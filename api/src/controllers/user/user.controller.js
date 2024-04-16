@@ -1,4 +1,4 @@
-import { User } from "../models/User.js";
+import { User } from "../../models/User.js";
 import jwt from "jsonwebtoken";
 import { resetPassword } from "./nodemailerSend.js";
 import bcrypt from "bcrypt";
