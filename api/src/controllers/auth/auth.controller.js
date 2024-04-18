@@ -47,7 +47,6 @@ export const registerUsers = async (req, res) => {
     // await nodemailerSend(email, token);
     return res.status(200).json({ message: "Successfull registration", token });
   } catch (error) {
-    console.log(error);
     throw new Error("something went wrong with the registry");
   }
 };
@@ -96,7 +95,6 @@ export const logout = async (req, res) => {
     };
     res.status(200).json(user);
   } catch (error) {
-    console.log(error);
     throw new Error("something went wrong");
   }
 };

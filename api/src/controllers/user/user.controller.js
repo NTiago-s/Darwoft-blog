@@ -16,7 +16,6 @@ export const profile = async (req, res) => {
       .status(200)
       .json({ firstName, lastName, email, role, telUser, image });
   } catch (error) {
-    console.error(error);
     return res.status(500).json({ message: "Error del Servidor" });
   }
 };
@@ -37,7 +36,6 @@ export const activeUser = async (req, res) => {
     await user.save();
     return res.status(200).json({ message: "Cuenta activada con exito" });
   } catch (error) {
-    console.error(error);
     return res.status(500).json({ message: "Error al modificar el Usuario" });
   }
 };
@@ -60,7 +58,6 @@ export const updateUser = async (req, res) => {
     await user.save();
     res.status(200).json({ message: "Usuario Modificado" });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: "Error al modificar el Usuario" });
   }
 };
@@ -71,7 +68,6 @@ export const deleteUser = async (req, res) => {
     await User.findByIdAndDelete(userId);
     res.status(204).json({ message: "Usuario Eliminado" });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: "Error al eliminar el Usuario" });
   }
 };
@@ -81,7 +77,6 @@ export const getUsers = async (req, res) => {
     const users = await User.find();
     res.status(200).json({ users });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: "Error al traer los Usuarios" });
   }
 };
@@ -100,7 +95,6 @@ export const prevResetPassword = async (req, res) => {
     await resetPassword(email, token);
     res.status(200).json({ token: token });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: "Error al modificar el Usuario" });
   }
 };
@@ -125,7 +119,6 @@ export const resetPasswordController = async (req, res) => {
     await user.save();
     res.status(200).json({ message: "Usuario Modificado" });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: "Error al modificar el Usuario" });
   }
 };

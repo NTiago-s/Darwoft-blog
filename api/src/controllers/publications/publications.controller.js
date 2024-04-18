@@ -48,7 +48,6 @@ export const deletePublication = async (req, res) => {
     await Publication.findByIdAndDelete(publicationId);
     res.status(204).json({ message: "Publicacion Eliminada" });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: "Error al eliminar la Publicacion" });
   }
 };

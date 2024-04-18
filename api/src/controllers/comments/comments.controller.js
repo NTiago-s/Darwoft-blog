@@ -45,7 +45,6 @@ export const deleteComment = async (req, res) => {
     await Comment.findByIdAndDelete(commentId);
     res.status(204).json({ message: "Comentario Eliminado" });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: "Error al eliminar el Comentario" });
   }
 };

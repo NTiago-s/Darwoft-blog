@@ -2,8 +2,8 @@ import { Theme } from "../../models/Themes.model.js";
 // Endpoint para obtener todas las Tematicas
 export const getThemes = async (req, res) => {
   try {
-    const themess = await Theme.find();
-    res.status(200).json({ themess });
+    const themes = await Theme.find();
+    res.status(200).json({ themes });
   } catch (error) {
     res.status(500).json({ message: "Error al traer las Tematicas" });
   }
@@ -44,7 +44,6 @@ export const deleteThemes = async (req, res) => {
     await Theme.findByIdAndDelete(themesId);
     res.status(204).json({ message: "Tematica Eliminada" });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: "Error al eliminar la Tematica" });
   }
 };
