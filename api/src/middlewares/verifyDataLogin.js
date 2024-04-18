@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import { User } from "../models/User.js";
+import { User } from "../models/User.model.js";
 
 const verifyPassBcrypt = (userpass, password) => {
   return bcrypt.compareSync(password, userpass);

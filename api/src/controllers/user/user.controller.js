@@ -1,7 +1,7 @@
-import { User } from "../../models/User.js";
+import { User } from "../../models/User.model.js";
 import jwt from "jsonwebtoken";
-import { resetPassword } from "./nodemailerSend.js";
 import bcrypt from "bcrypt";
+import { resetPassword } from "../auth/nodemailerSend.js";
 // Endpoint para obtener el perfil de un usuario
 export const profile = async (req, res) => {
   try {
@@ -20,29 +20,6 @@ export const profile = async (req, res) => {
     return res.status(500).json({ message: "Error del Servidor" });
   }
 };
-
-// Endpoint para agregar un nuevo usuario
-export const addUser = async (req, res) => {
-  try {
-    const { firstName, lastName, email, password, role, telUser } = req.body;
-
-    // Crear el nuevo usuario en la base de datos
-    const newUser = new User({
-      firstName,
-      lastName,
-      email,
-      password,
-      role,
-      telUser,
-    });
-    await newUser.save();
-    res.status(201).json({ user: newUser });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error al añadir el Usuario" });
-  }
-};
-
 // Endpoint para activar un usuario existente
 export const activeUser = async (req, res) => {
   try {
@@ -58,9 +35,7 @@ export const activeUser = async (req, res) => {
     }
     user.state = "active";
     await user.save();
-    return res
-      .status(200)
-      .redirect("https://autenticos.onrender.com/users/active");
+    return res.status(200).json({ message: "Cuenta activada con exito" });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Error al modificar el Usuario" });
@@ -145,7 +120,6 @@ export const resetPasswordController = async (req, res) => {
       return;
     }
     // Actualizar los datos del usuario
-    console.log(password);
     const criptpass = await passwordCrypt(password);
     user.password = criptpass;
     await user.save();

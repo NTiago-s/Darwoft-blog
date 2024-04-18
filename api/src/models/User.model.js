@@ -56,6 +56,16 @@ const userSchema = new Schema({
   image: {
     type: Buffer,
   },
+  telUser: {
+    type: String,
+    required: true,
+    validate: {
+      validator: function (v) {
+        return /^[0-9()+\s-]+$/.test(v);
+      },
+      message: "Invalid phone number format for telUser",
+    },
+  },
   role: {
     type: String,
     enum: ["client", "admin"],

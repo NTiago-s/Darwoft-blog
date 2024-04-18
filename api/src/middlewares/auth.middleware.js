@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
-import { logout } from "../controllers/auth.controller.js";
-import { User } from "../models/User.js";
+import { User } from "../models/User.model.js";
+import { logout } from "../controllers/auth/auth.controller.js";
 
 export const authMiddleware = async (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -66,7 +66,6 @@ export const authResetPassword = async (req, res, next) => {
     } else if (error instanceof jwt.JsonWebTokenError) {
       return res.status(401).send({ error: "Invalid token" });
     } else {
-      console.error("Error decoding token:", error);
       return res.status(500).send({ error: "Internal server error" });
     }
   }
@@ -96,7 +95,6 @@ export const authUserRolClient = async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.log(error);
     res.status(500).send({ error: "Error al autenticar el rol del usuario" });
     return;
   }
@@ -126,7 +124,6 @@ export const authUserRolAdmin = async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.log(error);
     res.status(500).send({ error: "Error al autenticar el rol del usuario" });
     return;
   }
