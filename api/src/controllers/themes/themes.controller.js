@@ -1,6 +1,6 @@
 import { Theme } from "../../models/Themes.model.js";
 // Endpoint para obtener todas las Tematicas
-export const getthemess = async (req, res) => {
+export const getThemes = async (req, res) => {
   try {
     const themess = await Theme.find();
     res.status(200).json({ themess });
@@ -10,7 +10,7 @@ export const getthemess = async (req, res) => {
 };
 
 //endpoint para crear una Tematica
-export const createthemes = async (req, res) => {
+export const createThemes = async (req, res) => {
   try {
     const { name, description } = req.body;
     const themes = new themes({ name, description });
@@ -22,7 +22,7 @@ export const createthemes = async (req, res) => {
 };
 
 // Endpoint para modificar una Tematica existente
-export const updatethemes = async (req, res) => {
+export const updateThemes = async (req, res) => {
   try {
     const { themesId, description } = req.body;
     const themes = await Theme.findById(themesId);
@@ -38,7 +38,7 @@ export const updatethemes = async (req, res) => {
   }
 };
 
-export const deletethemes = async (req, res) => {
+export const deleteThemes = async (req, res) => {
   try {
     const { themesId } = req.body;
     await Theme.findByIdAndDelete(themesId);
