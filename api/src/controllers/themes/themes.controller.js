@@ -3,7 +3,7 @@ import { Theme } from "../../models/Themes.model.js";
 export const getThemes = async (req, res) => {
   try {
     const themes = await Theme.find();
-    res.status(200).json({ themes });
+    res.status(201).json({ themes });
   } catch (error) {
     res.status(500).json({ message: "Error al traer las Tematicas" });
   }
@@ -13,7 +13,7 @@ export const getThemes = async (req, res) => {
 export const createThemes = async (req, res) => {
   try {
     const { name, description } = req.body;
-    const themes = new themes({ name, description });
+    const themes = new Theme({ name, description });
     await themes.save();
     res.status(201).json({ themes });
   } catch (error) {
@@ -32,7 +32,7 @@ export const updateThemes = async (req, res) => {
     }
     themes.description = description;
     await themes.save();
-    res.status(200).json({ message: "Tematica Modificada" });
+    res.status(201).json({ message: "Tematica Modificada" });
   } catch (error) {
     res.status(500).json({ message: "Error al modificar la Tematica" });
   }

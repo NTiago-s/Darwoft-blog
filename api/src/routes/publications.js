@@ -4,7 +4,7 @@ import {
   createPublication,
   updatePublication,
   deletePublication,
-} from "../controllers/comments/comments.controller";
+} from "../controllers/publications/publications.controller.js";
 const router = Router();
 
 //Rutas publicas

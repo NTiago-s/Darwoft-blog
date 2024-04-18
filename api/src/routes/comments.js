@@ -4,7 +4,7 @@ import {
   createComment,
   updateComment,
   deleteComment,
-} from "../controllers/comments/comments.controller";
+} from "../controllers/comments/comments.controller.js";
 const router = Router();
 
 //Rutas publicas

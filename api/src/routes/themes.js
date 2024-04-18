@@ -4,7 +4,7 @@ import {
   createThemes,
   updateThemes,
   deleteThemes,
-} from "../controllers/themes/themes.controller";
+} from "../controllers/themes/themes.controller.js";
 const router = Router();
 
 //Rutas publicas
