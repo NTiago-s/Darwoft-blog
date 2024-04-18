@@ -5,9 +5,9 @@ import {
   updateThemes,
   deleteThemes,
 } from "../controllers/themes/themes.controller.js";
+
 const router = Router();
 
-//Rutas publicas
 router.get("/", getThemes);
 router.put("/update", updateThemes);
 router.post("/create", createThemes);

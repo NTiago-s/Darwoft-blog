@@ -2,14 +2,14 @@ import { User } from "../models/User.model.js";
 
 // Verifica los datos del usuario cliente al registrarse
 export const verifyDataRegisterClient = async (req, res, next) => {
-  const { email, firstName, lastName, password, telUser } = req.body;
-
-  if (!email || !firstName || !lastName || !password || !telUser) {
-    res.status(401).send({ error: "Campo requerido" });
-    return;
-  }
-
   try {
+    const { email, firstName, lastName, password, telUser } = req.body;
+
+    if (!email || !firstName || !lastName || !password || !telUser) {
+      res.status(401).send({ error: "Campo requerido" });
+      return;
+    }
+
     const userDb = await User.findOne({ email: email.toLowerCase() });
 
     if (userDb) {

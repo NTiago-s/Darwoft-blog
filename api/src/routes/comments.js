@@ -5,9 +5,9 @@ import {
   updateComment,
   deleteComment,
 } from "../controllers/comments/comments.controller.js";
+
 const router = Router();
 
-//Rutas publicas
 router.get("/", getComments);
 router.put("/update", updateComment);
 router.post("/create", createComment);

@@ -6,17 +6,16 @@ const verifyPassBcrypt = (userpass, password) => {
 };
 
 export const verifyDataLogin = async (req, res, next) => {
-  const { email, password } = req.body;
-
-  if (!email || !password) {
-    res.status(401).send({ error: "Campo requerido" });
-    return;
-  }
-
   try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      res.status(401).send({ error: "Campo requerido" });
+      return;
+    }
+
     const clientdb = await User.findOne({ email: email.toLowerCase() });
 
-    if (!clientdb || clientdb === null) {
+    if (!clientdb) {
       res
         .status(404)
         .send({ error: "Correo electrónico o contraseña incorrectos." });

@@ -45,18 +45,16 @@ export const authMiddleware = async (req, res, next) => {
       }
     }
   }
-
   req.body.userId = decoded.payload.id;
-
   next();
 };
 
 export const authResetPassword = async (req, res, next) => {
-  const authHeader = req.body.token;
-  if (!authHeader) {
-    return res.status(401).send({ error: "No token provided" });
-  }
   try {
+    const authHeader = req.body.token;
+    if (!authHeader) {
+      return res.status(401).send({ error: "No token provided" });
+    }
     const decoded = jwt.verify(authHeader, process.env.JWT_SECRET);
     req.body.userId = decoded.id;
     next();
@@ -73,9 +71,8 @@ export const authResetPassword = async (req, res, next) => {
 
 // Verifica rol de cliente
 export const authUserRolClient = async (req, res, next) => {
-  const userId = req.body.userId;
-
   try {
+    const userId = req.body.userId;
     const userDb = await User.findById(userId);
 
     if (!userDb) {
@@ -102,9 +99,9 @@ export const authUserRolClient = async (req, res, next) => {
 
 // Verifica rol de admin
 export const authUserRolAdmin = async (req, res, next) => {
-  const userId = req.body.userId;
-
   try {
+    const userId = req.body.userId;
+
     const userDb = await User.findById(userId);
 
     if (!userDb) {

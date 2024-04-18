@@ -7,7 +7,9 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 // poner la primera letra de un nombre en mayúscula
 export const capitalizeFirstLetter = (nombre) => {
-  return nombre.charAt(0).toUpperCase() + nombre.slice(1).toLowerCase();
+  return (
+    nombre.charAt(0).toUpperCase().trim() + nombre.slice(1).toLowerCase().trim()
+  );
 };
 
 // Endpoint genera el token para los usuarios
@@ -57,8 +59,7 @@ export const loginUsers = async (req, res) => {
     const { email } = req.body;
     const userClientDb = await User.findOneAndUpdate(
       { email: email.toLowerCase() },
-      { login: true },
-      { new: true }
+      { login: true }
     );
     const tokenJwt = newToken(userClientDb._id);
     return res.status(200).json({

@@ -5,9 +5,9 @@ import {
   updatePublication,
   deletePublication,
 } from "../controllers/publications/publications.controller.js";
+
 const router = Router();
 
-//Rutas publicas
 router.get("/", getPublications);
 router.put("/update", updatePublication);
 router.post("/create", createPublication);

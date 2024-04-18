@@ -15,7 +15,6 @@ import {
 
 const router = Router();
 
-//Rutas publicas
 router.get("/", getUsers);
 router.get("/profile", authMiddleware, profile);
 router.get("/active", activeUser);
