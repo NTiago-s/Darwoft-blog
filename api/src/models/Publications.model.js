@@ -20,7 +20,7 @@ const publicationSchema = new Schema({
     default: Date.now,
     required: true,
   },
-  themes: [{ type: Schema.Types.ObjectId, ref: "Theme" }],
+  themes: [String],
 });
 
 export const Publication = model("Publication", publicationSchema);
