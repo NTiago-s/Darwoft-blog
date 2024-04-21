@@ -1,16 +1,25 @@
 import { User } from "../models/User.model.js";
 
+const verifyData = (data) => {
+  if (
+    !data.email ||
+    !data.firstName ||
+    !data.lastName ||
+    !data.password ||
+    !data.telUser
+  ) {
+    res.status(401).send({ error: "Campo requerido" });
+    return;
+  }
+};
+
 // Verifica los datos del usuario cliente al registrarse
 export const verifyDataRegisterClient = async (req, res, next) => {
   try {
-    const { email, firstName, lastName, password, telUser } = req.body;
+    const body = req.body;
+    verifyData(body);
 
-    if (!email || !firstName || !lastName || !password || !telUser) {
-      res.status(401).send({ error: "Campo requerido" });
-      return;
-    }
-
-    const userDb = await User.findOne({ email: email.toLowerCase() });
+    const userDb = await User.findOne({ email: body.email.toLowerCase() });
 
     if (userDb) {
       res.status(401).send({ error: "Correo electrónico en uso" });
@@ -26,21 +35,15 @@ export const verifyDataRegisterClient = async (req, res, next) => {
 
 // Verifica los datos del usuario admin al registrarse
 export const verifyDataRegisterAdmin = async (req, res, next) => {
-  const { email, firstName, lastName, password, role, telUser } = req.body;
-
-  if (!email || !firstName || !lastName || !password || !telUser) {
-    res.status(401).send({ error: "Campo requerido" });
-    return;
-  }
-
-  if (role !== "admin") {
-    res.status(401).send({ error: "Rol no admitido" });
-    return;
-  }
-
   try {
-    const userDb = await User.findOne({ email: email.toLowerCase() });
+    const body = req.body;
+    verifyData(body);
 
+    if (body.role !== "admin") {
+      res.status(401).send({ error: "Rol no admitido" });
+      return;
+    }
+    const userDb = await User.findOne({ email: body.email.toLowerCase() });
     if (userDb) {
       res.status(401).send({ error: "Correo electrónico en uso" });
       return;

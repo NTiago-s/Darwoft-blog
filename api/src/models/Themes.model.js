@@ -8,7 +8,7 @@ const themeSchema = new Schema({
       validator: function (v) {
         return /^[a-zA-Zá-úÁ-Ú\s]+$/.test(v);
       },
-      message: "Invalid firstName format",
+      message: "Invalid name format",
     },
   },
   description: {

@@ -2,7 +2,6 @@ import { User } from "../../models/User.model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { nodemailerSend } from "./nodemailerSend.js";
-
 const JWT_SECRET = process.env.JWT_SECRET;
 
 // poner la primera letra de un nombre en mayúscula
@@ -25,8 +24,7 @@ export const newToken = (userId) => {
 
 // se encripta el password
 const passwordCrypt = async (pass) => {
-  const saltOrRounds = 10;
-  return await bcrypt.hash(pass, saltOrRounds);
+  return await bcrypt.hash(pass, 10);
 };
 
 // Endpoint registra al usuario
@@ -59,7 +57,8 @@ export const loginUsers = async (req, res) => {
     const { email } = req.body;
     const userClientDb = await User.findOneAndUpdate(
       { email: email.toLowerCase() },
-      { login: true }
+      { login: true },
+      { new: true }
     );
     const tokenJwt = newToken(userClientDb._id);
     return res.status(200).json({

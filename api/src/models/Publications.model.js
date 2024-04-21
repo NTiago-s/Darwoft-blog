@@ -8,7 +8,7 @@ const publicationSchema = new Schema({
       validator: function (v) {
         return /^[a-zA-Zá-úÁ-Ú\s]+$/.test(v);
       },
-      message: "Invalid firstName format",
+      message: "Invalid title format",
     },
   },
   description: {
@@ -20,6 +20,7 @@ const publicationSchema = new Schema({
     default: Date.now,
     required: true,
   },
+  themes: [{ type: Schema.Types.ObjectId, ref: "Theme" }],
 });
 
 export const Publication = model("Publication", publicationSchema);

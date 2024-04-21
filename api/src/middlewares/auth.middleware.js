@@ -75,21 +75,10 @@ export const authUserRolClient = async (req, res, next) => {
     const userId = req.body.userId;
     const userDb = await User.findById(userId);
 
-    if (!userDb) {
+    if (!userDb || !userDb.login || userDb.role !== "client") {
       res.status(403).send({ error: "Autenticación fallida" });
       return;
     }
-
-    if (!userDb.login) {
-      res.status(403).send({ error: "Se requiere autenticación" });
-      return;
-    }
-
-    if (userDb.role !== "client") {
-      res.status(403).send({ error: "Autenticación fallida" });
-      return;
-    }
-
     next();
   } catch (error) {
     res.status(500).send({ error: "Error al autenticar el rol del usuario" });
@@ -101,24 +90,12 @@ export const authUserRolClient = async (req, res, next) => {
 export const authUserRolAdmin = async (req, res, next) => {
   try {
     const userId = req.body.userId;
-
     const userDb = await User.findById(userId);
 
-    if (!userDb) {
+    if (!userDb || !userDb.login || userDb.role !== "admin") {
       res.status(403).send({ error: "Autenticación fallida" });
       return;
     }
-
-    if (!userDb.login) {
-      res.status(403).send({ error: "Se requiere autenticación" });
-      return;
-    }
-
-    if (userDb.role !== "admin") {
-      res.status(403).send({ error: "Autenticación fallida" });
-      return;
-    }
-
     next();
   } catch (error) {
     res.status(500).send({ error: "Error al autenticar el rol del usuario" });

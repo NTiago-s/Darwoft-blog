@@ -12,11 +12,12 @@ export const getPublications = async (req, res) => {
 //endpoint para crear un Publicacion
 export const createPublication = async (req, res) => {
   try {
-    const { description, title } = req.body;
+    const { description, title, themes } = req.body;
     const publication = new Publication({
       title,
       description,
       date: new Date(),
+      themes: themes,
     });
     await publication.save();
     res.status(201).json({ publication });
