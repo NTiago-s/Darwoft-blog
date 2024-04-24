@@ -10,22 +10,9 @@ export const authMiddleware = async (req, res, next) => {
     return;
   }
 
-  const parts = authHeader.split(" ");
-  if (parts.length !== 2) {
-    res.status(401).send({ error: "Token error" });
-    return;
-  }
-
-  const [scheme, token] = parts;
-
-  if (!/^Bearer$/i.test(scheme)) {
-    res.status(401).send({ error: "Token malformatted" });
-    return;
-  }
-
   const currentTimestamp = Math.floor(Date.now() / 1000);
 
-  const decoded = jwt.decode(token, { complete: true });
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
   if (!decoded) {
     res.status(401).send({ error: "Token invalido" });
