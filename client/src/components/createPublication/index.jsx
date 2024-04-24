@@ -10,7 +10,7 @@ export default function CreatePublication() {
           id=""
           cols="10"
           rows="10"
-          className="rounded-xl w-full text-2xl placeholder:text-2xl p-2"
+          className="rounded-xl text-2xl placeholder:text-2xl p-2"
           placeholder="¡Creá una Publicación!"
         ></textarea>
       </div>
