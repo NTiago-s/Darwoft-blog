@@ -13,27 +13,23 @@ export const authService = {
   },
 
   logout: async (data) => {
-    if (!data) {
-      localStorage.removeItem("profileData");
+    const response = await fetch(BASE_URL + "/auth/logout", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token: data }),
+    });
+    if (response.ok) {
+      localStorage.removeItem("user");
     } else {
-      const response = await fetch(BASE_URL + "/auth/logout", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token: data }),
+      Swal.fire({
+        title: "Oops!",
+        text: "Error al cerrar Sesion",
+        icon: "error",
+        confirmButtonColor: "#FF22FF",
+        color: "#FFF",
+        background: "#000",
+        iconColor: "#FF22FF",
       });
-      if (response.ok) {
-        localStorage.removeItem("user");
-      } else {
-        Swal.fire({
-          title: "Oops!",
-          text: "Error al cerrar Sesion",
-          icon: "error",
-          confirmButtonColor: "#FF22FF",
-          color: "#FFF",
-          background: "#000",
-          iconColor: "#FF22FF",
-        });
-      }
     }
   },
 
@@ -46,17 +42,12 @@ export const authService = {
   },
 
   isAuthorized: () => {
-    return (
-      localStorage.getItem("user") !== null ||
-      localStorage.getItem("profileData") !== null
-    );
+    return localStorage.getItem("user") !== null;
   },
 
   userRole: () => {
     const user = localStorage.getItem("user");
-
     const parsedUser = user ? JSON.parse(user) : null;
-
     return parsedUser?.role;
   },
 };

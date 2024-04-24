@@ -11,7 +11,7 @@ const axiosPrivate = axios.create({
 axiosPrivate.interceptors.request.use(function (config) {
   const token = JSON.parse(localStorage.getItem("user"));
   if (config.headers !== undefined) {
-    config.headers.Authorization = token ? `Bearer ${token.accessToken}` : "";
+    config.headers.Authorization = token ? `${token.accessToken}` : "";
   }
   return config;
 });
