@@ -44,7 +44,7 @@ export const registerUsers = async (req, res) => {
     const newUser = new User(data);
     await newUser.save();
     const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
-    // await nodemailerSend(email, token);
+    await nodemailerSend(email, token);
     return res.status(200).json({ message: "Successfull registration", token });
   } catch (error) {
     throw new Error("something went wrong with the registry");

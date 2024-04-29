@@ -2,8 +2,8 @@ import NavBar from "./navBar";
 
 export default function Header() {
   return (
-    <div>
+    <header>
       <NavBar />
-    </div>
+    </header>
   );
 }

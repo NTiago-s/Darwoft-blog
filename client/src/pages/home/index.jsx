@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <section>
       <div>
-        <div>todos o seguidos</div>
+        {/* <div>todos o seguidos</div> */}
         <div>
           <CreatePublication />
         </div>

@@ -3,12 +3,6 @@ const emailRegex = /^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/;
 const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/;
 const phoneRegex = /^[+\d\s]+$/;
 
-// export const validateCheckBox = (value) => {
-//     if (value !== true) {
-//         return 'Debe aceptar los terminos y condiciones';
-//     }
-// }
-
 export const validatePhone = (value) => {
   if (!value) {
     return "Ingresa un número de teléfono";

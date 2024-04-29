@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import {
   validateNombre,
   validatePassword,
@@ -9,19 +9,52 @@ import {
   validatePhone,
 } from "../../utils/validation";
 import { Eye, EyeSlash } from "../../components/icons/icons";
+import { authService } from "../../services/Auth.service";
+import Swal from "sweetalert2";
+import Button from "../../components/buttons";
 
 export default function Register() {
   const {
     register,
+    handleSubmit,
     formState: { errors },
   } = useForm();
   const [visibilityPassword, setVisibilityPassword] = useState(false);
-
+  const navigate = useNavigate();
+  const onSubmit = handleSubmit(async (data) => {
+    try {
+      await authService.signup(data);
+      Swal.fire({
+        title: "Usuario creado correctamente!",
+        text: "Revisa tu correo para verificar tu cuenta",
+        icon: "success",
+        confirmButtonColor: "#22C55e",
+        color: "#FFF",
+        background: "#000",
+        iconColor: "#22C55e",
+      });
+      navigate("/");
+    } catch (error) {
+      let errorMessage = error.response.data.error;
+      Swal.fire({
+        title: "Oops!",
+        text: "Error: " + errorMessage,
+        icon: "error",
+        confirmButtonColor: "#FF22FF",
+        color: "#FFF",
+        background: "#000",
+        iconColor: "#FF22FF",
+      });
+    }
+  });
   const toggleVisibilityPassword = () => {
     setVisibilityPassword(!visibilityPassword);
   };
   return (
-    <form className="flex flex-col max-w-[500px] bg-fondo2 sm:p-12 shadow-md rounded-md p-6 h-auto mx-auto my-40">
+    <form
+      className="flex flex-col max-w-[500px] bg-fondo2 sm:p-12 shadow-md rounded-md p-6 h-auto mx-auto my-40"
+      onSubmit={onSubmit}
+    >
       <div className="flex flex-col lg:flex-row w-full gap-x-4">
         <div className="flex flex-col">
           <div>
@@ -127,8 +160,8 @@ export default function Register() {
         )}
       </div>
 
-      <div className="flex flex-col justify-center items-center w-full text-white mt-9 ">
-        <button>Registrarse</button>
+      <div className="flex flex-col justify-center items-center w-full mt-9 ">
+        <Button txt="Registrarse" ariaLabel={"Registrarse"} />
         <p className="mt-9">
           ¿Ya tienes una cuenta?
           <Link
