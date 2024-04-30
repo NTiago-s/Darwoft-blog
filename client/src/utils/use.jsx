@@ -2,6 +2,7 @@
 import { useEffect } from "react";
 import { useUser } from "../hooks/useGetUsers";
 import { useThemes } from "../hooks/useGetThemes";
+import { usePublications } from "../hooks/useGetPublications";
 export const useUserEffect = () => {
   const userData = useUser();
   useEffect(() => {
@@ -16,4 +17,12 @@ export const useThemesEffect = () => {
     themesData.get();
   }, []);
   return themesData;
+};
+
+export const usePublicationsEffect = () => {
+  const publicationsData = usePublications();
+  useEffect(() => {
+    publicationsData.get();
+  }, []);
+  return publicationsData;
 };

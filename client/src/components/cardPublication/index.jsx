@@ -1,38 +1,48 @@
 import { Adjusment } from "../icons/icons";
-
+import { usePublicationsEffect } from "../../utils/use";
 export default function CardPublication() {
+  // const user = useUserEffect();
+  const publicationsData = usePublicationsEffect();
   return (
-    <div className="h-auto p-3 max-w-[700px]">
-      <div className="flex justify-between m-3">
-        <div className="flex gap-2">
-          <div className="rounded-full bg-gray-900 text-white min-w-14 h-14 flex justify-center items-center text-center">
-            TN
+    <div className="flex flex-col h-auto p-3 max-w-[700px]">
+      {publicationsData.data &&
+        Array.isArray(publicationsData.data.publications) &&
+        publicationsData.data.publications.map((publication, index) => (
+          <div key={index}>
+            <div className="flex justify-between m-3">
+              <div className="flex gap-2">
+                <div className="rounded-full bg-gray-900 text-white min-w-14 h-14 flex justify-center items-center text-center">
+                  TN
+                </div>
+                <div className="text-center flex items-center">
+                  Nombre del usuario
+                </div>
+              </div>
+              <div>
+                <div className="flex h-auto w-auto justify-end p-4">
+                  <button>
+                    <Adjusment />
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div className="flex">
+              {publication.themes.map((theme, index) => (
+                <div
+                  className="flex w-auto justify-center rounded-xl m-2 p-2 gap-2 bg-blue-100 text-blue-800 hover:bg-emerald-300 hover:text-black text-sm font-medium dark:bg-blue-900 dark:text-blue-300  cursor-pointer"
+                  key={index}
+                >
+                  {theme}
+                </div>
+              ))}
+            </div>
+            <div className="text-2xl p-2">{publication.title}</div>
+            <p className="w-full break-words p-2">{publication.description}</p>
+            <div className="max-h-40 flex">
+              <input type="text" className="border-2 w-full rounded-lg my-2" />
+            </div>
           </div>
-          <div className="text-center flex items-center">
-            Nombre del usuario
-          </div>
-        </div>
-        <div>
-          <div className="flex h-auto w-auto justify-end p-4">
-            <button>
-              <Adjusment />
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div className="flex h-auto p-2 border-2">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloribus,
-        officia fugiat illo totam expedita rerum nisi exercitationem possimus
-        voluptas, dolorum mollitia neque quis. Molestiae laboriosam obcaecati,
-        quisquam ullam aut corrupti! Lorem, ipsum dolor sit amet consectetur
-        adipisicing elit. Obcaecati harum eaque dignissimos velit pariatur ut
-        et, reprehenderit, impedit quidem doloremque labore beatae sint nam
-        similique recusandae, ipsam ea! Distinctio, corrupti.
-      </div>
-      <div className="max-h-40 flex">
-        <input type="text" className="border-2 w-full rounded-lg my-2" />
-      </div>
+        ))}
     </div>
   );
 }

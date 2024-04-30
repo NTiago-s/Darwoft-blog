@@ -20,7 +20,11 @@ const publicationSchema = new Schema({
     default: Date.now,
     required: true,
   },
-  themes: [String],
+  author: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+  },
+  themes: [{ type: Schema.Types.ObjectId, ref: "Theme" }],
 });
 
 export const Publication = model("Publication", publicationSchema);

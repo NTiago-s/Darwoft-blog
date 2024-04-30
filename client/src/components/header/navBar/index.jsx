@@ -10,7 +10,7 @@ export default function NavBar() {
   const user = localStorage.getItem("user");
   // const userData = useUserEffect();
   const themesData = useThemesEffect();
-  // Determinar si la ruta actual es login o register
+
   const isLoginPage = location.pathname === "/login";
   const isRegisterPage = location.pathname === "/register";
   const dashPage = location.pathname === "/dashboard";

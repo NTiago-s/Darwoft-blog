@@ -1,6 +1,5 @@
 import jwt from "jsonwebtoken";
 import { User } from "../models/User.model.js";
-import { logout } from "../controllers/auth/auth.controller.js";
 
 export const authMiddleware = async (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -12,28 +11,28 @@ export const authMiddleware = async (req, res, next) => {
 
   const currentTimestamp = Math.floor(Date.now() / 1000);
 
-  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  try {
+    const decoded = jwt.verify(authHeader, process.env.JWT_SECRET);
 
-  if (!decoded) {
-    res.status(401).send({ error: "Token invalido" });
-    return;
-  }
-
-  if (decoded.payload.exp) {
-    if (decoded.payload.exp < currentTimestamp) {
-      const signout = await logout(decoded.payload.id);
-
-      if (signout.login === false) {
-        res.status(401).send({
-          error: "Token expirado",
-          login: signout.login,
-        });
-        return;
-      }
+    if (!decoded) {
+      res.status(401).send({ error: "Token inválido" });
+      return;
     }
+
+    if (decoded.exp < currentTimestamp) {
+      res.status(401).send({ error: "Token expirado" });
+      return;
+    }
+
+    req.body.userId = decoded.id;
+    next();
+  } catch (error) {
+    if (error.name === "TokenExpiredError") {
+      res.status(401).send({ error: "Token expirado" });
+      return;
+    }
+    res.status(500).send({ error: "Internal Server Error" });
   }
-  req.body.userId = decoded.payload.id;
-  next();
 };
 
 export const authResetPassword = async (req, res, next) => {
