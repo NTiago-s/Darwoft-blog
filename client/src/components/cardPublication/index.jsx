@@ -1,7 +1,11 @@
 import { Adjusment } from "../icons/icons";
 import { usePublicationsEffect } from "../../utils/use";
+
 export default function CardPublication() {
-  // const user = useUserEffect();
+  const Initials = (nombre, apellido) => {
+    return `${nombre.charAt(0)}${apellido.charAt(0)}`;
+  };
+
   const publicationsData = usePublicationsEffect();
   return (
     <div className="flex flex-col h-auto p-3 max-w-[700px]">
@@ -12,10 +16,13 @@ export default function CardPublication() {
             <div className="flex justify-between m-3">
               <div className="flex gap-2">
                 <div className="rounded-full bg-gray-900 text-white min-w-14 h-14 flex justify-center items-center text-center">
-                  TN
+                  {Initials(
+                    publication.author.firstName,
+                    publication.author.lastName
+                  )}
                 </div>
                 <div className="text-center flex items-center">
-                  Nombre del usuario
+                  {`${publication.author.firstName}  ${publication.author.lastName}`}
                 </div>
               </div>
               <div>
@@ -32,7 +39,7 @@ export default function CardPublication() {
                   className="flex w-auto justify-center rounded-xl m-2 p-2 gap-2 bg-blue-100 text-blue-800 hover:bg-emerald-300 hover:text-black text-sm font-medium dark:bg-blue-900 dark:text-blue-300  cursor-pointer"
                   key={index}
                 >
-                  {theme}
+                  {theme.name}
                 </div>
               ))}
             </div>

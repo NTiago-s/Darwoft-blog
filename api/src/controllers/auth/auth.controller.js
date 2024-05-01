@@ -2,7 +2,15 @@ import { User } from "../../models/User.model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { nodemailerSend } from "./nodemailerSend.js";
-const JWT_SECRET = process.env.JWT_SECRET;
+
+//Borra las propiedades que recibe por parametro y devuelve un objeto nuevo
+function removeProperties(obj, properties) {
+  const newObj = { ...obj };
+  properties.forEach((prop) => {
+    delete newObj[prop];
+  });
+  return newObj;
+}
 
 // poner la primera letra de un nombre en mayúscula
 export const capitalizeFirstLetter = (nombre) => {
@@ -19,7 +27,7 @@ export const newToken = (userId) => {
     id: userId,
     exp: Math.floor(expirationTimestamp / 1000),
   };
-  return jwt.sign(payload, JWT_SECRET);
+  return jwt.sign(payload, process.env.JWT_SECRET);
 };
 
 // se encripta el password
@@ -60,15 +68,13 @@ export const loginUsers = async (req, res) => {
       { login: true },
       { new: true }
     );
+    const cleanUser = removeProperties(userClientDb.toJSON(), [
+      "__v",
+      "password",
+    ]);
     const tokenJwt = newToken(userClientDb._id);
     return res.status(200).json({
-      firstName: userClientDb.firstName,
-      lastName: userClientDb.lastName,
-      email: userClientDb.email,
-      role: userClientDb.role,
-      image: userClientDb.image,
-      login: userClientDb.login,
-      status: userClientDb.status,
+      data: cleanUser,
       accessToken: tokenJwt,
     });
   } catch (error) {
@@ -85,14 +91,12 @@ export const logout = async (req, res) => {
       { login: false },
       { new: true }
     );
-    const user = {
-      firstName: logoutUser.firstName,
-      lastName: logoutUser.lastName,
-      email: logoutUser.email,
-      role: logoutUser.role,
-      login: logoutUser.login,
-      status: logoutUser.status,
-    };
+    const user = removeProperties(logoutUser.toJSON(), [
+      "__v",
+      "password",
+      "telUser",
+      "_id",
+    ]);
     res.status(200).json(user);
   } catch (error) {
     throw new Error("something went wrong");

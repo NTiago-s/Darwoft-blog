@@ -5,7 +5,7 @@ const BASE_URL = import.meta.env.VITE_ENDPOINT;
 
 export const authService = {
   login: async (data) => {
-    const response = await axios.put(BASE_URL + "/api/auth/login", data);
+    const response = await axios.put(BASE_URL + "/auth/login", data);
     if (response.data.accessToken) {
       localStorage.setItem("user", JSON.stringify(response.data));
     }
@@ -13,7 +13,7 @@ export const authService = {
   },
 
   logout: async (data) => {
-    const response = await fetch(BASE_URL + "/api/auth/logout", {
+    const response = await fetch(BASE_URL + "/auth/logout", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ token: data }),
@@ -34,7 +34,7 @@ export const authService = {
   },
 
   signup: (data) => {
-    return axios.post(BASE_URL + "/api/auth/register/client", data);
+    return axios.post(BASE_URL + "/auth/register/client", data);
   },
 
   getCurrentUser: () => {

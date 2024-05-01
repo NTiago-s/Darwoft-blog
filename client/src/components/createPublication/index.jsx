@@ -1,9 +1,12 @@
 export default function CreatePublication() {
+  const user = JSON.parse(localStorage.getItem("user"));
   return (
     <div className="h-auto p-3 max-w-[700px]">
       <div className="flex justify-between m-2 gap-2">
         <div className="rounded-full bg-gray-900 text-white min-w-14 h-14 flex justify-center items-center text-center">
-          TN
+          {`${user?.data?.firstName?.charAt(0)}${user?.data?.lastName?.charAt(
+            0
+          )}`}
         </div>
         <textarea
           name=""

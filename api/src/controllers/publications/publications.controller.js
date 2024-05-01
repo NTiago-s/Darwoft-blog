@@ -4,7 +4,9 @@ import { User } from "../../models/User.model.js";
 // Endpoint para obtener todas las Publicaciones
 export const getPublications = async (req, res) => {
   try {
-    const publications = await Publication.find();
+    const publications = await Publication.find()
+      .populate("author")
+      .populate("themes");
     res.status(200).json({ publications });
   } catch (error) {
     res.status(500).json({ message: "Error al traer las Publicaciones" });
