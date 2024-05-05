@@ -1,4 +1,5 @@
 import { Comment } from "../../models/Comments.model.js";
+import { Publication } from "../../models/Publications.model.js";
 
 // Endpoint para obtener todos los Comentarios
 export const getComments = async (req, res) => {
@@ -13,9 +14,17 @@ export const getComments = async (req, res) => {
 //endpoint para crear un comentario
 export const createComment = async (req, res) => {
   try {
-    const { description } = req.body;
-    const comment = new Comment({ description });
+    const { description, author, publication } = req.body.body;
+    const comment = new Comment({ description, author });
     await comment.save();
+
+    const newCommentId = comment._id;
+
+    const publicationToUpdate = await Publication.findById(publication);
+
+    publicationToUpdate.comments.push(newCommentId);
+    await publicationToUpdate.save();
+
     res.status(201).json({ comment });
   } catch (error) {
     res.status(500).json({ message: "Error al crear el Comentario" });

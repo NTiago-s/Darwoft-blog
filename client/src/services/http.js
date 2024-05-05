@@ -34,7 +34,7 @@ const post = async (url, body) => {
     body,
     headers,
   });
-  return response.data;
+  return response;
 };
 
 const put = async (url, body) => {

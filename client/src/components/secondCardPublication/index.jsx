@@ -2,50 +2,57 @@ import { SettingsIcon, UserIcon } from "../icons/icons";
 import { usePublicationsEffect } from "../../utils/use";
 import { useState } from "react";
 import { http } from "../../services/http";
-export default function CardPublication() {
+export default function SecondCardPublication() {
   const user = JSON.parse(localStorage.getItem("user"));
-  const [comment, setComment] = useState(false);
-  const [commentText, setCommentText] = useState("");
-  const [currentPublicationId, setCurrentPublicationId] = useState(null);
+  const [publicationComments, setPublicationComments] = useState({});
+
   const Initials = (nombre, apellido) => {
     return `${nombre.charAt(0)}${apellido.charAt(0)}`;
   };
 
   const handleStatusCommnet = (id) => {
-    setComment(true);
-    setCommentText("");
-    setCurrentPublicationId(id);
-  };
-  const handleStatusNoCommnet = () => {
-    setComment(false);
+    setPublicationComments({
+      ...publicationComments,
+      [id]: { comment: true, commentText: "" },
+    });
   };
 
-  const handleCreateComment = async () => {
+  const handleStatusNoCommnet = (id) => {
+    setPublicationComments({
+      ...publicationComments,
+      [id]: { comment: false, commentText: "" },
+    });
+  };
+
+  const handleCreateComment = async (id) => {
+    const { commentText } = publicationComments[id];
     if (!commentText.trim()) return;
-
     const data = {
       description: commentText,
-      publication: currentPublicationId,
+      publication: id,
       author: user.data._id,
     };
-
+    console.log(data);
     try {
       const response = await http.post("comments/create", data);
       console.log(response);
-      setCommentText("");
-      setComment(false);
+      handleStatusNoCommnet(id);
     } catch (error) {
       console.error("Error creating comment:", error);
     }
   };
 
   const publicationsData = usePublicationsEffect();
+  const sortedPublications = [
+    ...(publicationsData.data?.publications || []),
+  ].sort((a, b) => new Date(b.date) - new Date(a.date));
+
   return (
-    <div className="flex flex-col cursor-pointer h-auto p-3 max-w-[700px]">
-      {publicationsData.data &&
-        Array.isArray(publicationsData.data.publications) &&
-        publicationsData.data.publications.map((publication, index) => (
-          <div key={index}>
+    <div className="flex flex-col cursor-pointer h-auto p-3 max-w-[720px]">
+      {sortedPublications &&
+        Array.isArray(sortedPublications) &&
+        sortedPublications.map((publication, index) => (
+          <div key={index} className="bg-slate-500 rounded-lg m-4 p-3">
             <div className="flex justify-between m-3">
               <div className="flex gap-2">
                 <div className="rounded-full bg-gray-900 text-white min-w-14 h-14 flex justify-center items-center text-center">
@@ -59,7 +66,7 @@ export default function CardPublication() {
                 </div>
               </div>
               <div>
-                <div className="flex h-auto w-auto justify-end p-4">
+                <div className="flex h-auto w-auto justify-end">
                   <button className="rounded-xl p-[6px] gap-2 text-black hover:bg-emerald-300 hover:text-black text-xs font-medium">
                     <SettingsIcon />
                   </button>
@@ -86,7 +93,7 @@ export default function CardPublication() {
                 Responder
               </button>
             </div>
-            {comment ? (
+            {publicationComments[publication._id]?.comment ? (
               <div>
                 <div className="flex gap-2">
                   <div className="rounded-full bg-gray-900 text-white min-w-8 h-8  flex justify-center items-center text-center">
@@ -101,20 +108,30 @@ export default function CardPublication() {
                   <input
                     type="text"
                     className="w-full rounded-lg px-3 text-base bg-transparent border-black border-2 "
-                    value={commentText}
-                    onChange={(e) => setCommentText(e.target.value)}
+                    value={
+                      publicationComments[publication._id]?.commentText || ""
+                    }
+                    onChange={(e) =>
+                      setPublicationComments({
+                        ...publicationComments,
+                        [publication._id]: {
+                          ...publicationComments[publication._id],
+                          commentText: e.target.value,
+                        },
+                      })
+                    }
                   />
                 </div>
                 <div className="flex justify-end">
                   <button
                     className="rounded-xl m-2 p-[6px] gap-2 text-black hover:bg-emerald-300 hover:text-black text-xs font-medium"
-                    onClick={handleStatusNoCommnet}
+                    onClick={() => handleStatusNoCommnet(publication._id)}
                   >
                     Cancelar
                   </button>
                   <button
                     className="rounded-xl m-2 p-[6px] gap-2 text-black hover:bg-emerald-300 hover:text-black text-xs font-medium"
-                    onClick={handleCreateComment}
+                    onClick={() => handleCreateComment(publication._id)}
                   >
                     Responder
                   </button>

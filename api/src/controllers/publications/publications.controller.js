@@ -15,7 +15,7 @@ export const getPublications = async (req, res) => {
 
 export const createPublication = async (req, res) => {
   try {
-    const { description, title, themes, author } = req.body;
+    const { description, themes, author } = req.body.body;
 
     const existingUser = await User.findById(author);
     if (!existingUser) {
@@ -28,7 +28,6 @@ export const createPublication = async (req, res) => {
     const existingThemeIds = existingThemes.map((theme) => theme._id);
 
     const publication = new Publication({
-      title,
       description,
       date: new Date(),
       author: existingUser._id,

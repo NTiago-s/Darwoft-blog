@@ -1,5 +1,6 @@
-import CardPublication from "../../components/cardPublication";
+// import CardPublication from "../../components/cardPublication";
 import CreatePublication from "../../components/createPublication";
+import SecondCardPublication from "../../components/secondCardPublication";
 
 export default function Home() {
   return (
@@ -9,8 +10,8 @@ export default function Home() {
         <div>
           <CreatePublication />
         </div>
-        <div className="bg-slate-500 rounded-lg">
-          <CardPublication />
+        <div>
+          <SecondCardPublication />
         </div>
       </div>
     </section>

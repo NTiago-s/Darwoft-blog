@@ -22,11 +22,10 @@ export default function Login() {
   const onSubmit = handleSubmit(async (data) => {
     try {
       const user = await authService.login(data);
-      if ((user && user.role === "client") || (user && user.role === "admin")) {
-        navigate("/");
-        window.location.reload();
-        // eslint-disable-next-line no-dupe-else-if
-      } else if (user && user.role === "admin") {
+      if (
+        (user && user.data.role === "client") ||
+        (user && user.data.role === "admin")
+      ) {
         navigate("/");
       }
     } catch (error) {

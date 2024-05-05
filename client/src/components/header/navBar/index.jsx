@@ -21,7 +21,6 @@ export default function NavBar() {
     <div className="flex flex-col gap-3 min-h-10">
       <div className="flex gap-4">
         <Badge icon={<Home />} title={"Inicio"} to={"/"} />
-        {/* Renderizar el botón de inicio de sesión solo si no estamos en la página de login o registro */}
         {!isLoginPage && !isRegisterPage && !dashPage && (
           <Badge
             icon={user ? <User /> : ""}
@@ -30,14 +29,20 @@ export default function NavBar() {
           />
         )}
       </div>
-      <div>
-        <h4 className=" font-semibold text-xl mt-3">Tematicas Disponibles:</h4>
-        {themesData.data &&
-          Array.isArray(themesData.data.themes) &&
-          themesData.data.themes.map((theme, index) => (
-            <BadgeTheme key={index} className="text-black" title={theme.name} />
-          ))}
-      </div>
+      {!isLoginPage && !isRegisterPage && (
+        <div>
+          <h4 className="font-semibold text-xl mt-3">Tematicas Disponibles:</h4>
+          {themesData.data &&
+            Array.isArray(themesData.data.themes) &&
+            themesData.data.themes.map((theme, index) => (
+              <BadgeTheme
+                key={index}
+                className="text-black"
+                title={theme.name}
+              />
+            ))}
+        </div>
+      )}
     </div>
   );
 }

@@ -6,6 +6,7 @@ import Login from "../pages/login";
 import AuthUser from "../pages/activeUser";
 import DashboardUser from "../pages/dashboard";
 import { ProtectedLayout } from "./ProtectedRoutes";
+import PublicationDetails from "../pages/detailPublication";
 export const router = createBrowserRouter([
   // {
   //   path: "*",
@@ -20,6 +21,14 @@ export const router = createBrowserRouter([
     element: (
       <Main>
         <Register />
+      </Main>
+    ),
+  },
+  {
+    path: "/publications/:id",
+    element: (
+      <Main>
+        <PublicationDetails />
       </Main>
     ),
   },

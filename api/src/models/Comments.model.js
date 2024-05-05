@@ -5,10 +5,6 @@ const commentSchema = new Schema({
     type: String,
     required: true,
   },
-  publication: {
-    type: Schema.Types.ObjectId,
-    ref: "Publication", // Nombre del modelo de publicación
-  },
   author: {
     type: Schema.Types.ObjectId,
     ref: "User", // Nombre del modelo de usuario

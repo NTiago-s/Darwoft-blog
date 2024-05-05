@@ -1,16 +1,6 @@
 import { Schema, model } from "mongoose";
 
 const publicationSchema = new Schema({
-  title: {
-    type: String,
-    required: true,
-    validate: {
-      validator: function (v) {
-        return /^[a-zA-Zá-úÁ-Ú\s]+$/.test(v);
-      },
-      message: "Invalid title format",
-    },
-  },
   description: {
     type: String,
     required: true,
@@ -25,6 +15,7 @@ const publicationSchema = new Schema({
     ref: "User",
   },
   themes: [{ type: Schema.Types.ObjectId, ref: "Theme" }],
+  comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
 });
 
 export const Publication = model("Publication", publicationSchema);
