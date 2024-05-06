@@ -18,8 +18,8 @@ export default function NavBar() {
   useEffect(() => {}, []);
 
   return (
-    <div className="flex flex-col gap-3 min-h-10">
-      <div className="flex gap-4">
+    <div className="flex flex-col gap-3 min-h-10 min-w-60">
+      <div className="flex  gap-4">
         <Badge icon={<Home />} title={"Inicio"} to={"/"} />
         {!isLoginPage && !isRegisterPage && !dashPage && (
           <Badge

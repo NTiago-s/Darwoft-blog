@@ -40,7 +40,7 @@ export default function CreatePublication() {
   };
 
   return (
-    <div className="h-auto p-3 w-full">
+    <div className="h-auto p-3 w-full border-2 rounded-lg">
       <div className="flex justify-between m-2 gap-2">
         <div>
           {user ? (
@@ -95,7 +95,7 @@ export default function CreatePublication() {
       </div>
       <div className="flex justify-end">
         <button
-          className="flex items-center rounded-3xl p-2 gap-2 bg-blue-100 text-blue-800 hover:bg-emerald-300 hover:text-black text-sm font-medium dark:bg-blue-900 dark:text-blue-300  cursor-pointer"
+          className="flex items-center rounded-3xl p-2 mr-5 mt-2 gap-2 bg-blue-100 text-blue-800 hover:bg-emerald-300 hover:text-black text-sm font-medium dark:bg-blue-900 dark:text-blue-300  cursor-pointer"
           onClick={handleCreatePublication}
         >
           Crear Publicación
