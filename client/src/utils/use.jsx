@@ -26,3 +26,11 @@ export const usePublicationsEffect = () => {
   }, []);
   return publicationsData;
 };
+
+export const usePublicationsFilterEffect = () => {
+  const publicationsData = usePublications("filter");
+  useEffect(() => {
+    publicationsData.get();
+  }, []);
+  return publicationsData;
+};

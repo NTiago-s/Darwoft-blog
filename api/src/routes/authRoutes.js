@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { verifyDataLogin } from "../middlewares/verifyDataLogin.js";
 import { verifyUserLogout } from "../middlewares/verifyUserLogout.js";
-import { authResetPassword } from "../middlewares/auth.middleware.js";
+import { authMiddleware } from "../middlewares/auth.middleware.js";
 import {
   verifyDataRegisterAdmin,
   verifyDataRegisterClient,
@@ -17,6 +17,6 @@ const router = Router();
 router.post("/register/client", verifyDataRegisterClient, registerUsers);
 router.post("/register/admin", verifyDataRegisterAdmin, registerUsers);
 router.put("/login", verifyDataLogin, loginUsers);
-router.put("/logout", authResetPassword, verifyUserLogout, logout);
+router.put("/logout", authMiddleware, verifyUserLogout, logout);
 
 export default router;

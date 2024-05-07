@@ -8,9 +8,9 @@ export default function BadgeTheme({ icon, title, to, id }) {
   const user = useUserEffect();
   const handleDeleteTheme = async () => {
     try {
-      const response = await http.deleteTheme("themes/delete", id);
-      // const responseData = await response.json();
+      const response = await http.deleteCreates("themes/delete", id);
       console.log(response);
+      window.location.reload();
     } catch (error) {
       console.error("Error al eliminar la temática:", error);
     }

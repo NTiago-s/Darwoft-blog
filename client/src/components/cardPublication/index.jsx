@@ -1,11 +1,20 @@
-import { SettingsIcon, UserIcon } from "../icons/icons";
-import { usePublicationsEffect } from "../../utils/use";
+/* eslint-disable react-hooks/rules-of-hooks */
+import { PencilIcon, SettingsIcon, TrashIcon, UserIcon } from "../icons/icons";
+import {
+  usePublicationsEffect,
+  usePublicationsFilterEffect,
+} from "../../utils/use";
 import { useState } from "react";
 import { http } from "../../services/http";
-export default function SecondCardPublication() {
+
+export default function CardPublication() {
   const user = JSON.parse(localStorage.getItem("user"));
   const [publicationComments, setPublicationComments] = useState({});
+  const [publicationToDelete, setPublicationToDelete] = useState(null);
+  const [publicationWithDeleteModal, setPublicationWithDeleteModal] =
+    useState(null);
 
+  const isDashboardRoute = location.pathname === "/dashboard";
   const Initials = (nombre, apellido) => {
     return `${nombre.charAt(0)}${apellido.charAt(0)}`;
   };
@@ -32,7 +41,6 @@ export default function SecondCardPublication() {
       publication: id,
       author: user.data._id,
     };
-    console.log(data);
     try {
       const response = await http.post("comments/create", data);
       console.log(response);
@@ -42,17 +50,44 @@ export default function SecondCardPublication() {
     }
   };
 
-  const publicationsData = usePublicationsEffect();
+  const handleOpenDeleteModal = (id) => {
+    setPublicationWithDeleteModal(id);
+    setPublicationToDelete(id);
+  };
+
+  const handleCloseDeleteModal = () => {
+    setPublicationWithDeleteModal(null);
+    setPublicationToDelete(null);
+  };
+
+  const handleDeletePublication = async () => {
+    if (!publicationToDelete) return;
+    try {
+      const response = await http.deleteCreates(
+        "publications/delete",
+        publicationToDelete
+      );
+      console.log(response);
+      if (response.status === 200) window.location.reload();
+    } catch (error) {
+      console.error("Error deleting publication:", error);
+    }
+  };
+
+  const publicationsData = isDashboardRoute
+    ? usePublicationsFilterEffect()
+    : usePublicationsEffect();
+
   const sortedPublications = [
     ...(publicationsData.data?.publications || []),
   ].sort((a, b) => new Date(b.date) - new Date(a.date));
 
   return (
-    <div className="flex flex-col cursor-pointer h-auto">
-      {sortedPublications &&
-        Array.isArray(sortedPublications) &&
+    <div className="flex flex-col cursor-pointer h-auto my-2">
+      <div>{isDashboardRoute ? "Publicaciones creadas" : ""}</div>
+      {sortedPublications && sortedPublications.length > 0 ? (
         sortedPublications.map((publication, index) => (
-          <div key={index} className="bg-slate-500 rounded-lg p-4">
+          <div key={index} className="bg-slate-500 rounded-lg p-4 my-4">
             <div className="flex justify-between m-3">
               <div className="flex gap-2">
                 <div className="rounded-full bg-gray-900 text-white min-w-14 h-14 flex justify-center items-center text-center">
@@ -67,9 +102,32 @@ export default function SecondCardPublication() {
               </div>
               <div>
                 <div className="flex h-auto w-auto justify-end">
-                  <button className="rounded-xl p-[6px] gap-2 text-black hover:bg-emerald-300 hover:text-black text-xs font-medium">
-                    <SettingsIcon />
+                  <button
+                    className="rounded-xl p-[6px] gap-2 text-black hover:bg-emerald-300 hover:text-black text-xs font-medium"
+                    onClick={() => {
+                      if (publicationWithDeleteModal === publication._id) {
+                        handleCloseDeleteModal();
+                      } else {
+                        handleOpenDeleteModal(publication._id);
+                      }
+                    }}
+                  >
+                    {isDashboardRoute ? <SettingsIcon /> : ""}
                   </button>
+                  {publicationWithDeleteModal === publication._id && (
+                    <div className="fixed mt-10 z-20 bg-red-600 p-2 rounded-lg">
+                      <button className="flex items-center my-2 hover:bg-red-900 p-1 rounded-lg">
+                        <PencilIcon /> Editar
+                      </button>
+                      <button
+                        className="flex items-center my-2 hover:bg-red-900 p-1 rounded-lg"
+                        onClick={() => handleDeletePublication(publication._id)}
+                      >
+                        <TrashIcon />
+                        Eliminar
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -141,7 +199,12 @@ export default function SecondCardPublication() {
               ""
             )}
           </div>
-        ))}
+        ))
+      ) : (
+        <div className="text-center text-gray-500">
+          {isDashboardRoute ? "No tienes creada ninguna publicación" : ""}
+        </div>
+      )}
     </div>
   );
 }

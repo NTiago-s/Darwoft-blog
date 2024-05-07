@@ -1,22 +1,31 @@
 import { useState } from "react";
 import Button from "../../components/buttons";
-import CardPublication from "../../components/cardPublication";
 import { SettingsIcon } from "../../components/icons/icons";
 import Modal from "../../components/modal";
 import { useUserEffect } from "../../utils/use";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { http } from "../../services/http";
+import CardPublication from "../../components/cardPublication";
 export default function DashboardUser() {
   const user = useUserEffect();
-  console.log(user);
+  const navigate = useNavigate();
   const [modal, setModal] = useState(false);
 
   const handleModalClick = () => {
     setModal(!modal);
   };
+  const handleClick = async () => {
+    const response = await http.put("auth/logout");
+    console.log(response);
+    if (response.login == false) {
+      localStorage.removeItem("user");
+      navigate("/");
+    }
+  };
 
   return (
     <section className="w-full px-72">
-      <div className="m-auto flex py-4 px-40 justify-between">
+      <div className="m-auto flex py-4 px-20 justify-between">
         <div className="flex  gap-4">
           <div className="w-10 rounded-full bg-gray-900 text-white min-w-14 h-14 flex justify-center items-center text-center">
             {user
@@ -30,6 +39,13 @@ export default function DashboardUser() {
           </div>
         </div>
         <div className="flex items-center gap-4">
+          {/* {user.role === "admin" ? (
+            <Link to={"/dashboard/admin"}>
+              <SettingsIcon />
+            </Link>
+          ) : (
+            ""
+          )} */}
           {user.role === "admin" ? (
             ""
           ) : (
@@ -37,15 +53,21 @@ export default function DashboardUser() {
               <SettingsIcon />
             </Link>
           )}
-          <Button
-            txt={"Editar Perfil"}
-            ariaLabel={"Editar Perfil"}
-            handleUserDash={handleModalClick}
-          />
+          <div className="flex flex-col gap-4">
+            <Button
+              txt={"Editar Perfil"}
+              ariaLabel={"Editar Perfil"}
+              handleUserDash={handleModalClick}
+            />
+            <Button
+              txt={"Cerrar Sesion"}
+              ariaLabel={"Cerrar Sesion"}
+              handleUserDash={handleClick}
+            />
+          </div>
         </div>
       </div>
-      <div>Publicaciones creadas</div>
-      <div className="bg-slate-500 rounded-lg">
+      <div>
         <CardPublication />
       </div>
       {modal ? <Modal onClose={handleModalClick} /> : ""}

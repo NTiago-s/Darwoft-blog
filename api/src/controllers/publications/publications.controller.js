@@ -13,6 +13,18 @@ export const getPublications = async (req, res) => {
   }
 };
 
+export const filterPublications = async (req, res) => {
+  try {
+    const userId = req.body.userId;
+    const publications = await Publication.find({ author: userId })
+      .populate("author")
+      .populate("themes");
+    res.status(200).json({ publications });
+  } catch (error) {
+    res.status(500).json({ message: "Error al traer las Publicaciones" });
+  }
+};
+
 export const createPublication = async (req, res) => {
   try {
     const { description, themes, author } = req.body.body;
@@ -61,9 +73,10 @@ export const updatePublication = async (req, res) => {
 
 export const deletePublication = async (req, res) => {
   try {
-    const { publicationId } = req.body;
-    await Publication.findByIdAndDelete(publicationId);
-    res.status(204).json({ message: "Publicacion Eliminada" });
+    const { Id } = req.body;
+    console.log(Id);
+    await Publication.findByIdAndDelete(Id);
+    res.status(200).json({ message: "Publicacion Eliminada" });
   } catch (error) {
     res.status(500).json({ message: "Error al eliminar la Publicacion" });
   }

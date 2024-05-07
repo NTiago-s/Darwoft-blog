@@ -40,8 +40,8 @@ export const updateThemes = async (req, res) => {
 
 export const deleteThemes = async (req, res) => {
   try {
-    const { themesId } = req.body;
-    await Theme.findByIdAndDelete(themesId);
+    const { Id } = req.body;
+    await Theme.findByIdAndDelete(Id);
     res.status(204).json({ message: "Tematica Eliminada" });
   } catch (error) {
     console.error("Error al eliminar la temática:", error);

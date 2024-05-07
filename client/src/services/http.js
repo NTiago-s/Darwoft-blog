@@ -54,11 +54,11 @@ const _delete = async (url) => {
   return response;
 };
 
-const _deleteTheme = async (url, themesId) => {
-  console.log(themesId);
+const _deleteCreates = async (url, Id) => {
+  console.log(Id);
   const response = await fetch(`${BASE_URL}/${url}`, {
     method: "DELETE",
-    body: JSON.stringify({ themesId }),
+    body: JSON.stringify({ Id }),
     headers,
   });
   return response;
@@ -69,7 +69,7 @@ export const http = {
   post,
   put,
   delete: _delete,
-  deleteTheme: _deleteTheme,
+  deleteCreates: _deleteCreates,
 };
 
 export default axiosPrivate;
