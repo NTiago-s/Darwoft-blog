@@ -2,9 +2,9 @@ import { http } from "../../services/http";
 import { UserIcon } from "../icons/icons";
 import { Link } from "react-router-dom";
 import { useState } from "react"; // Importa useState
-import { useThemesEffect } from "../../utils/use";
+import { useThemesEffect, useUserEffect } from "../../utils/use";
 export default function CreatePublication() {
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = useUserEffect();
   const [publicationText, setPublicationText] = useState("");
   const [selectedThemes, setSelectedThemes] = useState([]);
   const [error, setError] = useState("");

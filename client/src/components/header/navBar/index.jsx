@@ -39,6 +39,7 @@ export default function NavBar() {
                 key={index}
                 className="text-black"
                 title={theme.name}
+                id={theme._id}
               />
             ))}
         </div>

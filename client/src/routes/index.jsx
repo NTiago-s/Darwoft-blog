@@ -7,6 +7,7 @@ import AuthUser from "../pages/activeUser";
 import DashboardUser from "../pages/dashboard";
 import { ProtectedLayout } from "./ProtectedRoutes";
 import PublicationDetails from "../pages/detailPublication";
+import DashboardUserAdmin from "../pages/dashboardAdmin";
 export const router = createBrowserRouter([
   // {
   //   path: "*",
@@ -69,6 +70,14 @@ export const router = createBrowserRouter([
         element: (
           <Main>
             <DashboardUser />
+          </Main>
+        ),
+      },
+      {
+        path: "/dashboard/admin",
+        element: (
+          <Main>
+            <DashboardUserAdmin />
           </Main>
         ),
       },

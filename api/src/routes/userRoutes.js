@@ -7,6 +7,7 @@ import {
   profile,
   resetPasswordController,
   prevResetPassword,
+  filterUsers,
 } from "../controllers/user/user.controller.js";
 import {
   authMiddleware,
@@ -16,6 +17,7 @@ import {
 const router = Router();
 
 router.get("/", getUsers);
+router.get("/search", authMiddleware, filterUsers);
 router.get("/profile", authMiddleware, profile);
 router.get("/active", activeUser);
 router.put("/", authMiddleware, updateUser);

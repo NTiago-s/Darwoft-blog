@@ -12,7 +12,7 @@ export const getThemes = async (req, res) => {
 //endpoint para crear una Tematica
 export const createThemes = async (req, res) => {
   try {
-    const { name, description } = req.body;
+    const { name, description } = req.body.body;
     const themes = new Theme({ name, description });
     await themes.save();
     res.status(201).json({ themes });
@@ -44,6 +44,7 @@ export const deleteThemes = async (req, res) => {
     await Theme.findByIdAndDelete(themesId);
     res.status(204).json({ message: "Tematica Eliminada" });
   } catch (error) {
+    console.error("Error al eliminar la temática:", error);
     res.status(500).json({ message: "Error al eliminar la Tematica" });
   }
 };

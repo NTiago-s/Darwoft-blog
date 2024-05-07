@@ -11,10 +11,10 @@ export const profile = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
-    const { firstName, lastName, email, role, telUser, image } = user;
+    const { firstName, lastName, email, role, telUser, image, _id } = user;
     return res
       .status(200)
-      .json({ firstName, lastName, email, role, telUser, image });
+      .json({ firstName, lastName, email, role, telUser, image, _id });
   } catch (error) {
     return res.status(500).json({ message: "Error del Servidor" });
   }
@@ -44,14 +44,14 @@ export const activeUser = async (req, res) => {
 // Endpoint para modificar un usuario existente
 export const updateUser = async (req, res) => {
   try {
-    const { userId, firstName, lastName, email, telUser } = req.body;
+    const { userId } = req.body;
+    const { firstName, lastName, email, telUser } = req.body.body;
     // Buscar el usuario en la base de datos
     const user = await User.findById(userId);
     if (!user) {
       res.status(404).json({ message: "Usuario no encontrado" });
       return;
     }
-    // Actualizar los datos del usuario
     user.firstName = firstName;
     user.lastName = lastName;
     user.email = email;
@@ -82,6 +82,16 @@ export const getUsers = async (req, res) => {
   }
 };
 
+export const filterUsers = async (req, res) => {
+  try {
+    const { name } = req.body;
+    const regex = new RegExp(name, "i");
+    const users = await User.find({ firstName: regex });
+    res.status(200).json({ users });
+  } catch (error) {
+    res.status(500).json({ message: "Error al traer los Usuarios" });
+  }
+};
 export const prevResetPassword = async (req, res) => {
   try {
     const { email } = req.body;

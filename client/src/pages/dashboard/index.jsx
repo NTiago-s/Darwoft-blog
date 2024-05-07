@@ -1,8 +1,19 @@
+import { useState } from "react";
 import Button from "../../components/buttons";
 import CardPublication from "../../components/cardPublication";
 import { SettingsIcon } from "../../components/icons/icons";
+import Modal from "../../components/modal";
+import { useUserEffect } from "../../utils/use";
+import { Link } from "react-router-dom";
 export default function DashboardUser() {
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = useUserEffect();
+  console.log(user);
+  const [modal, setModal] = useState(false);
+
+  const handleModalClick = () => {
+    setModal(!modal);
+  };
+
   return (
     <section className="w-full px-72">
       <div className="m-auto flex py-4 px-40 justify-between">
@@ -19,14 +30,25 @@ export default function DashboardUser() {
           </div>
         </div>
         <div className="flex items-center gap-4">
-          {user.role === "admin" ? "" : <SettingsIcon />}
-          <Button txt={"Editar Perfil"} ariaLabel={"Editar Perfil"} />
+          {user.role === "admin" ? (
+            ""
+          ) : (
+            <Link to={"/dashboard/admin"}>
+              <SettingsIcon />
+            </Link>
+          )}
+          <Button
+            txt={"Editar Perfil"}
+            ariaLabel={"Editar Perfil"}
+            handleUserDash={handleModalClick}
+          />
         </div>
       </div>
       <div>Publicaciones creadas</div>
       <div className="bg-slate-500 rounded-lg">
         <CardPublication />
       </div>
+      {modal ? <Modal onClose={handleModalClick} /> : ""}
     </section>
   );
 }
