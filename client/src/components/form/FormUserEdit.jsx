@@ -17,9 +17,11 @@ export default function FormUserEdit() {
   }, [user?.data, setValue]);
 
   const onSubmit = async (data) => {
-    console.log(data);
     const response = await http.put("users", data);
-    console.log(response);
+    if (response) {
+      //! ESTO TENGO QUE MODIFCAR
+      alert("Usuario Modificado");
+    }
   };
 
   return (

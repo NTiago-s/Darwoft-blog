@@ -28,10 +28,8 @@ export default function DashboardUserAdmin() {
     try {
       const response = await http.post("users/search", { name: searchUser });
       console.log(response);
-      // Actualizar el estado o mostrar los resultados al usuario según sea necesario
     } catch (error) {
       console.error("Error al buscar usuarios:", error);
-      // Manejar el error apropiadamente, por ejemplo, mostrando un mensaje de error al usuario
     }
   };
 

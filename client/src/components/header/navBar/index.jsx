@@ -2,15 +2,12 @@ import { useLocation } from "react-router-dom";
 import Badge from "../../badge";
 import { Home, User } from "../../icons/icons";
 import { useEffect } from "react";
-// import { useUserEffect } from "../../../utils/useUser";
-import { useThemesEffect } from "../../../utils/use";
+import { useThemesEffect, useUserEffect } from "../../../utils/use";
 import BadgeTheme from "../../badge/badgeThemes";
 export default function NavBar() {
   const location = useLocation();
-  const user = localStorage.getItem("user");
-  // const userData = useUserEffect();
+  const user = useUserEffect();
   const themesData = useThemesEffect();
-
   const isLoginPage = location.pathname === "/login";
   const isRegisterPage = location.pathname === "/register";
   const dashPage = location.pathname === "/dashboard";
