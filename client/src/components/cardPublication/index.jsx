@@ -7,25 +7,29 @@ import {
 import { useState } from "react";
 import { http } from "../../services/http";
 import { Link } from "react-router-dom";
+
 export default function CardPublication() {
   const user = JSON.parse(localStorage.getItem("user"));
   const [publicationComments, setPublicationComments] = useState({});
   const [publicationToDelete, setPublicationToDelete] = useState(null);
-  const [publicationDeleteModal, setpublicationDeleteModal] = useState(null);
+  const [publicationDeleteModal, setPublicationDeleteModal] = useState(null);
+  const [editingPublicationId, setEditingPublicationId] = useState(null);
+  const [editedPublicationDescription, setEditedPublicationDescription] =
+    useState("");
   const isDashboardRoute = location.pathname === "/dashboard";
 
   const Initials = (nombre, apellido) => {
     return `${nombre.charAt(0)}${apellido.charAt(0)}`;
   };
 
-  const handleStatusCommnet = (id) => {
+  const handleStatusComment = (id) => {
     setPublicationComments({
       ...publicationComments,
       [id]: { comment: true, commentText: "" },
     });
   };
 
-  const handleStatusNoCommnet = (id) => {
+  const handleStatusNoComment = (id) => {
     setPublicationComments({
       ...publicationComments,
       [id]: { comment: false, commentText: "" },
@@ -33,13 +37,26 @@ export default function CardPublication() {
   };
 
   const handleOpenDeleteModal = (id) => {
-    setpublicationDeleteModal(id);
+    setPublicationDeleteModal(id);
     setPublicationToDelete(id);
   };
 
   const handleCloseDeleteModal = () => {
-    setpublicationDeleteModal(null);
+    setPublicationDeleteModal(null);
     setPublicationToDelete(null);
+  };
+
+  const handleUpdatePublication = async (id) => {
+    try {
+      const response = await http.put(`publications/update`, {
+        publicationId: id,
+        description: editedPublicationDescription,
+      });
+      if (response.status === 200) window.location.reload();
+      setEditingPublicationId(null);
+    } catch (error) {
+      console.error("Error updating publication:", error);
+    }
   };
 
   const handleCreateComment = async (id) => {
@@ -57,7 +74,7 @@ export default function CardPublication() {
     try {
       const response = await http.post("comments/create", data);
       console.log(response);
-      handleStatusNoCommnet(id);
+      handleStatusNoComment(id);
     } catch (error) {
       console.error("Error creating comment:", error);
     }
@@ -123,7 +140,17 @@ export default function CardPublication() {
                     </button>
                     {publicationDeleteModal === publication._id && (
                       <div className="fixed mt-10 z-20 bg-red-600 p-2 rounded-lg">
-                        <button className="flex items-center my-2 hover:bg-red-900 p-1 rounded-lg">
+                        <button
+                          className="flex items-center my-2 hover:bg-red-900 p-1 rounded-lg"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            handleCloseDeleteModal();
+                            setEditingPublicationId(publication._id);
+                            setEditedPublicationDescription(
+                              publication.description
+                            );
+                          }}
+                        >
                           <PencilIcon /> Editar
                         </button>
                         <button
@@ -141,9 +168,23 @@ export default function CardPublication() {
                   </div>
                 </div>
               </div>
-              <p className="w-full break-words p-2">
-                {publication.description}
-              </p>
+              {editingPublicationId === publication._id ? (
+                <input
+                  type="text"
+                  value={editedPublicationDescription}
+                  onChange={(e) =>
+                    setEditedPublicationDescription(e.target.value)
+                  }
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }}
+                />
+              ) : (
+                <p className="w-full break-words p-2">
+                  {publication.description}
+                </p>
+              )}
               <div className="flex justify-between">
                 <div className="flex">
                   {publication.themes.map((theme, index) => (
@@ -156,15 +197,27 @@ export default function CardPublication() {
                   ))}
                 </div>
 
-                <button
-                  className="rounded-xl m-2 p-[6px] gap-2 text-black hover:bg-emerald-300 hover:text-black text-xs font-medium"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleStatusCommnet(publication._id);
-                  }}
-                >
-                  Responder
-                </button>
+                {editingPublicationId ? (
+                  <button
+                    className="rounded-xl m-2 p-[6px] gap-2 text-black hover:bg-emerald-300 hover:text-black text-xs font-medium"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleUpdatePublication(publication._id);
+                    }}
+                  >
+                    Guardar
+                  </button>
+                ) : (
+                  <button
+                    className="rounded-xl m-2 p-[6px] gap-2 text-black hover:bg-emerald-300 hover:text-black text-xs font-medium"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleStatusComment(publication._id);
+                    }}
+                  >
+                    Responder
+                  </button>
+                )}
               </div>
               {publicationComments[publication._id]?.comment ? (
                 <div>
@@ -204,7 +257,7 @@ export default function CardPublication() {
                       className="rounded-xl m-2 p-[6px] gap-2 text-black hover:bg-emerald-300 hover:text-black text-xs font-medium"
                       onClick={(e) => {
                         e.preventDefault();
-                        handleStatusNoCommnet(publication._id);
+                        handleStatusNoComment(publication._id);
                       }}
                     >
                       Cancelar

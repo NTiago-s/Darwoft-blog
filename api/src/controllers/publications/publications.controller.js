@@ -20,7 +20,12 @@ export const getPublication = async (req, res) => {
     const publication = await Publication.findById(id)
       .populate("author")
       .populate("themes")
-      .populate("comments");
+      .populate({
+        path: "comments",
+        populate: {
+          path: "author",
+        },
+      });
     if (!publication) {
       return res.status(404).json({ message: "Publicación no encontrada" });
     }
@@ -74,7 +79,8 @@ export const createPublication = async (req, res) => {
 // Endpoint para modificar un Publicacion existente
 export const updatePublication = async (req, res) => {
   try {
-    const { publicationId, description } = req.body;
+    const { publicationId, description } = req.body.body;
+    console.log(publicationId, description);
     const publication = await Publication.findById(publicationId);
     if (!publication) {
       res.status(404).json({ message: "Publicacion no encontrada" });

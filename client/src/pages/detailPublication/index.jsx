@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { http } from "../../services/http";
 import { UserIcon } from "../../components/icons/icons";
+import BadgeComment from "../../components/badge/badgeComments";
 
 export default function PublicationDetails() {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -152,14 +153,17 @@ export default function PublicationDetails() {
       ) : (
         ""
       )}
-      <div className="flex justify-between">
-        <div className="flex">
+      <hr className="my-4" />
+      <div className="flex flex-col justify-between p-6 max-h-[calc(100vh-300px)] overflow-x-hidden overflow-y-auto">
+        <div>
           {publication?.publication?.comments.map((comment, index) => (
-            <div
-              className="flex w-auto justify-center rounded-xl m-2 p-[6px] gap-2 bg-blue-100 text-blue-800 hover:text-black text-xs font-medium dark:bg-blue-900 dark:text-blue-300  cursor-pointer"
-              key={index}
-            >
-              {comment.description}
+            <div key={index}>
+              <BadgeComment
+                id={comment._id}
+                title={comment.description}
+                author={comment.author}
+                publication={publication}
+              />
             </div>
           ))}
         </div>

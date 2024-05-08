@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-catch */
 import axios from "axios";
 import authHeader from "./AuthHeader";
 
@@ -27,7 +28,6 @@ const get = async (url) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error fetching data:", error);
     throw error;
   }
 };
@@ -47,7 +47,7 @@ const put = async (url, body) => {
     body,
     headers,
   });
-  return response.data;
+  return response;
 };
 
 const _delete = async (url) => {

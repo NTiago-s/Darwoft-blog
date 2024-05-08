@@ -14,10 +14,10 @@ export default function DashboardUser() {
   const handleModalClick = () => {
     setModal(!modal);
   };
+
   const handleClick = async () => {
     const response = await http.put("auth/logout");
-    console.log(response);
-    if (response.login == false) {
+    if (response.status === 200) {
       localStorage.removeItem("user");
       navigate("/");
     }
