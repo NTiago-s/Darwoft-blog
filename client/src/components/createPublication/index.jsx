@@ -19,6 +19,10 @@ export default function CreatePublication() {
   };
 
   const handleCreatePublication = async () => {
+    if (!user.data) {
+      alert("Debes Iniciar Sesion para crear una Publicacion");
+      return;
+    }
     if (selectedThemes.length === 0) {
       setError("Seleccione al menos 1 temática.");
       return;
@@ -32,7 +36,6 @@ export default function CreatePublication() {
       };
 
       const response = await http.post("publications/create", data);
-      console.log(response);
       if (response.status === 201) window.location.reload();
     } catch (error) {
       console.error("Error creating publication:", error);

@@ -21,11 +21,15 @@ const headers = {
 };
 
 const get = async (url) => {
-  const response = await axiosPrivate.get(`${BASE_URL}/${url}`, {
-    method: "GET",
-    headers,
-  });
-  return response.data;
+  try {
+    const response = await axiosPrivate.get(`${BASE_URL}/${url}`, {
+      headers,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    throw error;
+  }
 };
 
 const post = async (url, body) => {
@@ -55,7 +59,6 @@ const _delete = async (url) => {
 };
 
 const _deleteCreates = async (url, Id) => {
-  console.log(Id);
   const response = await fetch(`${BASE_URL}/${url}`, {
     method: "DELETE",
     body: JSON.stringify({ Id }),

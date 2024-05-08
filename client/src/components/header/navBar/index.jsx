@@ -1,7 +1,6 @@
 import { useLocation } from "react-router-dom";
 import Badge from "../../badge";
 import { Home, User } from "../../icons/icons";
-import { useEffect } from "react";
 import { useThemesEffect, useUserEffect } from "../../../utils/use";
 import BadgeTheme from "../../badge/badgeThemes";
 export default function NavBar() {
@@ -12,17 +11,15 @@ export default function NavBar() {
   const isRegisterPage = location.pathname === "/register";
   const dashPage = location.pathname === "/dashboard";
 
-  useEffect(() => {}, []);
-
   return (
     <div className="flex flex-col gap-3 min-h-10 min-w-80">
       <div className="flex  gap-4">
         <Badge icon={<Home />} title={"Inicio"} to={"/"} />
         {!isLoginPage && !isRegisterPage && !dashPage && (
           <Badge
-            icon={user ? <User /> : ""}
-            title={user ? "Perfil" : "Iniciar Sesión"}
-            to={user ? "/dashboard" : "/login"}
+            icon={user?.data ? <User /> : ""}
+            title={user?.data ? "Perfil" : "Iniciar Sesión"}
+            to={user?.data ? "/dashboard" : "/login"}
           />
         )}
       </div>

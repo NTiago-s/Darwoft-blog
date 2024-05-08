@@ -27,6 +27,7 @@ export default function Login() {
         (user && user.data.role === "admin")
       ) {
         navigate("/");
+        window.location.reload();
       }
     } catch (error) {
       Swal.fire({

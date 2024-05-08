@@ -7,7 +7,12 @@ const commentSchema = new Schema({
   },
   author: {
     type: Schema.Types.ObjectId,
-    ref: "User", // Nombre del modelo de usuario
+    ref: "User",
+  },
+  publicationId: {
+    type: Schema.Types.ObjectId,
+    ref: "Publication",
+    required: true,
   },
 });
 

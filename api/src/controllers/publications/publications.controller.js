@@ -1,3 +1,4 @@
+import { Comment } from "../../models/Comments.model.js";
 import { Publication } from "../../models/Publications.model.js";
 import { Theme } from "../../models/Themes.model.js";
 import { User } from "../../models/User.model.js";
@@ -10,6 +11,23 @@ export const getPublications = async (req, res) => {
     res.status(200).json({ publications });
   } catch (error) {
     res.status(500).json({ message: "Error al traer las Publicaciones" });
+  }
+};
+
+export const getPublication = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const publication = await Publication.findById(id)
+      .populate("author")
+      .populate("themes")
+      .populate("comments");
+    if (!publication) {
+      return res.status(404).json({ message: "Publicación no encontrada" });
+    }
+    res.status(200).json({ publication });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error al obtener la publicación" });
   }
 };
 
@@ -45,7 +63,6 @@ export const createPublication = async (req, res) => {
       author: existingUser._id,
       themes: existingThemeIds,
     });
-    console.log(publication);
     await publication.save();
     res.status(201).json({ publication });
   } catch (error) {
@@ -74,10 +91,16 @@ export const updatePublication = async (req, res) => {
 export const deletePublication = async (req, res) => {
   try {
     const { Id } = req.body;
-    console.log(Id);
     await Publication.findByIdAndDelete(Id);
-    res.status(200).json({ message: "Publicacion Eliminada" });
+    await Comment.deleteMany({ publicationId: Id });
+
+    res
+      .status(200)
+      .json({ message: "Publicación y comentarios eliminados correctamente" });
   } catch (error) {
-    res.status(500).json({ message: "Error al eliminar la Publicacion" });
+    console.error("Error al eliminar la publicación y los comentarios:", error);
+    res
+      .status(500)
+      .json({ message: "Error al eliminar la publicación y los comentarios" });
   }
 };

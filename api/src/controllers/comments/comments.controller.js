@@ -15,7 +15,11 @@ export const getComments = async (req, res) => {
 export const createComment = async (req, res) => {
   try {
     const { description, author, publication } = req.body.body;
-    const comment = new Comment({ description, author });
+    const comment = new Comment({
+      description,
+      author,
+      publicationId: publication,
+    });
     await comment.save();
 
     const newCommentId = comment._id;
