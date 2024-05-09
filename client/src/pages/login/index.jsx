@@ -1,50 +1,35 @@
 import { useForm } from "react-hook-form";
 import { validatePassword, validateEmail } from "../../utils/validation";
-import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Eye, EyeSlash } from "../../components/icons/icons";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { login } from "../../store/authSlice";
 import Button from "../../components/buttons";
-import { authService } from "../../services/Auth.service";
 import Swal from "sweetalert2";
-
 export default function Login() {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [visibilityPassword, setVisibilityPassword] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
-
-  const onSubmit = handleSubmit(async (data) => {
-    try {
-      const user = await authService.login(data);
-      if (
-        (user && user.data.role === "client") ||
-        (user && user.data.role === "admin")
-      ) {
-        navigate("/");
-        window.location.reload();
-      }
-    } catch (error) {
-      Swal.fire({
-        title: "Oops!",
-        text: error.response.data.error,
-        icon: "error",
-        confirmButtonColor: "#FF22FF",
-        color: "#FFF",
-        background: "#000",
-        iconColor: "#FF22FF",
-      });
+  const { loading } = useSelector((state) => state.auth);
+  const onSubmit = handleSubmit((data) => {
+    const info = dispatch(login(data));
+    console.log(info);
+    if (info.payload) {
+      navigate("/");
+      // window.location.reload();
     }
   });
+
   const toggleVisibilityPassword = () => {
     setVisibilityPassword(!visibilityPassword);
   };
-
   const handleChangePassword = () => {
     Swal.fire({
       title: "Ingrese su correo electrónico",
@@ -151,7 +136,12 @@ export default function Login() {
             </p>
           )}
         </div>
-        <Button txt="Iniciar Sesión" ariaLabel="Iniciar Sesión" />
+        <Button
+          txt={loading ? "Cargando..." : "Iniciar Sesión"}
+          ariaLabel="Iniciar Sesión"
+          disabled={loading}
+        />
+
         <div className="flex flex-col mt-9 gap-2 items-center justify-between text-txt">
           <span
             onClick={handleChangePassword}

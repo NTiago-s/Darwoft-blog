@@ -9,47 +9,45 @@ import {
   validatePhone,
 } from "../../utils/validation";
 import { Eye, EyeSlash } from "../../components/icons/icons";
-import { authService } from "../../services/Auth.service";
-import Swal from "sweetalert2";
 import Button from "../../components/buttons";
+import { singup } from "../../store/authSlice";
+import { useDispatch } from "react-redux";
+import Alert from "../../components/alert/alert";
 
 export default function Register() {
+  const [visibilityPassword, setVisibilityPassword] = useState(false);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const [visibilityPassword, setVisibilityPassword] = useState(false);
+
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const onSubmit = handleSubmit(async (data) => {
     try {
-      await authService.signup(data);
-      Swal.fire({
-        title: "Usuario creado correctamente!",
-        text: "Revisa tu correo para verificar tu cuenta",
-        icon: "success",
-        confirmButtonColor: "#22C55e",
-        color: "#FFF",
-        background: "#000",
-        iconColor: "#22C55e",
-      });
-      navigate("/");
+      const info = await dispatch(singup(data));
+      if (info.payload && info.payload.status === 200) {
+        Alert(
+          "Usuario creado correctamente!",
+          "Revisa tu correo para verificar tu cuenta",
+          "success",
+          "#22C55e"
+        );
+        navigate("/");
+      }
     } catch (error) {
-      let errorMessage = error.response.data.error;
-      Swal.fire({
-        title: "Oops!",
-        text: "Error: " + errorMessage,
-        icon: "error",
-        confirmButtonColor: "#FF22FF",
-        color: "#FFF",
-        background: "#000",
-        iconColor: "#FF22FF",
-      });
+      let errorMessage = error.response
+        ? error.response.data.error
+        : "Error desconocido";
+      Alert("Oops!", "Error: " + errorMessage, "error", "#FF22FF");
     }
   });
+
   const toggleVisibilityPassword = () => {
     setVisibilityPassword(!visibilityPassword);
   };
+
   return (
     <form
       className="flex flex-col max-w-[500px] bg-fondo2 sm:p-12 shadow-md rounded-md p-6 h-auto mx-auto my-40"

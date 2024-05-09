@@ -23,7 +23,7 @@ export default function BadgeTheme({ icon, title, to, id }) {
         <div className="font-semibold text-lg ml-7 flex justify-center text-center">
           {title}
         </div>
-        {user ? (
+        {user?.data?.role === "admin" ? (
           <button onClick={handleDeleteTheme}>
             <CloseIcon />
           </button>

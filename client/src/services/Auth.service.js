@@ -1,6 +1,5 @@
 import axios from "axios";
 import Swal from "sweetalert2";
-
 const BASE_URL = import.meta.env.VITE_ENDPOINT;
 
 export const authService = {
@@ -20,6 +19,7 @@ export const authService = {
     });
     if (response.ok) {
       localStorage.removeItem("user");
+      return response;
     } else {
       Swal.fire({
         title: "Oops!",
@@ -37,17 +37,7 @@ export const authService = {
     return axios.post(BASE_URL + "/auth/register/client", data);
   },
 
-  getCurrentUser: () => {
-    return JSON.parse(localStorage.getItem("user"));
-  },
-
   isAuthorized: () => {
     return localStorage.getItem("user") !== null;
-  },
-
-  userRole: () => {
-    const user = localStorage.getItem("user");
-    const parsedUser = user ? JSON.parse(user) : null;
-    return parsedUser?.role;
   },
 };
