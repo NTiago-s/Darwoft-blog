@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { authService } from "../services/Auth.service";
-import Alert from "../components/alert/alert";
+import Swal from "sweetalert2";
 const authSlice = createSlice({
   name: "auth",
   initialState: {
@@ -15,27 +15,27 @@ const authSlice = createSlice({
       const user = await authService.signup(data.payload);
       try {
         if (user.status === 200) {
-          <Alert
-            title={"Usuario creado correctamente!"}
-            text={"Revisa tu correo para verificar tu cuenta"}
-            icon={"success"}
-            confirmButtonColor={"#22C55e"}
-            color={"#FFFFFF"}
-            background={"#000"}
-            iconColor={"#22C55e"}
-          />;
+          Swal.fire({
+            title: "Usuario creado correctamente!",
+            text: "Revisa tu correo para verificar tu cuenta",
+            icon: "success",
+            confirmButtonColor: "#22C55e",
+            color: "#FFF",
+            background: "#000",
+            iconColor: "#22C55e",
+          });
         }
       } catch (error) {
         let errorMessage = error.response.data.error;
-        <Alert
-          title={"Oops!"}
-          text={"Error: " + errorMessage}
-          icon={"error"}
-          confirmButtonColor={"#FF22FF"}
-          color={"#FFF"}
-          background={"#000"}
-          iconColor={"#FF22FF"}
-        />;
+        Swal.fire({
+          title: "Oops!",
+          text: "Error: " + errorMessage,
+          icon: "error",
+          confirmButtonColor: "#FF22FF",
+          color: "#FFF",
+          background: "#000",
+          iconColor: "#FF22FF",
+        });
       }
       state.user = user;
     },

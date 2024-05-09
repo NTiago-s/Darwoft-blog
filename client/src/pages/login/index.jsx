@@ -23,7 +23,7 @@ export default function Login() {
     console.log(info);
     if (info.payload) {
       navigate("/");
-      // window.location.reload();
+      window.location.reload();
     }
   });
 
