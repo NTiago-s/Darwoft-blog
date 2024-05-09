@@ -48,12 +48,18 @@ export default function CreatePublication() {
         <div>
           {user.data ? (
             <Link to={"/dashboard"}>
-              <div className="rounded-full bg-gray-900 text-white min-w-14 h-14 flex justify-center items-center text-center">
-                {user
-                  ? `${user?.data?.firstName?.charAt(
-                      0
-                    )}${user?.data?.lastName?.charAt(0)}`
-                  : ""}
+              <div className="rounded-full w-10 bg-gray-900 text-white min-w-14 h-14 flex justify-center items-center text-center">
+                {user ? (
+                  <img
+                    src={user?.data?.profileImage}
+                    alt=""
+                    className="rounded-full w-full h-full object-cover"
+                  />
+                ) : (
+                  `${user?.data?.firstName?.charAt(
+                    0
+                  )}${user?.data?.lastName?.charAt(0)}`
+                )}
               </div>
             </Link>
           ) : (

@@ -53,8 +53,9 @@ const userSchema = new Schema({
       message: "Unsupported value for status",
     },
   },
-  image: {
-    type: Buffer,
+  profileImage: {
+    type: String,
+    default: "",
   },
   telUser: {
     type: String,

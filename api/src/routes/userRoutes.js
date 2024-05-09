@@ -13,15 +13,20 @@ import {
   authMiddleware,
   authResetPassword,
 } from "../middlewares/auth.middleware.js";
+import multer from "multer";
 
 const router = Router();
 
+const storage = multer.diskStorage({});
+const upload = multer({ storage });
+
 router.get("/", getUsers);
-router.get("/search", authMiddleware, filterUsers);
-router.get("/profile", authMiddleware, profile);
 router.get("/active", activeUser);
-router.put("/", authMiddleware, updateUser);
 router.post("/prevresetpassword", prevResetPassword);
+router.get("/profile", authMiddleware, profile);
+router.put("/", authMiddleware, upload.single("image"), updateUser);
 router.put("/resetpassword", authResetPassword, resetPasswordController);
+router.get("/search", authMiddleware, filterUsers);
 router.delete("/", authResetPassword, deleteUser);
+
 export default router;

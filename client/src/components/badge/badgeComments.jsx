@@ -9,14 +9,18 @@ export default function BadgeComment({ title, id, author, publication }) {
   const [editing, setEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState(title);
   const Initials = (nombre, apellido) => {
-    return `${nombre.charAt(0)}${apellido.charAt(0)}`;
+    if (nombre && apellido) {
+      return `${nombre.charAt(0)}${apellido.charAt(0)}`;
+    } else {
+      return "";
+    }
   };
 
   const handleDeleteComments = async () => {
     if (
-      user.data &&
-      (user.data._id === author._id ||
-        user.data._id === publication.publication.author._id)
+      user?.data &&
+      (user?.data?._id === author?._id ||
+        user?.data?._id === publication?.publication?.author?._id)
     ) {
       try {
         const response = await http.deleteCreates("comments/delete", id);
@@ -30,7 +34,7 @@ export default function BadgeComment({ title, id, author, publication }) {
   };
 
   const handleEditComment = async () => {
-    if (user.data && user.data._id === author._id) {
+    if (user?.data && user?.data?._id === author?._id) {
       setEditing(true);
     } else {
       alert("No tienes permisos para editar este comentario.");
@@ -57,15 +61,23 @@ export default function BadgeComment({ title, id, author, publication }) {
     >
       <div className="flex w-full justify-between items-end">
         <div className="flex items-center justify-center gap-3 text-center">
-          <div className="rounded-full bg-gray-900 mt-2 text-white min-w-14 h-14 flex justify-center items-center text-center">
-            {Initials(author.firstName, author.lastName)}
+          <div className="rounded-full bg-gray-900 mt-2 text-white w-14 h-14 flex justify-center items-center text-center">
+            {author?.profileImage ? (
+              <img
+                src={author?.profileImage}
+                alt=""
+                className="rounded-full w-full h-full object-cover"
+              />
+            ) : (
+              Initials(author?.firstName, author?.lastName)
+            )}
           </div>
           <div className="text-center font-semibold flex mt-2 text-lg items-center">
-            {`${author.firstName}  ${author.lastName}`}
+            {`${author?.firstName}  ${author?.lastName}`}
           </div>
         </div>
         <div>
-          {user?.data && user.data._id === author._id && (
+          {user?.data && user?.data?._id === author?._id && (
             <>
               {!editing && (
                 <button
@@ -97,8 +109,8 @@ export default function BadgeComment({ title, id, author, publication }) {
             </>
           )}
           {user?.data &&
-            (user.data._id === author._id ||
-              user.data._id === publication.publication.author._id) && (
+            (user?.data?._id === author?._id ||
+              user?.data?._id === publication?.publication?.author?._id) && (
               <button
                 onClick={handleDeleteComments}
                 className="m-2 rounded-full bg-red-500 hover:bg-red-800 p-1"

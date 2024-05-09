@@ -41,13 +41,17 @@ const post = async (url, body) => {
   return response;
 };
 
-const put = async (url, body) => {
-  const response = await axiosPrivate.put(`${BASE_URL}/${url}`, {
-    method: "PUT",
-    body,
-    headers,
-  });
-  return response;
+const put = async (url, body, customHeaders) => {
+  console.log(body);
+  try {
+    const response = await axiosPrivate.put(`${BASE_URL}/${url}`, body, {
+      method: "PUT",
+      headers: customHeaders ? customHeaders : headers,
+    });
+    return response;
+  } catch (error) {
+    throw error;
+  }
 };
 
 const _delete = async (url) => {

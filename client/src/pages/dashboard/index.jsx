@@ -28,11 +28,17 @@ export default function DashboardUser() {
       <div className="m-auto flex py-4 px-20 justify-between">
         <div className="flex  gap-4">
           <div className="w-10 rounded-full bg-gray-900 text-white min-w-14 h-14 flex justify-center items-center text-center">
-            {user
-              ? `${user?.data?.firstName?.charAt(
-                  0
-                )}${user?.data?.lastName?.charAt(0)}`
-              : ""}
+            {user ? (
+              <img
+                src={user?.data?.profileImage}
+                alt=""
+                className="rounded-full w-full h-full object-cover"
+              />
+            ) : (
+              `${user?.data?.firstName?.charAt(
+                0
+              )}${user?.data?.lastName?.charAt(0)}`
+            )}
           </div>
           <div className="text-center flex items-center">
             {user ? `${user?.data?.firstName} ${user?.data?.lastName}` : ""}

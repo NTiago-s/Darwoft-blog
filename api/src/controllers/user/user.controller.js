@@ -2,6 +2,14 @@ import { User } from "../../models/User.model.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { resetPassword } from "../auth/nodemailerSend.js";
+import cloudinary from "cloudinary";
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
 // Endpoint para obtener el perfil de un usuario
 export const profile = async (req, res) => {
   try {
@@ -11,14 +19,12 @@ export const profile = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
-    const { firstName, lastName, email, role, telUser, image, _id } = user;
-    return res
-      .status(200)
-      .json({ firstName, lastName, email, role, telUser, image, _id });
+    return res.status(200).json(user);
   } catch (error) {
     return res.status(500).json({ message: "Error del Servidor" });
   }
 };
+
 // Endpoint para activar un usuario existente
 export const activeUser = async (req, res) => {
   try {
@@ -44,21 +50,31 @@ export const activeUser = async (req, res) => {
 // Endpoint para modificar un usuario existente
 export const updateUser = async (req, res) => {
   try {
-    const { userId } = req.body;
-    const { firstName, lastName, email, telUser } = req.body.body;
-    // Buscar el usuario en la base de datos
-    const user = await User.findById(userId);
-    if (!user) {
-      res.status(404).json({ message: "Usuario no encontrado" });
-      return;
+    const { userId, firstName, lastName, email, telUser } = req.body;
+    let imageUrl;
+
+    if (req.file) {
+      const result = await cloudinary.uploader.upload(req.file.path);
+      imageUrl = result.secure_url;
     }
-    user.firstName = firstName;
-    user.lastName = lastName;
-    user.email = email;
-    user.telUser = telUser;
-    await user.save();
+
+    const updatedFields = {
+      firstName,
+      lastName,
+      email,
+      telUser,
+    };
+
+    if (imageUrl) {
+      updatedFields.profileImage = imageUrl;
+    }
+
+    // Actualizar usuario en la base de datos
+    await User.findByIdAndUpdate(userId, updatedFields);
+
     res.status(200).json({ message: "Usuario Modificado" });
   } catch (error) {
+    console.error("Error al modificar el Usuario:", error);
     res.status(500).json({ message: "Error al modificar el Usuario" });
   }
 };

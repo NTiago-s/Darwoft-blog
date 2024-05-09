@@ -1,11 +1,13 @@
 import { useForm } from "react-hook-form";
 import { useUserEffect } from "../../utils/use";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { http } from "../../services/http";
+import Swal from "sweetalert2";
 
 export default function FormUserEdit() {
   const { register, handleSubmit, setValue } = useForm();
   const user = useUserEffect();
+  const [image, setImage] = useState(null);
 
   useEffect(() => {
     if (user?.data) {
@@ -17,15 +19,59 @@ export default function FormUserEdit() {
   }, [user?.data, setValue]);
 
   const onSubmit = async (data) => {
-    const response = await http.put("users", data);
-    if (response) {
-      //! ESTO TENGO QUE MODIFCAR
-      alert("Usuario Modificado");
+    try {
+      const formData = new FormData();
+      formData.append("userId", user.data._id);
+      formData.append("firstName", data.firstName);
+      formData.append("lastName", data.lastName);
+      formData.append("email", data.email);
+      formData.append("telUser", data.telUser);
+      formData.append("image", image);
+
+      const response = await http.put("users", formData, {
+        "Content-Type": "multipart/form-data",
+      });
+      if (response.status === 200) {
+        window.location.reload();
+        setTimeout(() => {
+          Swal.fire({
+            title: "Usuario creado correctamente!",
+            text: "Revisa tu correo para verificar tu cuenta",
+            icon: "success",
+            confirmButtonColor: "#22C55e",
+            color: "#FFF",
+            background: "#000",
+            iconColor: "#22C55e",
+          });
+        }, 2000);
+      }
+    } catch (error) {
+      console.error("Error al modificar el usuario:", error);
     }
   };
 
+  const handleImageChange = (e) => {
+    setImage(e.target.files[0]);
+  };
+
   return (
-    <form className="flex flex-col gap-2 " onSubmit={handleSubmit(onSubmit)}>
+    <form
+      className="flex flex-col gap-2 "
+      onSubmit={handleSubmit(onSubmit)}
+      encType="multipart/form-data"
+    >
+      <label
+        htmlFor="imagen"
+        className="flex flex-col text-white font-semibold text-xl"
+      >
+        Imagen de perfil:
+        <input
+          type="file"
+          id="imagen"
+          onChange={handleImageChange}
+          className="rounded-xl text-black px-3 py-1"
+        />
+      </label>
       <label
         htmlFor="nombre"
         className="gap-2 flex flex-col text-white font-semibold text-xl"

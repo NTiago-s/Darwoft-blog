@@ -113,10 +113,18 @@ export default function CardPublication() {
             >
               <div className="flex justify-between m-3">
                 <div className="flex gap-2">
-                  <div className="rounded-full bg-gray-900 text-white min-w-14 h-14 flex justify-center items-center text-center">
-                    {Initials(
-                      publication.author.firstName,
-                      publication.author.lastName
+                  <div className="rounded-full bg-gray-900 text-white w-14 h-14 flex justify-center items-center text-center">
+                    {publication.author.profileImage ? (
+                      <img
+                        src={publication.author.profileImage}
+                        alt=""
+                        className="rounded-full w-full h-full object-cover"
+                      />
+                    ) : (
+                      Initials(
+                        publication.author.firstName,
+                        publication.author.lastName
+                      )
                     )}
                   </div>
                   <div className="text-center flex items-center">
