@@ -50,7 +50,7 @@ export const filterPublications = async (req, res) => {
 
 export const createPublication = async (req, res) => {
   try {
-    const { description, themes, author } = req.body.body;
+    const { description, themes, author } = req.body;
 
     const existingUser = await User.findById(author);
     if (!existingUser) {
@@ -79,8 +79,7 @@ export const createPublication = async (req, res) => {
 // Endpoint para modificar un Publicacion existente
 export const updatePublication = async (req, res) => {
   try {
-    const { publicationId, description } = req.body.body;
-    console.log(publicationId, description);
+    const { publicationId, description } = req.body;
     const publication = await Publication.findById(publicationId);
     if (!publication) {
       res.status(404).json({ message: "Publicacion no encontrada" });

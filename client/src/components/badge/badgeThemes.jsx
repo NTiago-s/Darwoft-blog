@@ -9,8 +9,9 @@ export default function BadgeTheme({ icon, title, to, id }) {
   const handleDeleteTheme = async () => {
     try {
       const response = await http.deleteCreates("themes/delete", id);
-      console.log(response);
-      window.location.reload();
+      if (response.status === 200) {
+        window.location.reload();
+      }
     } catch (error) {
       console.error("Error al eliminar la temática:", error);
     }
@@ -23,7 +24,7 @@ export default function BadgeTheme({ icon, title, to, id }) {
         <div className="font-semibold text-lg ml-7 flex justify-center text-center">
           {title}
         </div>
-        {user ? (
+        {user?.data?.role === "admin" ? (
           <button onClick={handleDeleteTheme}>
             <CloseIcon />
           </button>

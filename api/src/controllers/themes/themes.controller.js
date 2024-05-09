@@ -12,7 +12,7 @@ export const getThemes = async (req, res) => {
 //endpoint para crear una Tematica
 export const createThemes = async (req, res) => {
   try {
-    const { name, description } = req.body.body;
+    const { name, description } = req.body;
     const themes = new Theme({ name, description });
     await themes.save();
     res.status(201).json({ themes });

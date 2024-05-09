@@ -28,7 +28,7 @@ export default function DashboardUser() {
       <div className="m-auto flex py-4 px-20 justify-between">
         <div className="flex  gap-4">
           <div className="w-10 rounded-full bg-gray-900 text-white min-w-14 h-14 flex justify-center items-center text-center">
-            {user ? (
+            {user?.data?.profileImage ? (
               <img
                 src={user?.data?.profileImage}
                 alt=""
@@ -45,20 +45,14 @@ export default function DashboardUser() {
           </div>
         </div>
         <div className="flex items-center gap-4">
-          {/* {user.role === "admin" ? (
+          {user?.data?.role === "admin" ? (
             <Link to={"/dashboard/admin"}>
               <SettingsIcon />
             </Link>
           ) : (
             ""
-          )} */}
-          {user.role === "admin" ? (
-            ""
-          ) : (
-            <Link to={"/dashboard/admin"}>
-              <SettingsIcon />
-            </Link>
           )}
+
           <div className="flex flex-col gap-4">
             <Button
               txt={"Editar Perfil"}

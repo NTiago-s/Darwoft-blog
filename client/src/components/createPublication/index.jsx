@@ -49,7 +49,7 @@ export default function CreatePublication() {
           {user.data ? (
             <Link to={"/dashboard"}>
               <div className="rounded-full w-10 bg-gray-900 text-white min-w-14 h-14 flex justify-center items-center text-center">
-                {user ? (
+                {user?.data?.profileImage ? (
                   <img
                     src={user?.data?.profileImage}
                     alt=""

@@ -14,7 +14,7 @@ export const getComments = async (req, res) => {
 //endpoint para crear un comentario
 export const createComment = async (req, res) => {
   try {
-    const { description, author, publication } = req.body.body;
+    const { description, author, publication } = req.body;
     const comment = new Comment({
       description,
       author,
@@ -38,7 +38,7 @@ export const createComment = async (req, res) => {
 // Endpoint para modificar un Comentario existente
 export const updateComment = async (req, res) => {
   try {
-    const { commentId, description } = req.body.body;
+    const { commentId, description } = req.body;
     const comment = await Comment.findById(commentId);
     if (!comment) {
       res.status(404).json({ message: "Comentario no encontrado" });

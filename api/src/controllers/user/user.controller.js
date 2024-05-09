@@ -3,7 +3,6 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { resetPassword } from "../auth/nodemailerSend.js";
 import cloudinary from "cloudinary";
-
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -71,7 +70,6 @@ export const updateUser = async (req, res) => {
 
     // Actualizar usuario en la base de datos
     await User.findByIdAndUpdate(userId, updatedFields);
-
     res.status(200).json({ message: "Usuario Modificado" });
   } catch (error) {
     console.error("Error al modificar el Usuario:", error);
