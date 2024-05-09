@@ -18,6 +18,8 @@ export default function FormUserEdit() {
     }
   }, [user?.data, setValue]);
 
+  //! react-lazy-load-image-component para las imagenes
+
   const onSubmit = async (data) => {
     try {
       const formData = new FormData();

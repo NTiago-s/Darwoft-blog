@@ -60,13 +60,21 @@ export default function PublicationDetails() {
     }
   };
   return (
-    <div className="w-full bg-slate-500 cursor-pointer rounded-lg p-4 my-4">
+    <div className="w-full bg-slate-500 rounded-lg p-4 my-4">
       <div className="flex justify-between m-3">
         <div className="flex gap-2">
-          <div className="rounded-full bg-gray-900 text-white min-w-14 h-14 flex justify-center items-center text-center">
-            {Initials(
-              publication?.publication?.author?.firstName,
-              publication?.publication?.author?.lastName
+          <div className="rounded-full bg-gray-900 text-white size-14 flex justify-center items-center text-center">
+            {publication?.publication?.author?.profileImage ? (
+              <img
+                src={publication?.publication?.author?.profileImage}
+                alt=""
+                className="rounded-full w-full h-full object-cover"
+              />
+            ) : (
+              Initials(
+                publication?.publication?.author?.firstName,
+                publication?.publication?.author?.lastName
+              )
             )}
           </div>
           <div className="text-center flex items-center">
@@ -92,7 +100,7 @@ export default function PublicationDetails() {
           className="rounded-xl m-2 p-[6px] gap-2 text-black hover:bg-emerald-300 hover:text-black text-xs font-medium"
           onClick={() => handleStatusCommnet(publication?.publication?._id)}
         >
-          Responder
+          Comentar
         </button>
       </div>
       {publicationComments[publication?.publication?._id]?.comment ? (

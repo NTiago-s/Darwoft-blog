@@ -9,27 +9,19 @@ import { ProtectedLayout } from "./ProtectedRoutes";
 import PublicationDetails from "../pages/detailPublication";
 import DashboardUserAdmin from "../pages/dashboardAdmin";
 export const router = createBrowserRouter([
-  // {
-  //   path: "*",
-  //   element: (
-  //     <Main>
-  //       <Error404 />
-  //     </Main>
-  //   ),
-  // },
+  {
+    path: "/",
+    element: (
+      <Main>
+        <Home />
+      </Main>
+    ),
+  },
   {
     path: "/register",
     element: (
       <Main>
         <Register />
-      </Main>
-    ),
-  },
-  {
-    path: "/publications/:id",
-    element: (
-      <Main>
-        <PublicationDetails />
       </Main>
     ),
   },
@@ -42,10 +34,10 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: "/",
+    path: "/publications/:id",
     element: (
       <Main>
-        <Home />
+        <PublicationDetails />
       </Main>
     ),
   },
@@ -60,6 +52,14 @@ export const router = createBrowserRouter([
   // {
   //   path: "/resetpassword",
   //   element: <ResetPassword />,
+  // },
+  // {
+  //   path: "*",
+  //   element: (
+  //     <Main>
+  //       <Error404 />
+  //     </Main>
+  //   ),
   // },
   {
     path: "",

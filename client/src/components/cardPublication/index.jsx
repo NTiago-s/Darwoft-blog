@@ -223,7 +223,7 @@ export default function CardPublication() {
                       handleStatusComment(publication._id);
                     }}
                   >
-                    Responder
+                    Comentar
                   </button>
                 )}
               </div>
@@ -231,13 +231,23 @@ export default function CardPublication() {
                 <div>
                   <div className="flex gap-2">
                     <div className="rounded-full bg-gray-900 text-white min-w-8 h-8  flex justify-center items-center text-center">
-                      {user ? (
-                        `${user?.data?.firstName?.charAt(
-                          0
-                        )}${user?.data?.lastName?.charAt(0)}`
-                      ) : (
-                        <UserIcon />
-                      )}
+                      <div className="rounded-full bg-gray-900 text-white min-w-8 h-8 flex justify-center items-center text-center">
+                        {user ? (
+                          user.data.profileImage ? (
+                            <img
+                              src={user.data.profileImage}
+                              alt=""
+                              className="rounded-full size-8"
+                            />
+                          ) : (
+                            `${user.data.firstName?.charAt(
+                              0
+                            )}${user.data.lastName?.charAt(0)}`
+                          )
+                        ) : (
+                          <UserIcon />
+                        )}
+                      </div>
                     </div>
                     <input
                       type="text"
@@ -277,7 +287,7 @@ export default function CardPublication() {
                         handleCreateComment(publication._id);
                       }}
                     >
-                      Responder
+                      Comentar
                     </button>
                   </div>
                 </div>
