@@ -1,9 +1,17 @@
 import { Schema, model } from "mongoose";
 
 const publicationSchema = new Schema({
+  title: {
+    type: String,
+    required: true,
+  },
   description: {
     type: String,
     required: true,
+  },
+  image: {
+    type: String,
+    default: "",
   },
   date: {
     type: Date,

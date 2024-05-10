@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/rules-of-hooks */
 import { PencilIcon, SettingsIcon, TrashIcon, UserIcon } from "../icons/icons";
 import {
@@ -7,9 +8,11 @@ import {
 import { useState } from "react";
 import { http } from "../../services/http";
 import { Link } from "react-router-dom";
-
+import { useDispatch } from "react-redux";
+import { httpPut } from "../../store/httpSlice";
 export default function CardPublication() {
   const user = JSON.parse(localStorage.getItem("user"));
+  const dispatch = useDispatch();
   const [publicationComments, setPublicationComments] = useState({});
   const [publicationToDelete, setPublicationToDelete] = useState(null);
   const [publicationDeleteModal, setPublicationDeleteModal] = useState(null);
@@ -48,11 +51,12 @@ export default function CardPublication() {
 
   const handleUpdatePublication = async (id) => {
     try {
-      const response = await http.put(`publications/update`, {
-        publicationId: id,
+      const data = {
+        id,
         description: editedPublicationDescription,
-      });
-      if (response.status === 200) window.location.reload();
+        string: "publications/update",
+      };
+      dispatch(httpPut(data));
       setEditingPublicationId(null);
     } catch (error) {
       console.error("Error updating publication:", error);
@@ -73,7 +77,6 @@ export default function CardPublication() {
     };
     try {
       const response = await http.post("comments/create", data);
-      console.log(response);
       handleStatusNoComment(id);
     } catch (error) {
       console.error("Error creating comment:", error);
@@ -232,12 +235,12 @@ export default function CardPublication() {
                   <div className="flex gap-2">
                     <div className="rounded-full bg-gray-900 text-white min-w-8 h-8  flex justify-center items-center text-center">
                       <div className="rounded-full bg-gray-900 text-white min-w-8 h-8 flex justify-center items-center text-center">
-                        {user ? (
+                        {user?.data ? (
                           user.data.profileImage ? (
                             <img
                               src={user.data.profileImage}
                               alt=""
-                              className="rounded-full size-8"
+                              className="rounded-full object-cover size-8"
                             />
                           ) : (
                             `${user.data.firstName?.charAt(

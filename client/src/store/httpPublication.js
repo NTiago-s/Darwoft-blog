@@ -1,16 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { http } from "../services/http";
 
-const httpSlice = createSlice({
+const httpPublicationSlice = createSlice({
   name: "http",
   initialState: {
     data: null,
   },
   reducers: {
-    httpGet: (state, action) => {
+    httpPublicationGet: (state, action) => {
       state.data = action.payload;
     },
-    httpPut: async (state, action) => {
+    httpPublicationPut: async (state, action) => {
       const response = await http.put(action.payload.string, {
         publicationId: action.payload.id,
         description: action.payload.description,
@@ -20,14 +20,15 @@ const httpSlice = createSlice({
       }
       state.data = response;
     },
-    httpPost: (state, action) => {
+    httpPublicationPost: (state, action) => {
       state.data = action.payload;
     },
-    httpDelete: (state, action) => {
+    httpPublicationDelete: (state, action) => {
       state.data = action.payload;
     },
   },
 });
 
-export const { httpGet, httpPut, httpPost, httpDelete } = httpSlice.actions;
-export default httpSlice.reducer;
+export const { httpGet, httpPut, httpPost, httpDelete } =
+  httpPublicationSlice.actions;
+export default httpPublicationSlice.reducer;

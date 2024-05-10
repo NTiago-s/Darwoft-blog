@@ -34,18 +34,16 @@ export default function FormUserEdit() {
         "Content-Type": "multipart/form-data",
       });
       if (response.status === 200) {
+        Swal.fire({
+          title: "Usuario creado correctamente!",
+          text: "Revisa tu correo para verificar tu cuenta",
+          icon: "success",
+          confirmButtonColor: "#22C55e",
+          color: "#FFF",
+          background: "#000",
+          iconColor: "#22C55e",
+        });
         window.location.reload();
-        setTimeout(() => {
-          Swal.fire({
-            title: "Usuario creado correctamente!",
-            text: "Revisa tu correo para verificar tu cuenta",
-            icon: "success",
-            confirmButtonColor: "#22C55e",
-            color: "#FFF",
-            background: "#000",
-            iconColor: "#22C55e",
-          });
-        }, 2000);
       }
     } catch (error) {
       console.error("Error al modificar el usuario:", error);

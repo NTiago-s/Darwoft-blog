@@ -68,9 +68,10 @@ export const updateUser = async (req, res) => {
       updatedFields.profileImage = imageUrl;
     }
 
-    // Actualizar usuario en la base de datos
     await User.findByIdAndUpdate(userId, updatedFields);
-    res.status(200).json({ message: "Usuario Modificado" });
+    const updatedUser = await User.findById(userId);
+
+    res.status(200).json({ message: "Usuario Modificado", user: updatedUser });
   } catch (error) {
     console.error("Error al modificar el Usuario:", error);
     res.status(500).json({ message: "Error al modificar el Usuario" });
@@ -106,6 +107,7 @@ export const filterUsers = async (req, res) => {
     res.status(500).json({ message: "Error al traer los Usuarios" });
   }
 };
+
 export const prevResetPassword = async (req, res) => {
   try {
     const { email } = req.body;

@@ -46,6 +46,11 @@ const put = async (url, body, customHeaders) => {
       method: "PUT",
       headers: customHeaders ? customHeaders : headers,
     });
+    if (response.data.user && response.data.user.profileImage) {
+      const currentUser = JSON.parse(localStorage.getItem("user"));
+      currentUser.profileImage = response.data.profileImage;
+      localStorage.setItem("user", JSON.stringify(currentUser));
+    }
     return response;
   } catch (error) {
     throw error;
