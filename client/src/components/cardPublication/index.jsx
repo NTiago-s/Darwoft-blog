@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   deletePublication,
   updatePublication,
-} from "../../store/httpPublication";
+} from "../../store/httpPublicationSlice";
 export default function CardPublication() {
   const user = JSON.parse(localStorage.getItem("user"));
   const dispatch = useDispatch();
