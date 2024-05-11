@@ -9,7 +9,7 @@ import { createComment } from "../../store/httpCommentSlice";
 import { useComments } from "../../hooks/useGetComments";
 
 export default function PublicationDetails() {
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = useSelector((state) => state.user.userProfile);
   const { id } = useParams();
   const dispatch = useDispatch();
   const { getComments } = useComments();
@@ -49,11 +49,15 @@ export default function PublicationDetails() {
         return;
       }
 
+      if (user.status === "banned") {
+        alert("Tu cuenta esta Baneada no podras crear comentarios");
+      }
+
       if (!newCommentText.trim()) return;
       const data = {
         description: newCommentText,
         publication: id,
-        author: user.data._id,
+        author: user._id,
       };
       dispatch(createComment(data));
       setIsCommenting(false);
@@ -69,7 +73,7 @@ export default function PublicationDetails() {
     : [];
 
   return (
-    <div className="w-full bg-slate-500 rounded-lg p-4 my-4">
+    <div className="w-full bg-slate-500 rounded-lg mx-72 p-4 my-4">
       <div className="flex justify-between m-3">
         <div className="flex gap-2">
           <div className="rounded-full bg-gray-900 text-white size-14 flex justify-center items-center text-center">
@@ -119,9 +123,7 @@ export default function PublicationDetails() {
           <div className="flex gap-2">
             <div className="rounded-full bg-gray-900 text-white min-w-8 h-8  flex justify-center items-center text-center">
               {user ? (
-                `${user?.data?.firstName?.charAt(
-                  0
-                )}${user?.data?.lastName?.charAt(0)}`
+                `${user.firstName?.charAt(0)}${user.lastName?.charAt(0)}`
               ) : (
                 <UserIcon />
               )}

@@ -1,18 +1,19 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/rules-of-hooks */
-import { PencilIcon, SettingsIcon, TrashIcon, UserIcon } from "../icons/icons";
+import { PencilIcon, TrashIcon, UserIcon } from "../icons/icons";
 import { usePublications } from "../../hooks/useGetPublications";
 import { useEffect, useState } from "react";
-import { http } from "../../services/http";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   deletePublication,
+  filterPublications,
   updatePublication,
 } from "../../store/httpPublicationSlice";
 import { createComment } from "../../store/httpCommentSlice";
 export default function CardPublication() {
-  const user = JSON.parse(localStorage.getItem("user"));
+  const filtro = localStorage.getItem("filter");
+  const user = useSelector((state) => state.user.userProfile);
   const dispatch = useDispatch();
   const { getPublications } = usePublications();
   const publicationsData = useSelector(
@@ -65,7 +66,7 @@ export default function CardPublication() {
     const data = {
       description: commentText,
       publication: id,
-      author: user.data._id,
+      author: user._id,
     };
     try {
       dispatch(createComment(data));
@@ -84,15 +85,19 @@ export default function CardPublication() {
   };
 
   useEffect(() => {
-    getPublications();
-  }, [getPublications]);
+    if (filtro) {
+      dispatch(filterPublications(filtro));
+    } else {
+      getPublications();
+    }
+  }, [filtro, dispatch, getPublications]);
 
   const sortedPublications =
     publicationsData && Array.isArray(publicationsData.publications)
       ? publicationsData.publications
           .filter((publication) => {
             if (isDashboardRoute) {
-              return publication.author._id === user.data._id;
+              return publication.author._id === user?._id;
             } else {
               return true;
             }
@@ -266,17 +271,17 @@ export default function CardPublication() {
                   <div className="flex gap-2">
                     <div className="rounded-full bg-gray-900 text-white min-w-8 h-8  flex justify-center items-center text-center">
                       <div className="rounded-full bg-gray-900 text-white min-w-8 h-8 flex justify-center items-center text-center">
-                        {user?.data ? (
-                          user.data.profileImage ? (
+                        {user ? (
+                          user.profileImage ? (
                             <img
-                              src={user.data.profileImage}
+                              src={user.profileImage}
                               alt=""
                               className="rounded-full object-cover size-8"
                             />
                           ) : (
-                            `${user.data.firstName?.charAt(
+                            `${user.firstName?.charAt(
                               0
-                            )}${user.data.lastName?.charAt(0)}`
+                            )}${user.lastName?.charAt(0)}`
                           )
                         ) : (
                           <UserIcon />
@@ -332,8 +337,10 @@ export default function CardPublication() {
           </Link>
         ))
       ) : (
-        <div className="text-center text-gray-500">
-          {isDashboardRoute ? "No tienes creada ninguna publicación" : ""}
+        <div className="text-center mt-10 text-gray-500">
+          {isDashboardRoute
+            ? "No tienes creada ninguna publicación"
+            : "No hay publicaciones creadas con esta tematica"}
         </div>
       )}
     </div>

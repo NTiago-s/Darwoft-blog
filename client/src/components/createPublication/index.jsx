@@ -1,11 +1,12 @@
 import { CloseIcon, PhotoIcon, UserIcon } from "../icons/icons";
 import { Link } from "react-router-dom";
-import { useRef, useState } from "react"; // Importa useState
-import { useThemesEffect, useUserEffect } from "../../utils/use";
-import { useDispatch } from "react-redux";
+import { useEffect, useRef, useState } from "react"; // Importa useState
+import { useDispatch, useSelector } from "react-redux";
 import { createPublication } from "../../store/httpPublicationSlice";
+import { useUsers } from "../../hooks/useGetUsers";
 export default function CreatePublication() {
-  const user = useUserEffect();
+  const { getUsers } = useUsers();
+  const user = useSelector((state) => state.user.userProfile);
   const dispatch = useDispatch();
   const [title, setTitle] = useState("");
   const [publicationText, setPublicationText] = useState("");
@@ -13,8 +14,12 @@ export default function CreatePublication() {
   const [error, setError] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
-  const themesData = useThemesEffect();
+  const { themes } = useSelector((state) => state.theme.themes);
   const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    getUsers();
+  }, [getUsers]);
 
   const handleThemeSelection = (themeId) => {
     if (selectedThemes.includes(themeId)) {
@@ -54,8 +59,12 @@ export default function CreatePublication() {
   };
 
   const handleCreatePublication = async () => {
-    if (!user.data) {
+    if (!user) {
       alert("Debes Iniciar Sesion para crear una Publicacion");
+      return;
+    }
+    if (user.status === "banned") {
+      alert("Tu cuenta esta Baneada no podras crear publicaciones");
       return;
     }
     if (selectedThemes.length === 0) {
@@ -67,7 +76,7 @@ export default function CreatePublication() {
       formData.append("image", imageFile);
       formData.append("title", title);
       formData.append("description", publicationText);
-      formData.append("author", user.data._id);
+      formData.append("author", user._id);
       formData.append("themes", selectedThemes);
       dispatch(createPublication(formData));
       handleclearInputs();
@@ -80,25 +89,23 @@ export default function CreatePublication() {
     <div className="h-auto p-3 w-full border-2 rounded-lg">
       <div className="flex m-2 gap-2">
         <div>
-          {user.data ? (
+          {user ? (
             <Link to={"/dashboard"}>
               <div className="rounded-full my-2  bg-gray-900 text-white size-16 flex justify-center items-center text-center">
-                {user?.data?.profileImage ? (
+                {user.profileImage ? (
                   <img
-                    src={user?.data?.profileImage}
+                    src={user.profileImage}
                     alt=""
                     className="rounded-full w-full h-full object-cover"
                   />
                 ) : (
-                  `${user?.data?.firstName?.charAt(
-                    0
-                  )}${user?.data?.lastName?.charAt(0)}`
+                  `${user.firstName?.charAt(0)}${user.lastName?.charAt(0)}`
                 )}
               </div>
             </Link>
           ) : (
             <div className="rounded-full bg-gray-900 text-white min-w-14 h-14 flex justify-center items-center text-center">
-              {user.data ? "" : <UserIcon />}
+              {user ? "" : <UserIcon />}
             </div>
           )}
         </div>
@@ -150,9 +157,9 @@ export default function CreatePublication() {
       <div className="flex flex-col ml-[60px] mt-5">
         Tematicas:
         <div>
-          {themesData.data &&
-            Array.isArray(themesData.data.themes) &&
-            themesData.data.themes.map((theme, index) => (
+          {themes &&
+            Array.isArray(themes) &&
+            themes.map((theme, index) => (
               <label
                 key={index}
                 className="inline-flex items-center gap-1 ml-4 my-3"

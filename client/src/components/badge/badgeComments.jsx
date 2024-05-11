@@ -1,13 +1,11 @@
 /* eslint-disable react/prop-types */
 import { CloseIcon, PencilIcon } from "../icons/icons";
-import { useUserEffect } from "../../utils/use";
-import { http } from "../../services/http";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { deleteComment } from "../../store/httpCommentSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteComment, updateComment } from "../../store/httpCommentSlice";
 
 export default function BadgeComment({ title, id, author, publication }) {
-  const user = useUserEffect();
+  const user = useSelector((state) => state.user.userProfile);
   const [editing, setEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState(title);
   const dispatch = useDispatch();
@@ -21,9 +19,9 @@ export default function BadgeComment({ title, id, author, publication }) {
 
   const handleDeleteComments = async () => {
     if (
-      user?.data &&
-      (user?.data?._id === author?._id ||
-        user?.data?._id === publication?.publication?.author?._id)
+      user &&
+      (user._id === author?._id ||
+        user._id === publication?.publication?.author?._id)
     ) {
       try {
         dispatch(deleteComment(id));
@@ -36,7 +34,7 @@ export default function BadgeComment({ title, id, author, publication }) {
   };
 
   const handleEditComment = async () => {
-    if (user?.data && user?.data?._id === author?._id) {
+    if (user && user._id === author?._id) {
       setEditing(true);
     } else {
       alert("No tienes permisos para editar este comentario.");
@@ -45,11 +43,11 @@ export default function BadgeComment({ title, id, author, publication }) {
 
   const handleUpdateComment = async () => {
     try {
-      const response = await http.put(`comments/update`, {
+      const data = {
         commentId: id,
         description: editedTitle,
-      });
-      if (response.status === 200) window.location.reload();
+      };
+      dispatch(updateComment(data));
       setEditing(false);
     } catch (error) {
       console.error("Error al actualizar el comentario:", error);
@@ -79,7 +77,7 @@ export default function BadgeComment({ title, id, author, publication }) {
           </div>
         </div>
         <div>
-          {user?.data && user?.data?._id === author?._id && (
+          {user && user._id === author?._id && (
             <>
               {!editing && (
                 <button
@@ -110,9 +108,9 @@ export default function BadgeComment({ title, id, author, publication }) {
               )}
             </>
           )}
-          {user?.data &&
-            (user?.data?._id === author?._id ||
-              user?.data?._id === publication?.publication?.author?._id) && (
+          {user &&
+            (user._id === author?._id ||
+              user._id === publication?.publication?.author?._id) && (
               <button
                 onClick={handleDeleteComments}
                 className="m-2 rounded-full bg-red-500 hover:bg-red-800 p-1"

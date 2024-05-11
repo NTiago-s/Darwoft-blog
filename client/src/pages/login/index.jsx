@@ -1,12 +1,13 @@
 import { useForm } from "react-hook-form";
 import { validatePassword, validateEmail } from "../../utils/validation";
-import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { useState } from "react";
 import { Eye, EyeSlash } from "../../components/icons/icons";
 import { Link } from "react-router-dom";
 import Button from "../../components/buttons";
-import { authService } from "../../services/Auth.service";
+
 import Swal from "sweetalert2";
+import { loginUser } from "../../store/authSlice";
 
 export default function Login() {
   const {
@@ -14,32 +15,11 @@ export default function Login() {
     handleSubmit,
     formState: { errors },
   } = useForm();
-
-  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [visibilityPassword, setVisibilityPassword] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
-
-  const onSubmit = handleSubmit(async (data) => {
-    try {
-      const user = await authService.login(data);
-      if (
-        (user && user.data.role === "client") ||
-        (user && user.data.role === "admin")
-      ) {
-        navigate("/");
-        window.location.reload();
-      }
-    } catch (error) {
-      Swal.fire({
-        title: "Oops!",
-        text: error.response.data.error,
-        icon: "error",
-        confirmButtonColor: "#FF22FF",
-        color: "#FFF",
-        background: "#000",
-        iconColor: "#FF22FF",
-      });
-    }
+  const onSubmit = handleSubmit((data) => {
+    dispatch(loginUser(data));
   });
   const toggleVisibilityPassword = () => {
     setVisibilityPassword(!visibilityPassword);

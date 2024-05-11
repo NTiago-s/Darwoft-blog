@@ -99,10 +99,31 @@ export const getUsers = async (req, res) => {
 
 export const filterUsers = async (req, res) => {
   try {
-    const { name } = req.body;
-    const regex = new RegExp(name, "i");
+    const { query } = req.query;
+    const regex = new RegExp(query, "i");
     const users = await User.find({ firstName: regex });
-    res.status(200).json({ users });
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ message: "Error al traer los Usuarios" });
+  }
+};
+
+export const adminEdit = async (req, res) => {
+  try {
+    const { userId, role, status } = req.body;
+    console.log(userId, role, status);
+    const updatedFields = {};
+    if (role !== undefined) {
+      updatedFields.role = role;
+    }
+
+    if (status !== undefined) {
+      updatedFields.status = status;
+    }
+
+    await User.findByIdAndUpdate(userId, updatedFields);
+    const updatedUser = await User.findById(userId);
+    res.status(200).json({ message: "Usuario Modificado", user: updatedUser });
   } catch (error) {
     res.status(500).json({ message: "Error al traer los Usuarios" });
   }

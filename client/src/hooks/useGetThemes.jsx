@@ -1,21 +1,16 @@
-import { useCallback, useState } from "react";
-import { http } from "../services/http";
+import { useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchThemes } from "../store/httpThemesSlice";
 
 export const useThemes = () => {
-  const [data, setData] = useState(undefined);
-  const [error, setError] = useState(undefined);
-  const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
+  const themes = useSelector((state) => state.theme.themes);
+  const isLoading = useSelector((state) => state.theme.isLoading);
+  const error = useSelector((state) => state.theme.error);
 
-  const get = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const themes = await http.get("themes");
-      setData(themes);
-    } catch (e) {
-      setError(e);
-    }
-    setIsLoading(false);
-  }, [setData, setIsLoading]);
+  const getThemes = useCallback(async () => {
+    dispatch(fetchThemes());
+  }, [dispatch]);
 
-  return { data, error, isLoading, get };
+  return { themes, isLoading, error, getThemes };
 };

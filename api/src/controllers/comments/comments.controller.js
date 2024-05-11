@@ -30,7 +30,7 @@ export const createComment = async (req, res) => {
     publicationToUpdate.comments.push(newCommentId);
     await publicationToUpdate.save();
 
-    res.status(201).json({ comment });
+    res.status(200).json({ comment });
   } catch (error) {
     res.status(500).json({ message: "Error al crear el Comentario" });
   }

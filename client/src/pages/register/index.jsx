@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   validateNombre,
   validatePassword,
@@ -9,43 +9,19 @@ import {
   validatePhone,
 } from "../../utils/validation";
 import { Eye, EyeSlash } from "../../components/icons/icons";
-import { authService } from "../../services/Auth.service";
-import Swal from "sweetalert2";
 import Button from "../../components/buttons";
-
+import { useDispatch } from "react-redux";
+import { signUpUser } from "../../store/authSlice";
 export default function Register() {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
+  const dispatch = useDispatch();
   const [visibilityPassword, setVisibilityPassword] = useState(false);
-  const navigate = useNavigate();
-  const onSubmit = handleSubmit(async (data) => {
-    try {
-      await authService.signup(data);
-      Swal.fire({
-        title: "Usuario creado correctamente!",
-        text: "Revisa tu correo para verificar tu cuenta",
-        icon: "success",
-        confirmButtonColor: "#22C55e",
-        color: "#FFF",
-        background: "#000",
-        iconColor: "#22C55e",
-      });
-      navigate("/");
-    } catch (error) {
-      let errorMessage = error.response.data.error;
-      Swal.fire({
-        title: "Oops!",
-        text: "Error: " + errorMessage,
-        icon: "error",
-        confirmButtonColor: "#FF22FF",
-        color: "#FFF",
-        background: "#000",
-        iconColor: "#FF22FF",
-      });
-    }
+  const onSubmit = handleSubmit((data) => {
+    dispatch(signUpUser(data));
   });
   const toggleVisibilityPassword = () => {
     setVisibilityPassword(!visibilityPassword);

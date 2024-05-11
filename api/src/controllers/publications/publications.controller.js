@@ -64,8 +64,8 @@ export const createPublication = async (req, res) => {
         .json({ message: "El autor no existe en la base de datos" });
     }
 
-    const existingThemes = await Theme.find({ _id: { $in: themes } });
-    const existingThemeIds = existingThemes.map((theme) => theme._id);
+    const themeIds = themes.split(",").map((themeId) => themeId.trim());
+    const existingThemes = await Theme.find({ _id: { $in: themeIds } });
 
     let imageUrl;
     if (req.file) {
@@ -78,7 +78,7 @@ export const createPublication = async (req, res) => {
       title,
       date: new Date(),
       author: existingUser._id,
-      themes: existingThemeIds,
+      themes: existingThemes,
       image: imageUrl,
     });
 

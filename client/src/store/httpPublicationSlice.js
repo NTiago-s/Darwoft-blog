@@ -1,11 +1,15 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAction } from "@reduxjs/toolkit";
 import { http } from "../services/http";
+
+export const filterPublicationsSuccess = createAction(
+  "publication/filterSuccess"
+);
 
 const httpPublicationSlice = createSlice({
   name: "publication",
   initialState: {
     publications: [],
-    publication: [],
+    filteredPublications: [],
     isLoading: false,
     error: null,
   },
@@ -17,7 +21,6 @@ const httpPublicationSlice = createSlice({
     httpGetSuccess: (state, action) => {
       state.isLoading = false;
       state.publications = action.payload;
-      state.publication = action.payload;
     },
     httpGetFailure: (state, action) => {
       state.isLoading = false;
@@ -60,6 +63,12 @@ const httpPublicationSlice = createSlice({
       state.error = action.payload;
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(filterPublicationsSuccess, (state, action) => {
+      state.filteredPublications = action.payload;
+      state.publications = action.payload;
+    });
+  },
 });
 
 export const {
@@ -82,6 +91,21 @@ export const fetchPublications = () => async (dispatch) => {
   try {
     const publications = await http.get("publications");
     dispatch(httpGetSuccess(publications));
+  } catch (error) {
+    dispatch(httpGetFailure(error.message));
+  }
+};
+
+export const filterPublications = () => async (dispatch) => {
+  const themeId = localStorage.getItem("filter");
+  dispatch(httpGetStart());
+  try {
+    const publications = await http.get("publications");
+    const filteredPublications = publications.publications.filter(
+      (publication) => publication.themes.some((theme) => theme._id === themeId)
+    );
+    console.log(filteredPublications);
+    dispatch(httpGetSuccess({ publications: filteredPublications }));
   } catch (error) {
     dispatch(httpGetFailure(error.message));
   }
@@ -115,7 +139,6 @@ export const createPublication = (formData) => async (dispatch) => {
 };
 
 export const updatePublication = (data) => async (dispatch) => {
-  console.log(data);
   dispatch(httpPutStart());
   try {
     const response = await http.put("publications/update", data, {

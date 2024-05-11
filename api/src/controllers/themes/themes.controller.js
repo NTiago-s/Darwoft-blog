@@ -15,7 +15,7 @@ export const createThemes = async (req, res) => {
     const { name, description } = req.body;
     const themes = new Theme({ name, description });
     await themes.save();
-    res.status(201).json({ themes });
+    res.status(200).json({ themes });
   } catch (error) {
     res.status(500).json({ message: "Error al crear la Tematica" });
   }
@@ -32,7 +32,7 @@ export const updateThemes = async (req, res) => {
     }
     themes.description = description;
     await themes.save();
-    res.status(201).json({ message: "Tematica Modificada" });
+    res.status(200).json({ message: "Tematica Modificada" });
   } catch (error) {
     res.status(500).json({ message: "Error al modificar la Tematica" });
   }
@@ -42,7 +42,7 @@ export const deleteThemes = async (req, res) => {
   try {
     const { Id } = req.body;
     await Theme.findByIdAndDelete(Id);
-    res.status(204).json({ message: "Tematica Eliminada" });
+    res.status(200).json({ message: "Tematica Eliminada" });
   } catch (error) {
     console.error("Error al eliminar la temática:", error);
     res.status(500).json({ message: "Error al eliminar la Tematica" });

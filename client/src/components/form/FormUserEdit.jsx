@@ -1,29 +1,29 @@
 import { useForm } from "react-hook-form";
-import { useUserEffect } from "../../utils/use";
 import { useEffect, useState } from "react";
 import { http } from "../../services/http";
 import Swal from "sweetalert2";
+import { useSelector } from "react-redux";
 
 export default function FormUserEdit() {
   const { register, handleSubmit, setValue } = useForm();
-  const user = useUserEffect();
+  const user = useSelector((state) => state.user.userProfile);
   const [image, setImage] = useState(null);
 
   useEffect(() => {
-    if (user?.data) {
-      setValue("firstName", user.data.firstName);
-      setValue("lastName", user.data.lastName);
-      setValue("email", user.data.email);
-      setValue("telUser", user.data.telUser);
+    if (user) {
+      setValue("firstName", user.firstName);
+      setValue("lastName", user.lastName);
+      setValue("email", user.email);
+      setValue("telUser", user.telUser);
     }
-  }, [user?.data, setValue]);
+  }, [user, setValue]);
 
   //! react-lazy-load-image-component para las imagenes
 
   const onSubmit = async (data) => {
     try {
       const formData = new FormData();
-      formData.append("userId", user.data._id);
+      formData.append("userId", user._id);
       formData.append("firstName", data.firstName);
       formData.append("lastName", data.lastName);
       formData.append("email", data.email);

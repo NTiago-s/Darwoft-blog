@@ -1,11 +1,10 @@
-/* eslint-disable no-unused-vars */
 import { createSlice } from "@reduxjs/toolkit";
 import { http } from "../services/http";
 
-const httpCommentSlice = createSlice({
-  name: "comment",
+const httpThemeSlice = createSlice({
+  name: "theme",
   initialState: {
-    comments: [],
+    themes: [],
     isLoading: false,
     error: null,
   },
@@ -16,7 +15,7 @@ const httpCommentSlice = createSlice({
     },
     httpGetSuccess: (state, action) => {
       state.isLoading = false;
-      state.comments = action.payload;
+      state.themes = action.payload;
     },
     httpGetFailure: (state, action) => {
       state.isLoading = false;
@@ -28,7 +27,7 @@ const httpCommentSlice = createSlice({
     },
     httpPutSuccess: (state, action) => {
       state.isLoading = false;
-      state.comments = action.payload;
+      state.themes = action.payload;
     },
     httpPutFailure: (state, action) => {
       state.isLoading = false;
@@ -40,9 +39,8 @@ const httpCommentSlice = createSlice({
     },
     httpPostSuccess: (state, action) => {
       state.isLoading = false;
-      state.comments = action.payload;
+      state.themes = action.payload;
     },
-
     httpPostFailure: (state, action) => {
       state.isLoading = false;
       state.error = action.payload;
@@ -53,7 +51,7 @@ const httpCommentSlice = createSlice({
     },
     httpDeleteSuccess: (state, action) => {
       state.isLoading = false;
-      state.comments = action.payload;
+      state.themes = action.payload;
     },
     httpDeleteFailure: (state, action) => {
       state.isLoading = false;
@@ -75,55 +73,59 @@ export const {
   httpDeleteStart,
   httpDeleteSuccess,
   httpDeleteFailure,
-} = httpCommentSlice.actions;
+} = httpThemeSlice.actions;
 
-export const fetchComments = () => async (dispatch) => {
+export const fetchThemes = () => async (dispatch) => {
   dispatch(httpGetStart());
   try {
-    const comments = await http.get("comments");
-    dispatch(httpGetSuccess(comments));
+    const themes = await http.get("themes");
+    dispatch(httpGetSuccess(themes));
   } catch (error) {
     dispatch(httpGetFailure(error.message));
   }
 };
 
-export const createComment = (data) => async (dispatch) => {
+export const createTheme = (formData) => async (dispatch) => {
   dispatch(httpPostStart());
   try {
-    const response = await http.post("comments/create", data);
+    const response = await http.post("themes/create", formData);
     dispatch(httpPostSuccess(response));
     if (response.status === 200) {
-      dispatch(fetchComments());
+      dispatch(fetchThemes());
     }
   } catch (error) {
     dispatch(httpPostFailure(error.message));
   }
 };
 
-export const updateComment = (data) => async (dispatch) => {
+export const updateTheme = (data) => async (dispatch) => {
   dispatch(httpPutStart());
   try {
-    const response = await http.put(`comments/update`, data);
-    dispatch(httpPutSuccess(response.data));
+    const response = await http.put("themes/update", data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    dispatch(httpPutSuccess(response));
     if (response.status === 200) {
-      dispatch(fetchComments());
+      dispatch(fetchThemes());
     }
   } catch (error) {
     dispatch(httpPutFailure(error.message));
   }
 };
 
-export const deleteComment = (id) => async (dispatch) => {
+export const deletetheme = (id) => async (dispatch) => {
   dispatch(httpDeleteStart());
   try {
-    const response = await http.deleteCreates("comments/delete", id);
+    const response = await http.deleteCreates(`themes/delete`, id);
     dispatch(httpDeleteSuccess(response));
     if (response.status === 200) {
-      dispatch(fetchComments());
+      dispatch(fetchThemes());
     }
   } catch (error) {
     dispatch(httpDeleteFailure(error.message));
   }
 };
 
-export default httpCommentSlice.reducer;
+export default httpThemeSlice.reducer;

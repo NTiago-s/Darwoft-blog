@@ -2,9 +2,10 @@ import { createSlice } from "@reduxjs/toolkit";
 import { http } from "../services/http";
 
 const httpUserSlice = createSlice({
-  name: "User",
+  name: "user",
   initialState: {
-    Users: [],
+    allUsers: [],
+    userProfile: null,
     isLoading: false,
     error: null,
   },
@@ -15,11 +16,17 @@ const httpUserSlice = createSlice({
     },
     httpGetSuccess: (state, action) => {
       state.isLoading = false;
-      state.Users = action.payload;
+      state.allUsers = action.payload;
     },
     httpGetFailure: (state, action) => {
       state.isLoading = false;
       state.error = action.payload;
+    },
+    setUserProfile: (state, action) => {
+      state.userProfile = action.payload;
+    },
+    clearUserProfile: (state) => {
+      state.userProfile = null;
     },
     httpPutStart: (state) => {
       state.isLoading = true;
@@ -27,7 +34,7 @@ const httpUserSlice = createSlice({
     },
     httpPutSuccess: (state, action) => {
       state.isLoading = false;
-      state.data = action.payload;
+      state.allUsers = action.payload;
     },
     httpPutFailure: (state, action) => {
       state.isLoading = false;
@@ -39,7 +46,7 @@ const httpUserSlice = createSlice({
     },
     httpPostSuccess: (state, action) => {
       state.isLoading = false;
-      state.data = action.payload;
+      state.allUsers = action.payload;
     },
     httpPostFailure: (state, action) => {
       state.isLoading = false;
@@ -51,9 +58,21 @@ const httpUserSlice = createSlice({
     },
     httpDeleteSuccess: (state, action) => {
       state.isLoading = false;
-      state.data = action.payload;
+      state.allUsers = action.payload;
     },
     httpDeleteFailure: (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
+    searchUsersStart: (state) => {
+      state.isLoading = true;
+      state.error = null;
+    },
+    searchUsersSuccess: (state, action) => {
+      state.isLoading = false;
+      state.allUsers = action.payload;
+    },
+    searchUsersFailure: (state, action) => {
       state.isLoading = false;
       state.error = action.payload;
     },
@@ -64,6 +83,8 @@ export const {
   httpGetStart,
   httpGetSuccess,
   httpGetFailure,
+  setUserProfile,
+  clearUserProfile,
   httpPutStart,
   httpPutSuccess,
   httpPutFailure,
@@ -73,13 +94,36 @@ export const {
   httpDeleteStart,
   httpDeleteSuccess,
   httpDeleteFailure,
+  searchUsersStart,
+  searchUsersSuccess,
+  searchUsersFailure,
 } = httpUserSlice.actions;
 
 export const fetchUsers = () => async (dispatch) => {
   dispatch(httpGetStart());
   try {
-    const users = await http.get("Users");
+    const users = await http.get("users");
     dispatch(httpGetSuccess(users));
+  } catch (error) {
+    dispatch(httpGetFailure(error.message));
+  }
+};
+
+export const searchUsers = (searchQuery) => async (dispatch) => {
+  dispatch(searchUsersStart());
+  try {
+    const users = await http.get(`users/search?query=${searchQuery}`);
+    dispatch(searchUsersSuccess({ users: users }));
+  } catch (error) {
+    dispatch(searchUsersFailure(error.message));
+  }
+};
+
+export const fetchProfileUsers = () => async (dispatch) => {
+  dispatch(httpGetStart());
+  try {
+    const userProfile = await http.get("users/profile");
+    dispatch(setUserProfile(userProfile));
   } catch (error) {
     dispatch(httpGetFailure(error.message));
   }
@@ -119,13 +163,42 @@ export const updateUser = (data) => async (dispatch) => {
   }
 };
 
+export const adminEdit = (data) => async (dispatch) => {
+  dispatch(httpPutStart());
+  try {
+    const response = await http.put("users/editadmin", data);
+    dispatch(httpPutSuccess(response));
+    console.log(response);
+    if (response.status === 200) {
+      dispatch(fetchUsers());
+    }
+  } catch (error) {
+    dispatch(httpPutFailure(error.message));
+  }
+};
+
 export const deleteUser = (id) => async (dispatch) => {
   dispatch(httpDeleteStart());
   try {
-    const response = await http.deleteCreates(`users/delete`, id);
+    const response = await http.delete(`users/delete/${id}`);
     dispatch(httpDeleteSuccess(response));
     if (response.status === 200) {
       dispatch(fetchUsers());
+    }
+  } catch (error) {
+    dispatch(httpDeleteFailure(error.message));
+  }
+};
+
+export const logoutUser = () => async (dispatch) => {
+  dispatch(httpDeleteStart());
+  try {
+    const response = await http.put("auth/logout");
+    dispatch(httpDeleteSuccess(response));
+    if (response.status === 200) {
+      localStorage.removeItem("user");
+      dispatch(clearUserProfile());
+      window.location.href = "/";
     }
   } catch (error) {
     dispatch(httpDeleteFailure(error.message));
