@@ -5,10 +5,22 @@ const httpSlice = createSlice({
   name: "http",
   initialState: {
     data: null,
+    publications: [],
+    isLoading: false,
+    error: null,
   },
   reducers: {
-    httpGet: (state, action) => {
-      state.data = action.payload;
+    httpGetStart: (state) => {
+      state.isLoading = true;
+      state.error = null;
+    },
+    httpGetSuccess: (state, action) => {
+      state.isLoading = false;
+      state.publications = action.payload;
+    },
+    httpGetFailure: (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload;
     },
     httpPut: async (state, action) => {
       const response = await http.put(action.payload.string, {
@@ -20,8 +32,17 @@ const httpSlice = createSlice({
       }
       state.data = response;
     },
-    httpPost: (state, action) => {
+    httpPostStart: (state) => {
+      state.isLoading = true;
+      state.error = null;
+    },
+    httpPostSuccess: (state, action) => {
+      state.isLoading = false;
       state.data = action.payload;
+    },
+    httpPostFailure: (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload;
     },
     httpDelete: (state, action) => {
       state.data = action.payload;
@@ -29,5 +50,14 @@ const httpSlice = createSlice({
   },
 });
 
-export const { httpGet, httpPut, httpPost, httpDelete } = httpSlice.actions;
+export const {
+  httpGetStart,
+  httpGetSuccess,
+  httpGetFailure,
+  httpPut,
+  httpPostStart,
+  httpPostSuccess,
+  httpPostFailure,
+} = httpSlice.actions;
+
 export default httpSlice.reducer;

@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "./authSlice";
-import httpReducer from "./httpSlice";
+import publicationReducer from "./httpPublication";
+import commentReducer from "./httpComment";
 export const store = configureStore({
   reducer: {
     auth: authReducer,
-    http: httpReducer,
+    publication: publicationReducer,
+    comment: commentReducer,
   },
 });

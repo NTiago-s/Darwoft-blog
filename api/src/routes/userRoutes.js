@@ -16,7 +16,6 @@ import {
 import multer from "multer";
 
 const router = Router();
-
 const storage = multer.diskStorage({});
 const upload = multer({ storage });
 

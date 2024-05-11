@@ -2,7 +2,7 @@
 import Header from "../header";
 const Main = ({ children }) => {
   return (
-    <section className="flex justify-between h-screen w-screen py-6 px-10">
+    <section className="flex justify-evenly h-screen w-screen py-6 px-10">
       <Header />
       {children}
     </section>

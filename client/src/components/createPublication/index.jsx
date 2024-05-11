@@ -1,14 +1,20 @@
-import { http } from "../../services/http";
-import { PhotoIcon, UserIcon } from "../icons/icons";
+import { CloseIcon, PhotoIcon, UserIcon } from "../icons/icons";
 import { Link } from "react-router-dom";
-import { useState } from "react"; // Importa useState
+import { useRef, useState } from "react"; // Importa useState
 import { useThemesEffect, useUserEffect } from "../../utils/use";
+import { useDispatch } from "react-redux";
+import { createPublication } from "../../store/httpPublication";
 export default function CreatePublication() {
   const user = useUserEffect();
+  const dispatch = useDispatch();
+  const [title, setTitle] = useState("");
   const [publicationText, setPublicationText] = useState("");
   const [selectedThemes, setSelectedThemes] = useState([]);
   const [error, setError] = useState("");
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
   const themesData = useThemesEffect();
+  const fileInputRef = useRef(null);
 
   const handleThemeSelection = (themeId) => {
     if (selectedThemes.includes(themeId)) {
@@ -16,6 +22,35 @@ export default function CreatePublication() {
     } else {
       setSelectedThemes([...selectedThemes, themeId]);
     }
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleDeleteImage = () => {
+    setImageFile(null);
+    setImagePreview(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const handleclearInputs = () => {
+    setTitle("");
+    setPublicationText("");
+    setSelectedThemes([]);
+    setError("");
+    setImageFile(null);
+    setImagePreview(null);
   };
 
   const handleCreatePublication = async () => {
@@ -27,16 +62,15 @@ export default function CreatePublication() {
       setError("Seleccione al menos 1 temática.");
       return;
     }
-
     try {
-      const data = {
-        description: publicationText,
-        author: user.data._id,
-        themes: selectedThemes,
-      };
-
-      const response = await http.post("publications/create", data);
-      if (response.status === 201) window.location.reload();
+      const formData = new FormData();
+      formData.append("image", imageFile);
+      formData.append("title", title);
+      formData.append("description", publicationText);
+      formData.append("author", user.data._id);
+      formData.append("themes", selectedThemes);
+      dispatch(createPublication(formData));
+      handleclearInputs();
     } catch (error) {
       console.error("Error creating publication:", error);
     }
@@ -71,6 +105,8 @@ export default function CreatePublication() {
         <div className="flex flex-col  w-full">
           <input
             type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
             className="rounded-xl w-full my-2  min-h-14 max-h-32
     text-2xl placeholder:text-2xl p-2"
             placeholder="Ingresa el titulo"
@@ -88,10 +124,29 @@ export default function CreatePublication() {
           ></textarea>
           <label htmlFor="fileInput" className="cursor-pointer">
             <PhotoIcon />
-            <input id="fileInput" type="file" className="hidden" />
+            <input
+              ref={fileInputRef}
+              id="fileInput"
+              type="file"
+              className="hidden"
+              onChange={handleImageChange}
+            />
           </label>
         </div>
       </div>
+
+      {imagePreview && (
+        <div className="flex items-start">
+          <img
+            src={imagePreview}
+            alt="Preview"
+            className="max-w-xs mt-2 ml-20 rounded-xl mr-2"
+          />
+          <button onClick={handleDeleteImage} className="text-red-500 mt-4">
+            <CloseIcon />
+          </button>
+        </div>
+      )}
       <div className="flex flex-col ml-[60px] mt-5">
         Tematicas:
         <div>

@@ -2,33 +2,134 @@ import { createSlice } from "@reduxjs/toolkit";
 import { http } from "../services/http";
 
 const httpPublicationSlice = createSlice({
-  name: "http",
+  name: "publication",
   initialState: {
-    data: null,
+    publications: [],
+    isLoading: false,
+    error: null,
   },
   reducers: {
-    httpPublicationGet: (state, action) => {
+    httpGetStart: (state) => {
+      state.isLoading = true;
+      state.error = null;
+    },
+    httpGetSuccess: (state, action) => {
+      state.isLoading = false;
+      state.publications = action.payload;
+    },
+    httpGetFailure: (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
+    httpPutStart: (state) => {
+      state.isLoading = true;
+      state.error = null;
+    },
+    httpPutSuccess: (state, action) => {
+      state.isLoading = false;
       state.data = action.payload;
     },
-    httpPublicationPut: async (state, action) => {
-      const response = await http.put(action.payload.string, {
-        publicationId: action.payload.id,
-        description: action.payload.description,
-      });
-      if (response.status === 200) {
-        window.location.reload();
-      }
-      state.data = response;
+    httpPutFailure: (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload;
     },
-    httpPublicationPost: (state, action) => {
+    httpPostStart: (state) => {
+      state.isLoading = true;
+      state.error = null;
+    },
+    httpPostSuccess: (state, action) => {
+      state.isLoading = false;
       state.data = action.payload;
     },
-    httpPublicationDelete: (state, action) => {
+    httpPostFailure: (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
+    httpDeleteStart: (state) => {
+      state.isLoading = true;
+      state.error = null;
+    },
+    httpDeleteSuccess: (state, action) => {
+      state.isLoading = false;
       state.data = action.payload;
+    },
+    httpDeleteFailure: (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload;
     },
   },
 });
 
-export const { httpGet, httpPut, httpPost, httpDelete } =
-  httpPublicationSlice.actions;
+export const {
+  httpGetStart,
+  httpGetSuccess,
+  httpGetFailure,
+  httpPutStart,
+  httpPutSuccess,
+  httpPutFailure,
+  httpPostStart,
+  httpPostSuccess,
+  httpPostFailure,
+  httpDeleteStart,
+  httpDeleteSuccess,
+  httpDeleteFailure,
+} = httpPublicationSlice.actions;
+
+export const fetchPublications = () => async (dispatch) => {
+  dispatch(httpGetStart());
+  try {
+    const publications = await http.get("publications");
+    dispatch(httpGetSuccess(publications));
+  } catch (error) {
+    dispatch(httpGetFailure(error.message));
+  }
+};
+
+export const createPublication = (formData) => async (dispatch) => {
+  dispatch(httpPostStart());
+  try {
+    const response = await http.post("publications/create", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    dispatch(httpPostSuccess(response));
+    if (response.status === 201) {
+      dispatch(fetchPublications());
+    }
+  } catch (error) {
+    dispatch(httpPostFailure(error.message));
+  }
+};
+
+export const updatePublication = (data) => async (dispatch) => {
+  dispatch(httpPutStart());
+  try {
+    const response = await http.put("publications/update", data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    dispatch(httpPutSuccess(response));
+    if (response.status === 200) {
+      dispatch(fetchPublications());
+    }
+  } catch (error) {
+    dispatch(httpPutFailure(error.message));
+  }
+};
+
+export const deletePublication = (id) => async (dispatch) => {
+  dispatch(httpDeleteStart());
+  try {
+    const response = await http.deleteCreates(`publications/delete`, id);
+    dispatch(httpDeleteSuccess(response));
+    if (response.status === 200) {
+      dispatch(fetchPublications());
+    }
+  } catch (error) {
+    dispatch(httpDeleteFailure(error.message));
+  }
+};
+
 export default httpPublicationSlice.reducer;

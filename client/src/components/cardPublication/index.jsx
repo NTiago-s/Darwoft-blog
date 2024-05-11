@@ -1,24 +1,30 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/rules-of-hooks */
 import { PencilIcon, SettingsIcon, TrashIcon, UserIcon } from "../icons/icons";
-import {
-  usePublicationsEffect,
-  usePublicationsFilterEffect,
-} from "../../utils/use";
-import { useState } from "react";
+import { usePublications } from "../../hooks/useGetPublications";
+import { useEffect, useState } from "react";
 import { http } from "../../services/http";
 import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { httpPut } from "../../store/httpSlice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  deletePublication,
+  updatePublication,
+} from "../../store/httpPublication";
 export default function CardPublication() {
   const user = JSON.parse(localStorage.getItem("user"));
   const dispatch = useDispatch();
+  const { getPublications } = usePublications();
+  const publicationsData = useSelector(
+    (state) => state.publication.publications
+  );
   const [publicationComments, setPublicationComments] = useState({});
   const [publicationToDelete, setPublicationToDelete] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
   const [publicationDeleteModal, setPublicationDeleteModal] = useState(null);
   const [editingPublicationId, setEditingPublicationId] = useState(null);
   const [editedPublicationDescription, setEditedPublicationDescription] =
     useState("");
+  const [editedPublicationTitle, setEditedPublicationTitle] = useState("");
   const isDashboardRoute = location.pathname === "/dashboard";
 
   const Initials = (nombre, apellido) => {
@@ -51,18 +57,19 @@ export default function CardPublication() {
 
   const handleUpdatePublication = async (id) => {
     try {
-      const data = {
-        id,
-        description: editedPublicationDescription,
-        string: "publications/update",
-      };
-      dispatch(httpPut(data));
+      let formData = new FormData();
+      formData.append("publicationId", id);
+      formData.append("description", editedPublicationDescription);
+      formData.append("title", editedPublicationTitle);
+      if (selectedImage) {
+        formData.append("image", selectedImage);
+      }
+      dispatch(updatePublication(formData));
       setEditingPublicationId(null);
     } catch (error) {
       console.error("Error updating publication:", error);
     }
   };
-
   const handleCreateComment = async (id) => {
     if (!user) {
       alert("Debes Iniciar Sesion para crear un Comentario");
@@ -83,26 +90,39 @@ export default function CardPublication() {
     }
   };
 
+  const handleImageChange = (event) => {
+    const imageFile = event.target.files[0];
+    setSelectedImage(imageFile);
+  };
+
   const handleDeletePublication = async () => {
     if (!publicationToDelete) return;
     try {
-      const response = await http.deleteCreates(
-        "publications/delete",
-        publicationToDelete
-      );
-      if (response.status === 200) window.location.reload();
+      dispatch(deletePublication(publicationToDelete));
     } catch (error) {
       console.error("Error deleting publication:", error);
     }
   };
 
-  const publicationsData = isDashboardRoute
-    ? usePublicationsFilterEffect()
-    : usePublicationsEffect();
+  useEffect(() => {
+    getPublications();
+  }, [getPublications]);
 
-  const sortedPublications = [
-    ...(publicationsData.data?.publications || []),
-  ].sort((a, b) => new Date(b.date) - new Date(a.date));
+  const sortedPublications =
+    publicationsData && Array.isArray(publicationsData.publications)
+      ? publicationsData.publications
+          .filter((publication) => {
+            if (isDashboardRoute) {
+              return publication.author._id === user.data._id;
+            } else {
+              return true;
+            }
+          })
+          .slice()
+          .sort((a, b) => {
+            return new Date(b.date) - new Date(a.date);
+          })
+      : [];
 
   return (
     <div className="flex flex-col h-auto my-2">
@@ -134,10 +154,11 @@ export default function CardPublication() {
                     {`${publication.author.firstName}  ${publication.author.lastName}`}
                   </div>
                 </div>
+
                 <div>
-                  <div className="flex h-auto w-auto justify-end">
+                  <div className="flex justify-end">
                     <button
-                      className="rounded-xl p-[6px] gap-2 text-black hover:bg-emerald-300 hover:text-black text-xs font-medium"
+                      className="rounded-xl w-auto p-[6px] gap-2 text-black hover:bg-emerald-300 hover:text-black text-xs font-medium"
                       onClick={(e) => {
                         e.preventDefault();
                         if (publicationDeleteModal === publication._id) {
@@ -179,23 +200,62 @@ export default function CardPublication() {
                   </div>
                 </div>
               </div>
-              {editingPublicationId === publication._id ? (
-                <input
-                  type="text"
-                  value={editedPublicationDescription}
-                  onChange={(e) =>
-                    setEditedPublicationDescription(e.target.value)
-                  }
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                  }}
-                />
-              ) : (
-                <p className="w-full break-words p-2">
-                  {publication.description}
-                </p>
-              )}
+
+              <div className="flex flex-col gap-4 m-3 p-4 border-2">
+                {editingPublicationId === publication._id ? (
+                  <input
+                    type="text"
+                    value={editedPublicationTitle}
+                    className="text-black"
+                    onChange={(e) => setEditedPublicationTitle(e.target.value)}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }}
+                  />
+                ) : (
+                  <h2 className="w-full break-words p-2 text-lg font-semibold">
+                    {publication.title}
+                  </h2>
+                )}
+
+                {editingPublicationId === publication._id ? (
+                  <input
+                    type="text"
+                    value={editedPublicationDescription}
+                    onChange={(e) =>
+                      setEditedPublicationDescription(e.target.value)
+                    }
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }}
+                  />
+                ) : (
+                  <p className="w-full break-words p-2">
+                    {publication.description}
+                  </p>
+                )}
+
+                {publication.image ? (
+                  <div className="w-80 h-60">
+                    {editingPublicationId === publication._id ? (
+                      <input
+                        type="file"
+                        onChange={handleImageChange}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                        }}
+                      />
+                    ) : (
+                      <img src={publication.image} alt="" />
+                    )}
+                  </div>
+                ) : (
+                  ""
+                )}
+              </div>
               <div className="flex justify-between">
                 <div className="flex">
                   {publication.themes.map((theme, index) => (

@@ -37,6 +37,17 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
+  status: {
+    type: String,
+    enum: ["active", "banned"],
+    default: "active",
+    validate: {
+      validator: function (v) {
+        return ["active", "banned"].includes(v);
+      },
+      message: "Unsupported value for status",
+    },
+  },
   login: {
     type: Boolean,
     required: true,

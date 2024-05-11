@@ -32,10 +32,10 @@ const get = async (url) => {
   }
 };
 
-const post = async (url, body) => {
+const post = async (url, body, customHeaders) => {
   const response = await axiosPrivate.post(`${BASE_URL}/${url}`, body, {
     method: "POST",
-    headers,
+    headers: customHeaders ? customHeaders : headers,
   });
   return response;
 };
