@@ -5,6 +5,7 @@ const httpPublicationSlice = createSlice({
   name: "publication",
   initialState: {
     publications: [],
+    publication: [],
     isLoading: false,
     error: null,
   },
@@ -16,6 +17,7 @@ const httpPublicationSlice = createSlice({
     httpGetSuccess: (state, action) => {
       state.isLoading = false;
       state.publications = action.payload;
+      state.publication = action.payload;
     },
     httpGetFailure: (state, action) => {
       state.isLoading = false;
@@ -27,7 +29,7 @@ const httpPublicationSlice = createSlice({
     },
     httpPutSuccess: (state, action) => {
       state.isLoading = false;
-      state.data = action.payload;
+      state.publications = action.payload;
     },
     httpPutFailure: (state, action) => {
       state.isLoading = false;
@@ -39,7 +41,7 @@ const httpPublicationSlice = createSlice({
     },
     httpPostSuccess: (state, action) => {
       state.isLoading = false;
-      state.data = action.payload;
+      state.publications = action.payload;
     },
     httpPostFailure: (state, action) => {
       state.isLoading = false;
@@ -51,7 +53,7 @@ const httpPublicationSlice = createSlice({
     },
     httpDeleteSuccess: (state, action) => {
       state.isLoading = false;
-      state.data = action.payload;
+      state.publications = action.payload;
     },
     httpDeleteFailure: (state, action) => {
       state.isLoading = false;
@@ -85,6 +87,16 @@ export const fetchPublications = () => async (dispatch) => {
   }
 };
 
+export const fetchPublication = (id) => async (dispatch) => {
+  dispatch(httpGetStart());
+  try {
+    const publications = await http.get(`publications/${id}`);
+    dispatch(httpGetSuccess(publications));
+  } catch (error) {
+    dispatch(httpGetFailure(error.message));
+  }
+};
+
 export const createPublication = (formData) => async (dispatch) => {
   dispatch(httpPostStart());
   try {
@@ -103,6 +115,7 @@ export const createPublication = (formData) => async (dispatch) => {
 };
 
 export const updatePublication = (data) => async (dispatch) => {
+  console.log(data);
   dispatch(httpPutStart());
   try {
     const response = await http.put("publications/update", data, {

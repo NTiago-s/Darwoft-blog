@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useRef, useState } from "react"; // Importa useState
 import { useThemesEffect, useUserEffect } from "../../utils/use";
 import { useDispatch } from "react-redux";
-import { createPublication } from "../../store/httpPublication";
+import { createPublication } from "../../store/httpPublicationSlice";
 export default function CreatePublication() {
   const user = useUserEffect();
   const dispatch = useDispatch();

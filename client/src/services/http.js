@@ -1,6 +1,6 @@
 /* eslint-disable no-useless-catch */
 import axios from "axios";
-import authHeader from "./AuthHeader";
+import authHeader from "../services/AuthHeader";
 
 export const BASE_URL = import.meta.env.VITE_ENDPOINT;
 

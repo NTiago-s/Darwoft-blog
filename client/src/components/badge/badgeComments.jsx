@@ -3,11 +3,14 @@ import { CloseIcon, PencilIcon } from "../icons/icons";
 import { useUserEffect } from "../../utils/use";
 import { http } from "../../services/http";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { deleteComment } from "../../store/httpCommentSlice";
 
 export default function BadgeComment({ title, id, author, publication }) {
   const user = useUserEffect();
   const [editing, setEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState(title);
+  const dispatch = useDispatch();
   const Initials = (nombre, apellido) => {
     if (nombre && apellido) {
       return `${nombre.charAt(0)}${apellido.charAt(0)}`;
@@ -23,8 +26,7 @@ export default function BadgeComment({ title, id, author, publication }) {
         user?.data?._id === publication?.publication?.author?._id)
     ) {
       try {
-        const response = await http.deleteCreates("comments/delete", id);
-        if (response.status === 204) window.location.reload();
+        dispatch(deleteComment(id));
       } catch (error) {
         console.error("Error al eliminar la temática:", error);
       }

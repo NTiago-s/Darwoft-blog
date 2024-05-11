@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { createSlice } from "@reduxjs/toolkit";
 import { http } from "../services/http";
 
@@ -21,15 +22,19 @@ const httpCommentSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
-    httpPut: async (state, action) => {
-      const response = await http.put(action.payload.string, {
-        publicationId: action.payload.id,
-        description: action.payload.description,
-      });
-      if (response.status === 200) {
-        window.location.reload();
-      }
-      state.data = response;
+    httpPutStart: (state) => {
+      state.isLoading = true;
+      state.error = null;
+    },
+    httpPutSuccess: (state, action) => {
+      state.isLoading = false;
+      state.comments = state.comments.map((comment) =>
+        comment._id === action.payload._id ? action.payload : comment
+      );
+    },
+    httpPutFailure: (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload;
     },
     httpPostStart: (state) => {
       state.isLoading = true;
@@ -37,14 +42,24 @@ const httpCommentSlice = createSlice({
     },
     httpPostSuccess: (state, action) => {
       state.isLoading = false;
-      state.data = action.payload;
+      state.comments = action.payload;
     },
+
     httpPostFailure: (state, action) => {
       state.isLoading = false;
       state.error = action.payload;
     },
-    httpDelete: (state, action) => {
-      state.data = action.payload;
+    httpDeleteStart: (state) => {
+      state.isLoading = true;
+      state.error = null;
+    },
+    httpDeleteSuccess: (state, action) => {
+      state.isLoading = false;
+      state.comments = action.payload;
+    },
+    httpDeleteFailure: (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload;
     },
   },
 });
@@ -53,10 +68,15 @@ export const {
   httpGetStart,
   httpGetSuccess,
   httpGetFailure,
-  httpPut,
+  httpPutStart,
+  httpPutSuccess,
+  httpPutFailure,
   httpPostStart,
   httpPostSuccess,
   httpPostFailure,
+  httpDeleteStart,
+  httpDeleteSuccess,
+  httpDeleteFailure,
 } = httpCommentSlice.actions;
 
 export const fetchComments = () => async (dispatch) => {
@@ -69,20 +89,39 @@ export const fetchComments = () => async (dispatch) => {
   }
 };
 
-export const createComment = (formData) => async (dispatch) => {
+export const createComment = (data) => async (dispatch) => {
   dispatch(httpPostStart());
   try {
-    const response = await http.post("comments/create", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    const response = await http.post("comments/create", data);
     dispatch(httpPostSuccess(response));
     if (response.status === 201) {
       dispatch(fetchComments());
     }
   } catch (error) {
     dispatch(httpPostFailure(error.message));
+  }
+};
+
+export const updateComment = (data) => async (dispatch) => {
+  dispatch(httpPutStart());
+  try {
+    const response = await http.put(`comments/${data.id}`, data);
+    dispatch(httpPutSuccess(response.data));
+  } catch (error) {
+    dispatch(httpPutFailure(error.message));
+  }
+};
+
+export const deleteComment = (id) => async (dispatch) => {
+  dispatch(httpDeleteStart());
+  try {
+    const response = await http.deleteCreates("comments/delete", id);
+    dispatch(httpDeleteSuccess(response));
+    if (response.status === 200) {
+      dispatch(fetchComments());
+    }
+  } catch (error) {
+    dispatch(httpDeleteFailure(error.message));
   }
 };
 

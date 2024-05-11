@@ -10,6 +10,7 @@ import {
   deletePublication,
   updatePublication,
 } from "../../store/httpPublicationSlice";
+import { createComment } from "../../store/httpCommentSlice";
 export default function CardPublication() {
   const user = JSON.parse(localStorage.getItem("user"));
   const dispatch = useDispatch();
@@ -18,9 +19,6 @@ export default function CardPublication() {
     (state) => state.publication.publications
   );
   const [publicationComments, setPublicationComments] = useState({});
-  const [publicationToDelete, setPublicationToDelete] = useState(null);
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [publicationDeleteModal, setPublicationDeleteModal] = useState(null);
   const [editingPublicationId, setEditingPublicationId] = useState(null);
   const [editedPublicationDescription, setEditedPublicationDescription] =
     useState("");
@@ -45,25 +43,12 @@ export default function CardPublication() {
     });
   };
 
-  const handleOpenDeleteModal = (id) => {
-    setPublicationDeleteModal(id);
-    setPublicationToDelete(id);
-  };
-
-  const handleCloseDeleteModal = () => {
-    setPublicationDeleteModal(null);
-    setPublicationToDelete(null);
-  };
-
   const handleUpdatePublication = async (id) => {
     try {
       let formData = new FormData();
       formData.append("publicationId", id);
       formData.append("description", editedPublicationDescription);
       formData.append("title", editedPublicationTitle);
-      if (selectedImage) {
-        formData.append("image", selectedImage);
-      }
       dispatch(updatePublication(formData));
       setEditingPublicationId(null);
     } catch (error) {
@@ -83,22 +68,16 @@ export default function CardPublication() {
       author: user.data._id,
     };
     try {
-      const response = await http.post("comments/create", data);
+      dispatch(createComment(data));
       handleStatusNoComment(id);
     } catch (error) {
       console.error("Error creating comment:", error);
     }
   };
 
-  const handleImageChange = (event) => {
-    const imageFile = event.target.files[0];
-    setSelectedImage(imageFile);
-  };
-
-  const handleDeletePublication = async () => {
-    if (!publicationToDelete) return;
+  const handleDeletePublication = async (id) => {
     try {
-      dispatch(deletePublication(publicationToDelete));
+      dispatch(deletePublication(id));
     } catch (error) {
       console.error("Error deleting publication:", error);
     }
@@ -154,59 +133,46 @@ export default function CardPublication() {
                     {`${publication.author.firstName}  ${publication.author.lastName}`}
                   </div>
                 </div>
-
                 <div>
                   <div className="flex justify-end">
-                    <button
-                      className="rounded-xl w-auto p-[6px] gap-2 text-black hover:bg-emerald-300 hover:text-black text-xs font-medium"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        if (publicationDeleteModal === publication._id) {
-                          handleCloseDeleteModal();
-                        } else {
-                          handleOpenDeleteModal(publication._id);
-                        }
-                      }}
-                    >
-                      {isDashboardRoute ? <SettingsIcon /> : ""}
-                    </button>
-                    {publicationDeleteModal === publication._id && (
-                      <div className="fixed mt-10 z-20 bg-red-600 p-2 rounded-lg">
+                    {isDashboardRoute ? (
+                      <div className="flex p-2 gap-4 rounded-lg">
                         <button
-                          className="flex items-center my-2 hover:bg-red-900 p-1 rounded-lg"
+                          className="flex items-center my-2 bg-green-600 hover:bg-green-800 p-1 rounded-lg"
                           onClick={(e) => {
                             e.preventDefault();
-                            handleCloseDeleteModal();
                             setEditingPublicationId(publication._id);
                             setEditedPublicationDescription(
                               publication.description
                             );
+                            setEditedPublicationTitle(publication.title);
                           }}
                         >
-                          <PencilIcon /> Editar
+                          <PencilIcon />
                         </button>
                         <button
-                          className="flex items-center my-2 hover:bg-red-900 p-1 rounded-lg"
+                          className="flex items-center my-2 bg-red-600 hover:bg-red-800 p-1 rounded-lg"
                           onClick={(e) => {
                             e.preventDefault();
                             handleDeletePublication(publication._id);
                           }}
                         >
                           <TrashIcon />
-                          Eliminar
                         </button>
                       </div>
+                    ) : (
+                      ""
                     )}
                   </div>
                 </div>
               </div>
 
-              <div className="flex flex-col gap-4 m-3 p-4 border-2">
+              <div className="flex flex-col gap-4 m-3 p-4">
                 {editingPublicationId === publication._id ? (
                   <input
                     type="text"
                     value={editedPublicationTitle}
-                    className="text-black"
+                    className="px-2"
                     onChange={(e) => setEditedPublicationTitle(e.target.value)}
                     onClick={(e) => {
                       e.preventDefault();
@@ -226,6 +192,7 @@ export default function CardPublication() {
                     onChange={(e) =>
                       setEditedPublicationDescription(e.target.value)
                     }
+                    className="px-2"
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
@@ -236,25 +203,17 @@ export default function CardPublication() {
                     {publication.description}
                   </p>
                 )}
-
-                {publication.image ? (
-                  <div className="w-80 h-60">
-                    {editingPublicationId === publication._id ? (
-                      <input
-                        type="file"
-                        onChange={handleImageChange}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                        }}
-                      />
-                    ) : (
-                      <img src={publication.image} alt="" />
-                    )}
-                  </div>
-                ) : (
-                  ""
-                )}
+                <div className="flex justify-center rounded-2xl">
+                  {publication.image ? (
+                    <img
+                      src={publication.image}
+                      alt=""
+                      className="rounded-2xl w-full h-full object-cover"
+                    />
+                  ) : (
+                    ""
+                  )}
+                </div>
               </div>
               <div className="flex justify-between">
                 <div className="flex">
@@ -269,15 +228,26 @@ export default function CardPublication() {
                 </div>
 
                 {editingPublicationId ? (
-                  <button
-                    className="rounded-xl m-2 p-[6px] gap-2 text-black hover:bg-emerald-300 hover:text-black text-xs font-medium"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleUpdatePublication(publication._id);
-                    }}
-                  >
-                    Guardar
-                  </button>
+                  <div>
+                    <button
+                      className="rounded-xl m-2 p-[6px] gap-2 text-black hover:bg-emerald-300 hover:text-black text-xs font-medium"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleUpdatePublication(publication._id);
+                      }}
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      className="rounded-xl m-2 p-[6px] gap-2 text-black hover:bg-emerald-300 hover:text-black text-xs font-medium"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleUpdatePublication(publication._id);
+                      }}
+                    >
+                      Guardar
+                    </button>
+                  </div>
                 ) : (
                   <button
                     className="rounded-xl m-2 p-[6px] gap-2 text-black hover:bg-emerald-300 hover:text-black text-xs font-medium"
@@ -290,6 +260,7 @@ export default function CardPublication() {
                   </button>
                 )}
               </div>
+
               {publicationComments[publication._id]?.comment ? (
                 <div>
                   <div className="flex gap-2">

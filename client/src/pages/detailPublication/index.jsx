@@ -1,64 +1,73 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { http } from "../../services/http";
 import { UserIcon } from "../../components/icons/icons";
 import BadgeComment from "../../components/badge/badgeComments";
+import { fetchPublication } from "../../store/httpPublicationSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { createComment } from "../../store/httpCommentSlice";
+import { useComments } from "../../hooks/useGetComments";
 
 export default function PublicationDetails() {
   const user = JSON.parse(localStorage.getItem("user"));
   const { id } = useParams();
-  const [publication, setPublication] = useState(null);
-  const [publicationComments, setPublicationComments] = useState({});
+  const dispatch = useDispatch();
+  const { getComments } = useComments();
+  const publication = useSelector((state) => state.publication.publications);
+  const commentsData = useSelector((state) => state.comment.comments);
+  const [newCommentText, setNewCommentText] = useState("");
+  const [isCommenting, setIsCommenting] = useState(false);
   const Initials = (nombre, apellido) => {
-    return `${nombre?.charAt(0) || ""}${apellido?.charAt(0) || ""}`;
-  };
-
-  const handleStatusCommnet = (id) => {
-    setPublicationComments({
-      ...publicationComments,
-      [id]: { comment: true, commentText: "" },
-    });
-  };
-
-  const handleStatusNoCommnet = (id) => {
-    setPublicationComments({
-      ...publicationComments,
-      [id]: { comment: false, commentText: "" },
-    });
+    if (nombre && apellido) {
+      return `${nombre.charAt(0)}${apellido.charAt(0)}`;
+    } else {
+      return "";
+    }
   };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await http.get(`publications/${id}`);
-        setPublication(response);
+        dispatch(fetchPublication(id));
+        getComments();
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
     fetchData();
-  }, [id]);
+  }, [id, getComments]);
 
-  const handleCreateComment = async (id) => {
-    if (!user) {
-      alert("Debes Iniciar Sesion para crear un Comentario");
-      return;
-    }
-    const { commentText } = publicationComments[id];
-    if (!commentText.trim()) return;
-    const data = {
-      description: commentText,
-      publication: id,
-      author: user.data._id,
-    };
+  const handleToggleCommenting = () => {
+    setIsCommenting(!isCommenting);
+    setNewCommentText("");
+  };
+
+  const handleCreateComment = (id) => {
     try {
-      const response = await http.post("comments/create", data);
-      console.log(response);
-      handleStatusNoCommnet(id);
+      if (!user) {
+        alert("Debes Iniciar Sesion para crear un Comentario");
+        return;
+      }
+
+      if (!newCommentText.trim()) return;
+      const data = {
+        description: newCommentText,
+        publication: id,
+        author: user.data._id,
+      };
+      dispatch(createComment(data));
+      setIsCommenting(false);
     } catch (error) {
       console.error("Error creating comment:", error);
     }
   };
+
+  const filteredComments = commentsData.comments
+    ? commentsData.comments
+        .filter((comment) => comment.publicationId === id)
+        .sort((a, b) => new Date(b.date) - new Date(a.date))
+    : [];
+
   return (
     <div className="w-full bg-slate-500 rounded-lg p-4 my-4">
       <div className="flex justify-between m-3">
@@ -96,14 +105,16 @@ export default function PublicationDetails() {
             </div>
           ))}
         </div>
-        <button
-          className="rounded-xl m-2 p-[6px] gap-2 text-black hover:bg-emerald-300 hover:text-black text-xs font-medium"
-          onClick={() => handleStatusCommnet(publication?.publication?._id)}
-        >
-          Comentar
-        </button>
+        {!isCommenting && (
+          <button
+            className="rounded-xl m-2 p-[6px] gap-2 text-black hover:bg-emerald-300 hover:text-black text-xs font-medium"
+            onClick={handleToggleCommenting}
+          >
+            Comentar
+          </button>
+        )}
       </div>
-      {publicationComments[publication?.publication?._id]?.comment ? (
+      {isCommenting && (
         <div>
           <div className="flex gap-2">
             <div className="rounded-full bg-gray-900 text-white min-w-8 h-8  flex justify-center items-center text-center">
@@ -117,20 +128,9 @@ export default function PublicationDetails() {
             </div>
             <input
               type="text"
-              className="w-full rounded-lg px-3 text-base bg-transparent border-black border-2 "
-              value={
-                publicationComments[publication?.publication?._id]
-                  ?.commentText || ""
-              }
-              onChange={(e) =>
-                setPublicationComments({
-                  ...publicationComments,
-                  [publication?.publication?._id]: {
-                    ...publicationComments[publication?.publication?._id],
-                    commentText: e.target.value,
-                  },
-                })
-              }
+              className="w-full rounded-lg px-3 text-base bg-transparent border-black border-2"
+              value={newCommentText}
+              onChange={(e) => setNewCommentText(e.target.value)}
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -140,10 +140,7 @@ export default function PublicationDetails() {
           <div className="flex justify-end">
             <button
               className="rounded-xl m-2 p-[6px] gap-2 text-black hover:bg-emerald-300 hover:text-black text-xs font-medium"
-              onClick={(e) => {
-                e.preventDefault();
-                handleStatusNoCommnet(publication?.publication?._id);
-              }}
+              onClick={handleToggleCommenting}
             >
               Cancelar
             </button>
@@ -151,30 +148,26 @@ export default function PublicationDetails() {
               className="rounded-xl m-2 p-[6px] gap-2 text-black hover:bg-emerald-300 hover:text-black text-xs font-medium"
               onClick={(e) => {
                 e.preventDefault();
-                handleCreateComment(publication?.publication?._id);
+                handleCreateComment(publication.publication._id);
               }}
             >
               Responder
             </button>
           </div>
         </div>
-      ) : (
-        ""
       )}
       <hr className="my-4" />
       <div className="flex flex-col justify-between p-6 max-h-[calc(100vh-300px)] overflow-x-hidden overflow-y-auto">
-        <div>
-          {publication?.publication?.comments.map((comment, index) => (
-            <div key={index}>
-              <BadgeComment
-                id={comment._id}
-                title={comment.description}
-                author={comment.author}
-                publication={publication}
-              />
-            </div>
-          ))}
-        </div>
+        {filteredComments.map((comment, index) => (
+          <div key={index}>
+            <BadgeComment
+              id={comment._id}
+              title={comment.description}
+              author={comment.author}
+              publication={publication}
+            />
+          </div>
+        ))}
       </div>
     </div>
   );
