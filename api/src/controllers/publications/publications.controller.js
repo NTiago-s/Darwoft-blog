@@ -94,7 +94,6 @@ export const createPublication = async (req, res) => {
 export const updatePublication = async (req, res) => {
   try {
     const { publicationId, description, title } = req.body;
-    console.log(publicationId, description, title);
     const publication = await Publication.findById(publicationId);
     if (!publication) {
       res.status(404).json({ message: "Publicacion no encontrada" });
