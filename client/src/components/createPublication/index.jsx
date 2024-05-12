@@ -42,7 +42,6 @@ export default function CreatePublication() {
       reader.readAsDataURL(file);
     }
   };
-
   const handleDeleteImage = () => {
     setImageFile(null);
     setImagePreview(null);
@@ -88,16 +87,16 @@ export default function CreatePublication() {
   };
 
   return (
-    <div className="flex w-full p-2 rounded-lg border-2">
-      <div className="flex flex-col w-full">
-        <div className="flex justify-between sm:justify-end items-center w-full">
+    <div className="flex sm:flex-col w-full p-2 rounded-lg border-2">
+      <div className="flex sm:flex-row flex-col w-full">
+        <div className="flex justify-between sm:justify-start items-center sm:w-auto sm:items-start sm:px-4 sm:py-4 w-full">
           <div className="flex sm:hidden">
             <Header />
           </div>
           <div className={`${!dashPage ? "flex" : "hidden"}`}>
             {user ? (
               <Link to={"/dashboard"}>
-                <div className="rounded-full bg-gray-900 items-center justify-center text-white size-12 flex">
+                <div className="rounded-full bg-gray-900 items-center justify-center text-white sm:size-16  size-12 flex">
                   {user.profileImage ? (
                     <img
                       src={user.profileImage}
@@ -122,25 +121,23 @@ export default function CreatePublication() {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             className="rounded-xl w-full my-2  min-h-14 max-h-32
-    text-2xl placeholder:text-2xl p-2"
+    text-2xl placeholder:text-xl p-2 outline-none"
             placeholder="Ingresa el titulo"
           />
           <hr />
           <textarea
             value={publicationText}
             onChange={(e) => setPublicationText(e.target.value)}
-            name=""
-            cols="10"
-            rows="10"
             className="rounded-xl w-full my-2  min-h-14 max-h-32
-    text-2xl placeholder:text-2xl p-2"
+    text-2xl placeholder:text-xl p-2 outline-none [form-sizing:content] resize-none"
             placeholder="Ingresa la descripción"
           ></textarea>
-          <label htmlFor="fileInput" className="cursor-pointer">
-            <PhotoIcon />
+          <label className="flex flex-col mb-6 gap-2">
+            <div className="cursor-pointer">
+              <PhotoIcon />
+            </div>
             <input
               ref={fileInputRef}
-              id="fileInput"
               type="file"
               className="hidden"
               onChange={handleImageChange}
@@ -148,25 +145,33 @@ export default function CreatePublication() {
           </label>
         </div>
       </div>
-      <div className="hidden">
-        <div>
-          {imagePreview && (
+      <div className="sm:flex sm:ml-24 hidden justify-between sm:flex-col">
+        {imagePreview ? (
+          <div className="px-6">
             <div className="flex flex-col mt-3 items-start">
-              <div className="flex w-full justify-end">
-                <button
-                  onClick={handleDeleteImage}
-                  className="text-red-500 my-2"
-                >
-                  <CloseIcon />
-                </button>
-              </div>
-              <div className="w-full">
-                <img src={imagePreview} alt="Preview" className="rounded-xl" />
+              <div className="flex flex-col w-80 h-60 mb-10">
+                <div className="flex justify-end">
+                  <button
+                    onClick={handleDeleteImage}
+                    className="text-red-500 my-2"
+                  >
+                    <CloseIcon />
+                  </button>
+                </div>
+                <div>
+                  <img
+                    src={imagePreview}
+                    alt="Preview"
+                    className="w-full rounded-xl"
+                  />
+                </div>
               </div>
             </div>
-          )}
-        </div>
-        <div className="flex flex-col mt-">
+          </div>
+        ) : (
+          ""
+        )}
+        <div className="flex flex-col">
           Tematicas:
           <div>
             {themes &&
@@ -178,7 +183,7 @@ export default function CreatePublication() {
                 >
                   <input
                     type="checkbox"
-                    className="form-checkbox h-5 w-5 text-blue-600"
+                    className="form-checkbox h-5 w-5 text-blue-600 cursor-pointer"
                     checked={selectedThemes.includes(theme._id)}
                     onChange={() => handleThemeSelection(theme._id)}
                   />

@@ -23,14 +23,18 @@ export function handleFileUpload(req, res, next) {
       return handleFileSizeError(err, req, res, next);
     }
     if (req.file) {
-      const allowedExtensions = [".jpg", ".jpeg", ".png", ".gif", ".webp"];
-      const fileExtension = req.file.originalname
-        .toLowerCase()
-        .substring(req.file.originalname.lastIndexOf("."));
+      const allowedExtensions = [
+        "image/jpg",
+        "image/jpeg",
+        "image/png",
+        "image/gif",
+        "image/webp",
+      ];
+      const fileExtension = req.file.mimetype;
       if (!allowedExtensions.includes(fileExtension)) {
         return res.status(400).json({
           message:
-            "La extensión del archivo no es válida. Las extensiones permitidas son .jpg, .jpeg, .png, .gif",
+            "La extensión del archivo no es válida. Las extensiones permitidas son .jpg, .jpeg, .png, .gif , .webp",
         });
       }
     }

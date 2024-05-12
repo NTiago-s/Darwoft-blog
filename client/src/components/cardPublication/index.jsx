@@ -113,7 +113,7 @@ export default function CardPublication() {
       : [];
 
   return (
-    <div className="flex flex-col h-auto my-2">
+    <div className="flex flex-col w-full  sm:w-[500px] mx-auto h-auto my-2">
       <div className="text-center">
         {isDashboardRoute ? "Publicaciones creadas" : ""}
       </div>
@@ -219,17 +219,17 @@ export default function CardPublication() {
                     </p>
                   )}
                 </div>
-                <div className="flex justify-center rounded-2xl">
-                  {publication.image ? (
+                {publication.image ? (
+                  <div className="flex h-[150px] w-full items-center justify-center rounded-2xl">
                     <img
                       src={publication.image}
                       alt=""
-                      className="rounded-2xl w-full h-full object-cover"
+                      className="rounded-2xl  w-[300px] h-full object-cover mx-auto"
                     />
-                  ) : (
-                    ""
-                  )}
-                </div>
+                  </div>
+                ) : (
+                  ""
+                )}
               </div>
 
               <div className="flex flex-col justify-between">

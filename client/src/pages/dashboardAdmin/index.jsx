@@ -123,7 +123,7 @@ export default function DashboardUserAdmin() {
             handleSearchUser();
           }}
         />
-        <div className="mt-4 w-full flex justify-end">
+        <div className="mt-4 mb-10 w-full flex justify-end">
           <Button
             txt={"Buscar Usuario"}
             ariaLabel={"Buscar Usuario"}
