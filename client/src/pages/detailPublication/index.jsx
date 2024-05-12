@@ -73,103 +73,119 @@ export default function PublicationDetails() {
     : [];
 
   return (
-    <div className="w-full bg-slate-500 rounded-lg mx-72 p-4 my-4">
-      <div className="flex justify-between m-3">
-        <div className="flex gap-2">
-          <div className="rounded-full bg-gray-900 text-white size-14 flex justify-center items-center text-center">
-            {publication?.publication?.author?.profileImage ? (
-              <img
-                src={publication?.publication?.author?.profileImage}
-                alt=""
-                className="rounded-full w-full h-full object-cover"
-              />
-            ) : (
-              Initials(
-                publication?.publication?.author?.firstName,
-                publication?.publication?.author?.lastName
-              )
-            )}
-          </div>
-          <div className="text-center flex items-center">
-            {`${publication?.publication?.author?.firstName} ${publication?.publication?.author?.lastName}`}
-          </div>
-        </div>
-      </div>
-      <p className="w-full break-words p-2">
-        {publication?.publication?.description}
-      </p>
-      <div className="flex justify-between">
-        <div className="flex">
-          {publication?.publication?.themes.map((theme, index) => (
-            <div
-              className="flex w-auto justify-center rounded-xl m-2 p-[6px] gap-2 bg-blue-100 text-blue-800 hover:text-black text-xs font-medium dark:bg-blue-900 dark:text-blue-300  cursor-pointer"
-              key={index}
-            >
-              {theme.name}
-            </div>
-          ))}
-        </div>
-        {!isCommenting && (
-          <button
-            className="rounded-xl m-2 p-[6px] gap-2 text-black hover:bg-emerald-300 hover:text-black text-xs font-medium"
-            onClick={handleToggleCommenting}
-          >
-            Comentar
-          </button>
-        )}
-      </div>
-      {isCommenting && (
-        <div>
+    <div className="lg:px-72">
+      <div className="w-full bg-slate-500 rounded-lg p-4 my-4">
+        <div className="flex justify-between m-3">
           <div className="flex gap-2">
-            <div className="rounded-full bg-gray-900 text-white min-w-8 h-8  flex justify-center items-center text-center">
-              {user ? (
-                `${user.firstName?.charAt(0)}${user.lastName?.charAt(0)}`
+            <div className="rounded-full bg-gray-900 text-white size-14 flex justify-center items-center text-center">
+              {publication?.publication?.author?.profileImage ? (
+                <img
+                  src={publication?.publication?.author?.profileImage}
+                  alt=""
+                  className="rounded-full w-full h-full object-cover"
+                />
               ) : (
-                <UserIcon />
+                Initials(
+                  publication?.publication?.author?.firstName,
+                  publication?.publication?.author?.lastName
+                )
               )}
             </div>
-            <input
-              type="text"
-              className="w-full rounded-lg px-3 text-base bg-transparent border-black border-2"
-              value={newCommentText}
-              onChange={(e) => setNewCommentText(e.target.value)}
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-              }}
+            <div className="text-center flex items-center">
+              {`${publication?.publication?.author?.firstName} ${publication?.publication?.author?.lastName}`}
+            </div>
+          </div>
+        </div>
+        <h2 className="w-full break-words text-2xl font-semibold p-2">
+          {publication?.publication?.title}
+        </h2>
+        <p className="w-full break-words text-base p-2">
+          {publication?.publication?.description}
+        </p>
+        {publication?.publication?.image ? (
+          <div className="flex justify-center rounded-xl">
+            <img
+              src={publication?.publication?.image}
+              alt={publication?.publication?.title}
+              className="rounded-xl"
             />
           </div>
-          <div className="flex justify-end">
+        ) : (
+          ""
+        )}
+        <div className="flex justify-between">
+          <div className="flex">
+            {publication?.publication?.themes.map((theme, index) => (
+              <div
+                className="flex w-auto justify-center rounded-xl m-2 p-[6px] gap-2 bg-blue-100 text-blue-800 hover:text-black text-xs font-medium dark:bg-blue-900 dark:text-blue-300  cursor-pointer"
+                key={index}
+              >
+                {theme.name}
+              </div>
+            ))}
+          </div>
+          {!isCommenting && (
             <button
               className="rounded-xl m-2 p-[6px] gap-2 text-black hover:bg-emerald-300 hover:text-black text-xs font-medium"
               onClick={handleToggleCommenting}
             >
-              Cancelar
+              Comentar
             </button>
-            <button
-              className="rounded-xl m-2 p-[6px] gap-2 text-black hover:bg-emerald-300 hover:text-black text-xs font-medium"
-              onClick={(e) => {
-                e.preventDefault();
-                handleCreateComment(publication.publication._id);
-              }}
-            >
-              Responder
-            </button>
-          </div>
+          )}
         </div>
-      )}
-      <hr className="my-4" />
-      <div className="flex flex-col justify-between p-6 max-h-[calc(100vh-300px)] overflow-x-hidden overflow-y-auto">
-        {filteredComments.map((comment, index) => (
-          <div key={index}>
-            <BadgeComment
-              id={comment._id}
-              title={comment.description}
-              author={comment.author}
-              publication={publication}
-            />
+        {isCommenting && (
+          <div>
+            <div className="flex gap-2">
+              <div className="rounded-full bg-gray-900 text-white min-w-8 h-8  flex justify-center items-center text-center">
+                {user ? (
+                  `${user.firstName?.charAt(0)}${user.lastName?.charAt(0)}`
+                ) : (
+                  <UserIcon />
+                )}
+              </div>
+              <input
+                type="text"
+                className="w-full rounded-lg px-3 text-base bg-transparent border-black border-2"
+                value={newCommentText}
+                onChange={(e) => setNewCommentText(e.target.value)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
+              />
+            </div>
+            <div className="flex justify-end">
+              <button
+                className="rounded-xl m-2 p-[6px] gap-2 text-black hover:bg-emerald-300 hover:text-black text-xs font-medium"
+                onClick={handleToggleCommenting}
+              >
+                Cancelar
+              </button>
+              <button
+                className="rounded-xl m-2 p-[6px] gap-2 text-black hover:bg-emerald-300 hover:text-black text-xs font-medium"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleCreateComment(publication.publication._id);
+                }}
+              >
+                Responder
+              </button>
+            </div>
           </div>
-        ))}
+        )}
+        <hr className="my-4" />
+        <div className="flex flex-col justify-between gap-3 max-h-[calc(100vh-300px)] overflow-x-hidden overflow-y-auto">
+          {filteredComments.map((comment, index) => (
+            <div key={index}>
+              <BadgeComment
+                id={comment._id}
+                title={comment.description}
+                author={comment.author}
+                publication={publication}
+              />
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

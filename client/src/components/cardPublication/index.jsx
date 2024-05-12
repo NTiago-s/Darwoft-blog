@@ -58,7 +58,11 @@ export default function CardPublication() {
   };
   const handleCreateComment = async (id) => {
     if (!user) {
-      alert("Debes Iniciar Sesion para crear un Comentario");
+      alert("Debes Iniciar Sesion para crear un comentario");
+      return;
+    }
+    if (user.status === "banned") {
+      alert("Tu cuenta esta Baneada no podras crear comentarios");
       return;
     }
     const { commentText } = publicationComments[id];
@@ -110,15 +114,17 @@ export default function CardPublication() {
 
   return (
     <div className="flex flex-col h-auto my-2">
-      <div>{isDashboardRoute ? "Publicaciones creadas" : ""}</div>
+      <div className="text-center">
+        {isDashboardRoute ? "Publicaciones creadas" : ""}
+      </div>
       {sortedPublications && sortedPublications.length > 0 ? (
         sortedPublications.map((publication, index) => (
           <Link key={index} to={`/publications/${publication._id}`}>
             <div
               key={index}
-              className="bg-slate-500 cursor-pointer rounded-lg p-4 my-4"
+              className="bg-slate-500 cursor-pointer rounded-lg p-3 my-4"
             >
-              <div className="flex justify-between m-3">
+              <div className="flex">
                 <div className="flex gap-2">
                   <div className="rounded-full bg-gray-900 text-white w-14 h-14 flex justify-center items-center text-center">
                     {publication.author.profileImage ? (
@@ -172,42 +178,47 @@ export default function CardPublication() {
                 </div>
               </div>
 
-              <div className="flex flex-col gap-4 m-3 p-4">
-                {editingPublicationId === publication._id ? (
-                  <input
-                    type="text"
-                    value={editedPublicationTitle}
-                    className="px-2"
-                    onChange={(e) => setEditedPublicationTitle(e.target.value)}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                    }}
-                  />
-                ) : (
-                  <h2 className="w-full break-words p-2 text-lg font-semibold">
-                    {publication.title}
-                  </h2>
-                )}
-
-                {editingPublicationId === publication._id ? (
-                  <input
-                    type="text"
-                    value={editedPublicationDescription}
-                    onChange={(e) =>
-                      setEditedPublicationDescription(e.target.value)
-                    }
-                    className="px-2"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                    }}
-                  />
-                ) : (
-                  <p className="w-full break-words p-2">
-                    {publication.description}
-                  </p>
-                )}
+              <div className="flex flex-col gap-3 my-4">
+                <div>
+                  {editingPublicationId === publication._id ? (
+                    <input
+                      type="text"
+                      value={editedPublicationTitle}
+                      className="px-2"
+                      onChange={(e) =>
+                        setEditedPublicationTitle(e.target.value)
+                      }
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }}
+                    />
+                  ) : (
+                    <h2 className="w-full break-words p-2 text-lg font-semibold">
+                      {publication.title}
+                    </h2>
+                  )}
+                </div>
+                <div>
+                  {editingPublicationId === publication._id ? (
+                    <input
+                      type="text"
+                      value={editedPublicationDescription}
+                      onChange={(e) =>
+                        setEditedPublicationDescription(e.target.value)
+                      }
+                      className="px-2"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }}
+                    />
+                  ) : (
+                    <p className="w-full break-words text-sm p-2">
+                      {publication.description}
+                    </p>
+                  )}
+                </div>
                 <div className="flex justify-center rounded-2xl">
                   {publication.image ? (
                     <img
@@ -220,7 +231,8 @@ export default function CardPublication() {
                   )}
                 </div>
               </div>
-              <div className="flex justify-between">
+
+              <div className="flex flex-col justify-between">
                 <div className="flex">
                   {publication.themes.map((theme, index) => (
                     <div
@@ -231,44 +243,45 @@ export default function CardPublication() {
                     </div>
                   ))}
                 </div>
-
-                {editingPublicationId ? (
-                  <div>
+                <div className="flex justify-end">
+                  {editingPublicationId ? (
+                    <div className="mt-2">
+                      <button
+                        className="rounded-xl m-2 p-[6px] gap-2 text-black hover:bg-emerald-300 hover:text-black text-xs font-medium"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleUpdatePublication(publication._id);
+                        }}
+                      >
+                        Cancelar
+                      </button>
+                      <button
+                        className="rounded-xl m-2 p-[6px] gap-2 text-black hover:bg-emerald-300 hover:text-black text-xs font-medium"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleUpdatePublication(publication._id);
+                        }}
+                      >
+                        Guardar
+                      </button>
+                    </div>
+                  ) : (
                     <button
                       className="rounded-xl m-2 p-[6px] gap-2 text-black hover:bg-emerald-300 hover:text-black text-xs font-medium"
                       onClick={(e) => {
                         e.preventDefault();
-                        handleUpdatePublication(publication._id);
+                        handleStatusComment(publication._id);
                       }}
                     >
-                      Cancelar
+                      Comentar
                     </button>
-                    <button
-                      className="rounded-xl m-2 p-[6px] gap-2 text-black hover:bg-emerald-300 hover:text-black text-xs font-medium"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        handleUpdatePublication(publication._id);
-                      }}
-                    >
-                      Guardar
-                    </button>
-                  </div>
-                ) : (
-                  <button
-                    className="rounded-xl m-2 p-[6px] gap-2 text-black hover:bg-emerald-300 hover:text-black text-xs font-medium"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleStatusComment(publication._id);
-                    }}
-                  >
-                    Comentar
-                  </button>
-                )}
+                  )}
+                </div>
               </div>
 
               {publicationComments[publication._id]?.comment ? (
                 <div>
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 mt-2">
                     <div className="rounded-full bg-gray-900 text-white min-w-8 h-8  flex justify-center items-center text-center">
                       <div className="rounded-full bg-gray-900 text-white min-w-8 h-8 flex justify-center items-center text-center">
                         {user ? (
@@ -309,7 +322,7 @@ export default function CardPublication() {
                       }}
                     />
                   </div>
-                  <div className="flex justify-end">
+                  <div className="flex justify-end mt-2">
                     <button
                       className="rounded-xl m-2 p-[6px] gap-2 text-black hover:bg-emerald-300 hover:text-black text-xs font-medium"
                       onClick={(e) => {

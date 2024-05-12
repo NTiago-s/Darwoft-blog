@@ -2,7 +2,7 @@ import { RouterProvider } from "react-router-dom";
 import { router } from "./routes";
 function App() {
   return (
-    <main className="w-screen h-screen">
+    <main>
       <RouterProvider router={router} />
     </main>
   );

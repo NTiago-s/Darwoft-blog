@@ -14,17 +14,15 @@ import {
   authMiddleware,
   authResetPassword,
 } from "../middlewares/auth.middleware.js";
-import multer from "multer";
+import { handleFileUpload } from "../middlewares/fileSize.js";
 
 const router = Router();
-const storage = multer.diskStorage({});
-const upload = multer({ storage });
 
 router.get("/", getUsers);
 router.get("/active", activeUser);
 router.get("/profile", authMiddleware, profile);
 router.get("/search", authMiddleware, filterUsers);
-router.put("/", authMiddleware, upload.single("image"), updateUser);
+router.put("/", authMiddleware, handleFileUpload, updateUser);
 router.put("/resetpassword", authResetPassword, resetPasswordController);
 router.put("/editadmin", adminEdit);
 router.post("/prevresetpassword", prevResetPassword);

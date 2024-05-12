@@ -57,11 +57,11 @@ export default function BadgeComment({ title, id, author, publication }) {
   return (
     <div
       className="flex flex-col w-full border-2
-     items-center justify-between text-center rounded-lg m-2 px-2 gap-2  text-sm font-medium"
+     items-center justify-between text-center rounded-lg p-2 gap-2  text-sm font-medium"
     >
       <div className="flex w-full justify-between items-end">
         <div className="flex items-center justify-center gap-3 text-center">
-          <div className="rounded-full bg-gray-900 mt-2 text-white w-14 h-14 flex justify-center items-center text-center">
+          <div className="rounded-full bg-gray-900 mt-2 text-white size-12 flex justify-center items-center text-center">
             {author?.profileImage ? (
               <img
                 src={author?.profileImage}
@@ -122,7 +122,7 @@ export default function BadgeComment({ title, id, author, publication }) {
       </div>
       <div className="w-full">
         {!editing && (
-          <p className="w-full font-light text-base ml-4 my-4  flex">{title}</p>
+          <p className="w-full font-light text-base ml-4 my-2  flex">{title}</p>
         )}
         {editing && (
           <input

@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { http } from "../services/http";
-
+import Swal from "sweetalert2";
 const httpUserSlice = createSlice({
   name: "user",
   initialState: {
@@ -149,17 +149,37 @@ export const createUser = (formData) => async (dispatch) => {
 export const updateUser = (data) => async (dispatch) => {
   dispatch(httpPutStart());
   try {
-    const response = await http.put("users/update", data, {
+    const response = await http.put("users", data, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
     });
-    dispatch(httpPutSuccess(response));
+    console.log(response);
     if (response.status === 200) {
-      dispatch(fetchUsers());
+      dispatch(fetchProfileUsers());
+      Swal.fire({
+        title: "Usuario modificado correctamente!",
+        text: "",
+        icon: "success",
+        confirmButtonColor: "#22C55e",
+        color: "#FFF",
+        background: "#000",
+        iconColor: "#22C55e",
+      });
     }
   } catch (error) {
     dispatch(httpPutFailure(error.message));
+    if (error.response && error.response.status === 400) {
+      Swal.fire({
+        title: "Error al modificar usuario",
+        text: error.response.data.message,
+        icon: "error",
+        confirmButtonColor: "#FF5C5C",
+        color: "#FFF",
+        background: "#000",
+        iconColor: "#FF5C5C",
+      });
+    }
   }
 };
 

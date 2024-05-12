@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react"; // Importa useState
 import { useDispatch, useSelector } from "react-redux";
 import { createPublication } from "../../store/httpPublicationSlice";
 import { useUsers } from "../../hooks/useGetUsers";
+import Header from "../header";
 export default function CreatePublication() {
   const { getUsers } = useUsers();
   const user = useSelector((state) => state.user.userProfile);
@@ -14,6 +15,7 @@ export default function CreatePublication() {
   const [error, setError] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+  const dashPage = location.pathname === "/dashboard";
   const { themes } = useSelector((state) => state.theme.themes);
   const fileInputRef = useRef(null);
 
@@ -86,30 +88,35 @@ export default function CreatePublication() {
   };
 
   return (
-    <div className="h-auto p-3 w-full border-2 rounded-lg">
-      <div className="flex m-2 gap-2">
-        <div>
-          {user ? (
-            <Link to={"/dashboard"}>
-              <div className="rounded-full my-2  bg-gray-900 text-white size-16 flex justify-center items-center text-center">
-                {user.profileImage ? (
-                  <img
-                    src={user.profileImage}
-                    alt=""
-                    className="rounded-full w-full h-full object-cover"
-                  />
-                ) : (
-                  `${user.firstName?.charAt(0)}${user.lastName?.charAt(0)}`
-                )}
+    <div className="flex w-full p-2 rounded-lg border-2">
+      <div className="flex flex-col w-full">
+        <div className="flex justify-between sm:justify-end items-center w-full">
+          <div className="flex sm:hidden">
+            <Header />
+          </div>
+          <div className={`${!dashPage ? "flex" : "hidden"}`}>
+            {user ? (
+              <Link to={"/dashboard"}>
+                <div className="rounded-full bg-gray-900 items-center justify-center text-white size-12 flex">
+                  {user.profileImage ? (
+                    <img
+                      src={user.profileImage}
+                      alt=""
+                      className="rounded-full w-full h-full object-cover"
+                    />
+                  ) : (
+                    `${user.firstName?.charAt(0)}${user.lastName?.charAt(0)}`
+                  )}
+                </div>
+              </Link>
+            ) : (
+              <div className="rounded-full bg-gray-900 text-white min-w-14 h-14 flex justify-center items-center text-center">
+                {user ? "" : <UserIcon />}
               </div>
-            </Link>
-          ) : (
-            <div className="rounded-full bg-gray-900 text-white min-w-14 h-14 flex justify-center items-center text-center">
-              {user ? "" : <UserIcon />}
-            </div>
-          )}
+            )}
+          </div>
         </div>
-        <div className="flex flex-col  w-full">
+        <div className="sm:flex p-1 flex-col w-full hidden">
           <input
             type="text"
             value={title}
@@ -141,50 +148,56 @@ export default function CreatePublication() {
           </label>
         </div>
       </div>
-
-      {imagePreview && (
-        <div className="flex items-start">
-          <img
-            src={imagePreview}
-            alt="Preview"
-            className="max-w-xs mt-2 ml-20 rounded-xl mr-2"
-          />
-          <button onClick={handleDeleteImage} className="text-red-500 mt-4">
-            <CloseIcon />
+      <div className="hidden">
+        <div>
+          {imagePreview && (
+            <div className="flex flex-col mt-3 items-start">
+              <div className="flex w-full justify-end">
+                <button
+                  onClick={handleDeleteImage}
+                  className="text-red-500 my-2"
+                >
+                  <CloseIcon />
+                </button>
+              </div>
+              <div className="w-full">
+                <img src={imagePreview} alt="Preview" className="rounded-xl" />
+              </div>
+            </div>
+          )}
+        </div>
+        <div className="flex flex-col mt-">
+          Tematicas:
+          <div>
+            {themes &&
+              Array.isArray(themes) &&
+              themes.map((theme, index) => (
+                <label
+                  key={index}
+                  className="inline-flex items-center gap-1 ml-4 my-3"
+                >
+                  <input
+                    type="checkbox"
+                    className="form-checkbox h-5 w-5 text-blue-600"
+                    checked={selectedThemes.includes(theme._id)}
+                    onChange={() => handleThemeSelection(theme._id)}
+                  />
+                  <span className="mr-3 text-sm text-gray-700 ">
+                    {theme.name}
+                  </span>
+                </label>
+              ))}
+            {error && <div className="text-red-500 ml-4">{error}</div>}
+          </div>
+        </div>
+        <div className="flex justify-end mb-4">
+          <button
+            className="flex items-center rounded-3xl p-2 mr-5 mt-2 gap-2 bg-blue-100 text-blue-800 hover:bg-emerald-300 hover:text-black text-sm font-medium dark:bg-blue-900 dark:text-blue-300  cursor-pointer"
+            onClick={handleCreatePublication}
+          >
+            Crear Publicación
           </button>
         </div>
-      )}
-      <div className="flex flex-col ml-[60px] mt-5">
-        Tematicas:
-        <div>
-          {themes &&
-            Array.isArray(themes) &&
-            themes.map((theme, index) => (
-              <label
-                key={index}
-                className="inline-flex items-center gap-1 ml-4 my-3"
-              >
-                <input
-                  type="checkbox"
-                  className="form-checkbox h-5 w-5 text-blue-600"
-                  checked={selectedThemes.includes(theme._id)}
-                  onChange={() => handleThemeSelection(theme._id)}
-                />
-                <span className="mr-3 text-sm text-gray-700 ">
-                  {theme.name}
-                </span>
-              </label>
-            ))}
-          {error && <div className="text-red-500 ml-4">{error}</div>}
-        </div>
-      </div>
-      <div className="flex justify-end mb-4">
-        <button
-          className="flex items-center rounded-3xl p-2 mr-5 mt-2 gap-2 bg-blue-100 text-blue-800 hover:bg-emerald-300 hover:text-black text-sm font-medium dark:bg-blue-900 dark:text-blue-300  cursor-pointer"
-          onClick={handleCreatePublication}
-        >
-          Crear Publicación
-        </button>
       </div>
     </div>
   );

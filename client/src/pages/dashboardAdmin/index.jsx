@@ -67,13 +67,19 @@ export default function DashboardUserAdmin() {
   };
 
   return (
-    <section className="w-full px-72">
-      <div className="m-auto flex py-4 px-40 justify-center">
+    <section className="w-full lg:px-72">
+      <div className="m-auto flex py-4 justify-center">
         <div className="flex gap-4">
           <div className="w-10 rounded-full bg-gray-900 text-white min-w-14 h-14 flex justify-center items-center text-center">
-            {user
-              ? `${user.firstName?.charAt(0)}${user.lastName?.charAt(0)}`
-              : ""}
+            {user?.profileImage ? (
+              <img
+                src={user?.profileImage}
+                alt=""
+                className="rounded-full w-full h-full object-cover"
+              />
+            ) : (
+              `${user?.firstName?.charAt(0)}${user?.lastName?.charAt(0)}`
+            )}
           </div>
           <div className="text-center flex items-center">
             {user ? `${user.firstName} ${user.lastName}` : ""}
@@ -147,7 +153,7 @@ export default function DashboardUserAdmin() {
               </div>
               {user._id === currentUser._id ? (
                 <h3 className="text-green-400 font-semibold">
-                  No puedes modificar tus propios datos de rol y estado{" "}
+                  No puedes modificar tus propios datos de rol y estado
                 </h3>
               ) : (
                 <div className="flex gap-3">

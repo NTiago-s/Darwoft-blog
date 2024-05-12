@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { resetPassword } from "../auth/nodemailerSend.js";
 import cloudinary from "cloudinary";
+import path from "path";
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -49,12 +50,28 @@ export const activeUser = async (req, res) => {
 // Endpoint para modificar un usuario existente
 export const updateUser = async (req, res) => {
   try {
-    const { userId, firstName, lastName, email, telUser } = req.body;
-    let imageUrl;
+    const { userId, firstName, lastName, email, telUser, imageUrl } = req.body;
+    let urlImage;
+    if (imageUrl) {
+      const imageExt = path.extname(imageUrl).toLowerCase();
+      const allowedExtensions = [".jpg", ".jpeg", ".png", ".webp"];
+      if (!allowedExtensions.includes(imageExt)) {
+        return res
+          .status(400)
+          .json({ message: "La extensión de la imagen no es válida" });
+      }
+      const maxUrlLength = 1024;
+      if (Buffer.byteLength(imageUrl, "utf-8") > maxUrlLength) {
+        return res.status(400).json({
+          message:
+            "El tamaño del enlace de la imagen excede el límite permitido (1MB)",
+        });
+      }
+    }
 
     if (req.file) {
       const result = await cloudinary.uploader.upload(req.file.path);
-      imageUrl = result.secure_url;
+      urlImage = result.secure_url;
     }
 
     const updatedFields = {
@@ -66,6 +83,11 @@ export const updateUser = async (req, res) => {
 
     if (imageUrl) {
       updatedFields.profileImage = imageUrl;
+    }
+    if (req.file) {
+      updatedFields.profileImage = urlImage;
+    } else if (req.body.image === "") {
+      updatedFields.profileImage = "";
     }
 
     await User.findByIdAndUpdate(userId, updatedFields);
@@ -111,7 +133,6 @@ export const filterUsers = async (req, res) => {
 export const adminEdit = async (req, res) => {
   try {
     const { userId, role, status } = req.body;
-    console.log(userId, role, status);
     const updatedFields = {};
     if (role !== undefined) {
       updatedFields.role = role;

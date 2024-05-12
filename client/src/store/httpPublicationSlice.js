@@ -104,7 +104,6 @@ export const filterPublications = () => async (dispatch) => {
     const filteredPublications = publications.publications.filter(
       (publication) => publication.themes.some((theme) => theme._id === themeId)
     );
-    console.log(filteredPublications);
     dispatch(httpGetSuccess({ publications: filteredPublications }));
   } catch (error) {
     dispatch(httpGetFailure(error.message));

@@ -44,19 +44,23 @@ export default function NavBar() {
   }, [getThemes]);
 
   return (
-    <div className=" fixed flex flex-col  gap-3 min-h-10 min-w-80">
-      <div className="flex  gap-4">
-        <Badge icon={<Home />} title={"Inicio"} to={"/"} />
-        {!isLoginPage && !isRegisterPage && !dashPage && (
-          <Badge
-            icon={user ? <User /> : ""}
-            title={user ? "Perfil" : "Iniciar Sesión"}
-            to={user ? "/dashboard" : "/login"}
-          />
-        )}
+    <div className="flex flex-col">
+      <div className="flex gap-2">
+        <div>
+          <Badge icon={<Home />} title={"Inicio"} to={"/"} />
+        </div>
+        <div className={`${user ? "hidden" : "flex"} sm:flex`}>
+          {!isLoginPage && !isRegisterPage && !dashPage && (
+            <Badge
+              icon={user ? <User /> : ""}
+              title={user ? "Perfil" : "Iniciar Sesión"}
+              to={user ? "/dashboard" : "/login"}
+            />
+          )}
+        </div>
       </div>
       {!isLoginPage && !isRegisterPage && (
-        <div>
+        <div className="hidden sm:flex sm:flex-col">
           <h4 className="font-semibold text-xl mt-3">Tematicas Disponibles:</h4>
           <div>
             {themes &&
