@@ -14,6 +14,11 @@ const commentSchema = new Schema({
     ref: "Publication",
     required: true,
   },
+  date: {
+    type: Date,
+    default: Date.now,
+    required: true,
+  },
 });
 
 export const Comment = model("Comment", commentSchema);

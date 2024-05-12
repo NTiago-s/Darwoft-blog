@@ -1,24 +1,38 @@
-import { useState } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useEffect, useState } from "react";
 import Button from "../../components/buttons";
-import { http } from "../../services/http";
-import { useUserEffect } from "../../utils/use";
+import { createTheme } from "../../store/httpThemesSlice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  adminEdit,
+  fetchProfileUsers,
+  searchUsers,
+} from "../../store/httpUserSlice";
+import { useUsers } from "../../hooks/useGetUsers";
 
 export default function DashboardUserAdmin() {
-  const user = useUserEffect();
-
+  const user = useSelector((state) => state.user.userProfile);
+  const { users } = useSelector((state) => state.user.allUsers);
+  const { getAllUsers } = useUsers();
   const [newTheme, setNewTheme] = useState("");
-  const [description, setDescription] = useState("");
   const [searchUser, setSearchUser] = useState("");
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    getAllUsers();
+  }, [getAllUsers]);
+
+  useEffect(() => {
+    dispatch(fetchProfileUsers());
+  }, [dispatch]);
 
   const handleCreateTheme = async () => {
     try {
-      const response = await http.post("themes/create", {
+      const data = {
         name: newTheme,
-        description: description,
-      });
-      if (response.status === 201) {
-        window.location.reload();
-      }
+      };
+      dispatch(createTheme(data));
+      setNewTheme("");
     } catch (error) {
       console.error("Error al crear la temática:", error);
     }
@@ -26,26 +40,49 @@ export default function DashboardUserAdmin() {
 
   const handleSearchUser = async () => {
     try {
-      const response = await http.post("users/search", { name: searchUser });
-      console.log(response);
+      dispatch(searchUsers(searchUser));
     } catch (error) {
       console.error("Error al buscar usuarios:", error);
     }
   };
 
+  const handleChangeRole = async (userId, newRole) => {
+    try {
+      const updatedUserData = { userId, role: newRole };
+      dispatch(adminEdit(updatedUserData));
+      getAllUsers();
+    } catch (error) {
+      console.error("Error al cambiar el rol del usuario:", error);
+    }
+  };
+
+  const handleChangeStatus = async (userId, newStatus) => {
+    try {
+      const updatedUserData = { userId, status: newStatus };
+      dispatch(adminEdit(updatedUserData));
+      getAllUsers();
+    } catch (error) {
+      console.error("Error al cambiar el estado del usuario:", error);
+    }
+  };
+
   return (
-    <section className="w-full px-72">
-      <div className="m-auto flex py-4 px-40 justify-center">
+    <section className="w-full lg:px-72">
+      <div className="m-auto flex py-4 justify-center">
         <div className="flex gap-4">
           <div className="w-10 rounded-full bg-gray-900 text-white min-w-14 h-14 flex justify-center items-center text-center">
-            {user
-              ? `${user?.data?.firstName?.charAt(
-                  0
-                )}${user?.data?.lastName?.charAt(0)}`
-              : ""}
+            {user?.profileImage ? (
+              <img
+                src={user?.profileImage}
+                alt=""
+                className="rounded-full w-full h-full object-cover"
+              />
+            ) : (
+              `${user?.firstName?.charAt(0)}${user?.lastName?.charAt(0)}`
+            )}
           </div>
           <div className="text-center flex items-center">
-            {user ? `${user?.data?.firstName} ${user?.data?.lastName}` : ""}
+            {user ? `${user.firstName} ${user.lastName}` : ""}
           </div>
         </div>
       </div>
@@ -63,18 +100,14 @@ export default function DashboardUserAdmin() {
           value={newTheme}
           onChange={(e) => setNewTheme(e.target.value)}
         />
-        <input
-          type="text"
-          className="w-full border-2 p-2 mt-4 rounded-lg placeholder:text-black"
-          placeholder="Ingresa una descripcion si crees que es necesario"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
         <div className="mt-4 w-full flex justify-end">
           <Button
             txt={"Crear Tematica"}
             ariaLabel={"Crear Tematica"}
-            handleUserDash={handleCreateTheme}
+            handleUserDash={(e) => {
+              e.preventDefault();
+              handleCreateTheme();
+            }}
           />
         </div>
       </form>
@@ -85,16 +118,89 @@ export default function DashboardUserAdmin() {
           className="w-full border-2 p-2 rounded-lg placeholder:text-black"
           placeholder="Ingresa el nombre del usuario a buscar"
           value={searchUser}
-          onChange={(e) => setSearchUser(e.target.value)}
+          onChange={(e) => {
+            setSearchUser(e.target.value);
+            handleSearchUser();
+          }}
         />
-        <div className="mt-4 w-full flex justify-end">
+        <div className="mt-4 mb-10 w-full flex justify-end">
           <Button
             txt={"Buscar Usuario"}
             ariaLabel={"Buscar Usuario"}
-            handleUserDash={handleSearchUser}
+            handleUserDash={(e) => {
+              e.preventDefault();
+              handleSearchUser();
+            }}
           />
         </div>
       </form>
+      <div>
+        {users?.map((currentUser, index) => {
+          return (
+            <div
+              key={index}
+              className="flex flex-col bg-slate-800 rounded-xl my-2 p-6 text-white gap-5"
+            >
+              <div className="flex gap-2">
+                <h3>Nombre:</h3>
+                <div>{currentUser.firstName}</div>
+                <div>{currentUser.lastName}</div>
+              </div>
+              <div className="flex flex-col gap-2">
+                <div>Email: {currentUser.email}</div>
+                <div>Rol: {currentUser.role}</div>
+                <div>Estado: {currentUser.status}</div>
+              </div>
+              {user._id === currentUser._id ? (
+                <h3 className="text-green-400 font-semibold">
+                  No puedes modificar tus propios datos de rol y estado
+                </h3>
+              ) : (
+                <div className="flex gap-3">
+                  {currentUser.role === "admin" ? (
+                    <Button
+                      txt={"Hacer Cliente"}
+                      ariaLabel={"Hacer Cliente"}
+                      handleUserDash={(e) => {
+                        e.preventDefault();
+                        handleChangeRole(currentUser._id, "client");
+                      }}
+                    />
+                  ) : (
+                    <Button
+                      txt={"Hacer Admin"}
+                      ariaLabel={"Hacer Admin"}
+                      handleUserDash={(e) => {
+                        e.preventDefault();
+                        handleChangeRole(currentUser._id, "admin");
+                      }}
+                    />
+                  )}
+                  {currentUser.status === "active" ? (
+                    <Button
+                      txt={"Banear Usuario"}
+                      ariaLabel={"Banear Usuario"}
+                      handleUserDash={(e) => {
+                        e.preventDefault();
+                        handleChangeStatus(currentUser._id, "banned");
+                      }}
+                    />
+                  ) : (
+                    <Button
+                      txt={"Activar Usuario"}
+                      ariaLabel={"Activar Usuario"}
+                      handleUserDash={(e) => {
+                        e.preventDefault();
+                        handleChangeStatus(currentUser._id, "active");
+                      }}
+                    />
+                  )}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
     </section>
   );
 }

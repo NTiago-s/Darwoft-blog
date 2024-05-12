@@ -1,21 +1,31 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/rules-of-hooks */
-import { PencilIcon, SettingsIcon, TrashIcon, UserIcon } from "../icons/icons";
-import {
-  usePublicationsEffect,
-  usePublicationsFilterEffect,
-} from "../../utils/use";
-import { useState } from "react";
-import { http } from "../../services/http";
+import { PencilIcon, TrashIcon, UserIcon } from "../icons/icons";
+import { usePublications } from "../../hooks/useGetPublications";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-
+import { useDispatch, useSelector } from "react-redux";
+import {
+  deletePublication,
+  filterPublications,
+  updatePublication,
+} from "../../store/httpPublicationSlice";
+import { createComment } from "../../store/httpCommentSlice";
+import { useUsers } from "../../hooks/useGetUsers";
 export default function CardPublication() {
-  const user = JSON.parse(localStorage.getItem("user"));
+  const filtro = localStorage.getItem("filter");
+  const user = useSelector((state) => state.user.userProfile);
+  const dispatch = useDispatch();
+  const { getPublications } = usePublications();
+  const publicationsData = useSelector(
+    (state) => state.publication.publications
+  );
+  const { getUsers } = useUsers();
   const [publicationComments, setPublicationComments] = useState({});
-  const [publicationToDelete, setPublicationToDelete] = useState(null);
-  const [publicationDeleteModal, setPublicationDeleteModal] = useState(null);
   const [editingPublicationId, setEditingPublicationId] = useState(null);
   const [editedPublicationDescription, setEditedPublicationDescription] =
     useState("");
+  const [editedPublicationTitle, setEditedPublicationTitle] = useState("");
   const isDashboardRoute = location.pathname === "/dashboard";
 
   const Initials = (nombre, apellido) => {
@@ -36,32 +46,25 @@ export default function CardPublication() {
     });
   };
 
-  const handleOpenDeleteModal = (id) => {
-    setPublicationDeleteModal(id);
-    setPublicationToDelete(id);
-  };
-
-  const handleCloseDeleteModal = () => {
-    setPublicationDeleteModal(null);
-    setPublicationToDelete(null);
-  };
-
   const handleUpdatePublication = async (id) => {
     try {
-      const response = await http.put(`publications/update`, {
-        publicationId: id,
-        description: editedPublicationDescription,
-      });
-      if (response.status === 200) window.location.reload();
+      let formData = new FormData();
+      formData.append("publicationId", id);
+      formData.append("description", editedPublicationDescription);
+      formData.append("title", editedPublicationTitle);
+      dispatch(updatePublication(formData));
       setEditingPublicationId(null);
     } catch (error) {
       console.error("Error updating publication:", error);
     }
   };
-
   const handleCreateComment = async (id) => {
     if (!user) {
-      alert("Debes Iniciar Sesion para crear un Comentario");
+      alert("Debes Iniciar Sesion para crear un comentario");
+      return;
+    }
+    if (user.status === "banned") {
+      alert("Tu cuenta esta Baneada no podras crear comentarios");
       return;
     }
     const { commentText } = publicationComments[id];
@@ -69,54 +72,78 @@ export default function CardPublication() {
     const data = {
       description: commentText,
       publication: id,
-      author: user.data._id,
+      author: user._id,
     };
     try {
-      const response = await http.post("comments/create", data);
-      console.log(response);
+      dispatch(createComment(data));
       handleStatusNoComment(id);
     } catch (error) {
       console.error("Error creating comment:", error);
     }
   };
 
-  const handleDeletePublication = async () => {
-    if (!publicationToDelete) return;
+  const handleDeletePublication = async (id) => {
     try {
-      const response = await http.deleteCreates(
-        "publications/delete",
-        publicationToDelete
-      );
-      if (response.status === 200) window.location.reload();
+      dispatch(deletePublication(id));
     } catch (error) {
       console.error("Error deleting publication:", error);
     }
   };
 
-  const publicationsData = isDashboardRoute
-    ? usePublicationsFilterEffect()
-    : usePublicationsEffect();
+  useEffect(() => {
+    getUsers();
+  }, [getUsers]);
 
-  const sortedPublications = [
-    ...(publicationsData.data?.publications || []),
-  ].sort((a, b) => new Date(b.date) - new Date(a.date));
+  useEffect(() => {
+    if (filtro) {
+      dispatch(filterPublications(filtro));
+    } else {
+      getPublications();
+    }
+  }, [filtro, dispatch, getPublications]);
+
+  const sortedPublications =
+    publicationsData && Array.isArray(publicationsData.publications)
+      ? publicationsData.publications
+          .filter((publication) => {
+            if (isDashboardRoute) {
+              return publication.author._id === user?._id;
+            } else {
+              return true;
+            }
+          })
+          .slice()
+          .sort((a, b) => {
+            return new Date(b.date) - new Date(a.date);
+          })
+      : [];
 
   return (
-    <div className="flex flex-col h-auto my-2">
-      <div>{isDashboardRoute ? "Publicaciones creadas" : ""}</div>
+    <div className="flex flex-col w-full  sm:w-[500px] mx-auto h-auto my-2">
+      <div className="text-center">
+        {isDashboardRoute ? "Publicaciones creadas" : ""}
+      </div>
       {sortedPublications && sortedPublications.length > 0 ? (
         sortedPublications.map((publication, index) => (
           <Link key={index} to={`/publications/${publication._id}`}>
             <div
               key={index}
-              className="bg-slate-500 cursor-pointer rounded-lg p-4 my-4"
+              className="bg-slate-500 cursor-pointer rounded-lg p-3 my-4"
             >
-              <div className="flex justify-between m-3">
+              <div className="flex">
                 <div className="flex gap-2">
-                  <div className="rounded-full bg-gray-900 text-white min-w-14 h-14 flex justify-center items-center text-center">
-                    {Initials(
-                      publication.author.firstName,
-                      publication.author.lastName
+                  <div className="rounded-full bg-gray-900 text-white w-14 h-14 flex justify-center items-center text-center">
+                    {publication.author.profileImage ? (
+                      <img
+                        src={publication.author.profileImage}
+                        alt=""
+                        className="rounded-full w-full h-full object-cover"
+                      />
+                    ) : (
+                      Initials(
+                        publication.author.firstName,
+                        publication.author.lastName
+                      )
                     )}
                   </div>
                   <div className="text-center flex items-center">
@@ -124,68 +151,94 @@ export default function CardPublication() {
                   </div>
                 </div>
                 <div>
-                  <div className="flex h-auto w-auto justify-end">
-                    <button
-                      className="rounded-xl p-[6px] gap-2 text-black hover:bg-emerald-300 hover:text-black text-xs font-medium"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        if (publicationDeleteModal === publication._id) {
-                          handleCloseDeleteModal();
-                        } else {
-                          handleOpenDeleteModal(publication._id);
-                        }
-                      }}
-                    >
-                      {isDashboardRoute ? <SettingsIcon /> : ""}
-                    </button>
-                    {publicationDeleteModal === publication._id && (
-                      <div className="fixed mt-10 z-20 bg-red-600 p-2 rounded-lg">
+                  <div className="flex justify-end">
+                    {isDashboardRoute ? (
+                      <div className="flex p-2 gap-4 rounded-lg">
                         <button
-                          className="flex items-center my-2 hover:bg-red-900 p-1 rounded-lg"
+                          className="flex items-center my-2 bg-green-600 hover:bg-green-800 p-1 rounded-lg"
                           onClick={(e) => {
                             e.preventDefault();
-                            handleCloseDeleteModal();
                             setEditingPublicationId(publication._id);
                             setEditedPublicationDescription(
                               publication.description
                             );
+                            setEditedPublicationTitle(publication.title);
                           }}
                         >
-                          <PencilIcon /> Editar
+                          <PencilIcon />
                         </button>
                         <button
-                          className="flex items-center my-2 hover:bg-red-900 p-1 rounded-lg"
+                          className="flex items-center my-2 bg-red-600 hover:bg-red-800 p-1 rounded-lg"
                           onClick={(e) => {
                             e.preventDefault();
                             handleDeletePublication(publication._id);
                           }}
                         >
                           <TrashIcon />
-                          Eliminar
                         </button>
                       </div>
+                    ) : (
+                      ""
                     )}
                   </div>
                 </div>
               </div>
-              {editingPublicationId === publication._id ? (
-                <input
-                  type="text"
-                  value={editedPublicationDescription}
-                  onChange={(e) =>
-                    setEditedPublicationDescription(e.target.value)
-                  }
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                  }}
-                />
-              ) : (
-                <p className="w-full break-words p-2">
-                  {publication.description}
-                </p>
-              )}
-              <div className="flex justify-between">
+
+              <div className="flex flex-col gap-3 my-4">
+                <div>
+                  {editingPublicationId === publication._id ? (
+                    <input
+                      type="text"
+                      value={editedPublicationTitle}
+                      className="px-2"
+                      onChange={(e) =>
+                        setEditedPublicationTitle(e.target.value)
+                      }
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }}
+                    />
+                  ) : (
+                    <h2 className="w-full break-words p-2 text-lg font-semibold">
+                      {publication.title}
+                    </h2>
+                  )}
+                </div>
+                <div>
+                  {editingPublicationId === publication._id ? (
+                    <input
+                      type="text"
+                      value={editedPublicationDescription}
+                      onChange={(e) =>
+                        setEditedPublicationDescription(e.target.value)
+                      }
+                      className="px-2"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }}
+                    />
+                  ) : (
+                    <p className="w-full break-words text-sm p-2">
+                      {publication.description}
+                    </p>
+                  )}
+                </div>
+                {publication.image ? (
+                  <div className="flex h-[150px] w-full items-center justify-center rounded-2xl">
+                    <img
+                      src={publication.image}
+                      alt=""
+                      className="rounded-2xl  w-[300px] h-full object-cover mx-auto"
+                    />
+                  </div>
+                ) : (
+                  ""
+                )}
+              </div>
+
+              <div className="flex flex-col justify-between">
                 <div className="flex">
                   {publication.themes.map((theme, index) => (
                     <div
@@ -196,40 +249,63 @@ export default function CardPublication() {
                     </div>
                   ))}
                 </div>
-
-                {editingPublicationId ? (
-                  <button
-                    className="rounded-xl m-2 p-[6px] gap-2 text-black hover:bg-emerald-300 hover:text-black text-xs font-medium"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleUpdatePublication(publication._id);
-                    }}
-                  >
-                    Guardar
-                  </button>
-                ) : (
-                  <button
-                    className="rounded-xl m-2 p-[6px] gap-2 text-black hover:bg-emerald-300 hover:text-black text-xs font-medium"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleStatusComment(publication._id);
-                    }}
-                  >
-                    Responder
-                  </button>
-                )}
+                <div className="flex justify-end">
+                  {editingPublicationId ? (
+                    <div className="mt-2">
+                      <button
+                        className="rounded-xl m-2 p-[6px] gap-2 text-black hover:bg-emerald-300 hover:text-black text-xs font-medium"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleUpdatePublication(publication._id);
+                        }}
+                      >
+                        Cancelar
+                      </button>
+                      <button
+                        className="rounded-xl m-2 p-[6px] gap-2 text-black hover:bg-emerald-300 hover:text-black text-xs font-medium"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleUpdatePublication(publication._id);
+                        }}
+                      >
+                        Guardar
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      className="rounded-xl m-2 p-[6px] gap-2 text-black hover:bg-emerald-300 hover:text-black text-xs font-medium"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleStatusComment(publication._id);
+                      }}
+                    >
+                      Comentar
+                    </button>
+                  )}
+                </div>
               </div>
+
               {publicationComments[publication._id]?.comment ? (
                 <div>
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 mt-2">
                     <div className="rounded-full bg-gray-900 text-white min-w-8 h-8  flex justify-center items-center text-center">
-                      {user ? (
-                        `${user?.data?.firstName?.charAt(
-                          0
-                        )}${user?.data?.lastName?.charAt(0)}`
-                      ) : (
-                        <UserIcon />
-                      )}
+                      <div className="rounded-full bg-gray-900 text-white min-w-8 h-8 flex justify-center items-center text-center">
+                        {user ? (
+                          user.profileImage ? (
+                            <img
+                              src={user.profileImage}
+                              alt=""
+                              className="rounded-full object-cover size-8"
+                            />
+                          ) : (
+                            `${user.firstName?.charAt(
+                              0
+                            )}${user.lastName?.charAt(0)}`
+                          )
+                        ) : (
+                          <UserIcon />
+                        )}
+                      </div>
                     </div>
                     <input
                       type="text"
@@ -252,7 +328,7 @@ export default function CardPublication() {
                       }}
                     />
                   </div>
-                  <div className="flex justify-end">
+                  <div className="flex justify-end mt-2">
                     <button
                       className="rounded-xl m-2 p-[6px] gap-2 text-black hover:bg-emerald-300 hover:text-black text-xs font-medium"
                       onClick={(e) => {
@@ -269,7 +345,7 @@ export default function CardPublication() {
                         handleCreateComment(publication._id);
                       }}
                     >
-                      Responder
+                      Comentar
                     </button>
                   </div>
                 </div>
@@ -280,8 +356,10 @@ export default function CardPublication() {
           </Link>
         ))
       ) : (
-        <div className="text-center text-gray-500">
-          {isDashboardRoute ? "No tienes creada ninguna publicación" : ""}
+        <div className="text-center mt-10 text-gray-500">
+          {isDashboardRoute
+            ? "No tienes creada ninguna publicación"
+            : "No hay publicaciones creadas con esta tematica"}
         </div>
       )}
     </div>

@@ -1,6 +1,6 @@
 /* eslint-disable no-useless-catch */
 import axios from "axios";
-import authHeader from "./AuthHeader";
+import authHeader from "../services/AuthHeader";
 
 export const BASE_URL = import.meta.env.VITE_ENDPOINT;
 
@@ -32,22 +32,34 @@ const get = async (url) => {
   }
 };
 
-const post = async (url, body) => {
-  const response = await axiosPrivate.post(`${BASE_URL}/${url}`, {
+const post = async (url, body, customHeaders) => {
+  const response = await axiosPrivate.post(`${BASE_URL}/${url}`, body, {
     method: "POST",
-    body,
-    headers,
+    headers: customHeaders ? customHeaders : headers,
   });
   return response;
 };
 
-const put = async (url, body) => {
-  const response = await axiosPrivate.put(`${BASE_URL}/${url}`, {
-    method: "PUT",
-    body,
-    headers,
-  });
-  return response;
+const put = async (url, body, customHeaders) => {
+  try {
+    const response = await axiosPrivate.put(`${BASE_URL}/${url}`, body, {
+      method: "PUT",
+      headers: customHeaders ? customHeaders : headers,
+    });
+    console.log(response);
+    if (response.data.user && response.data.user.profileImage) {
+      const currentUser = JSON.parse(localStorage.getItem("user"));
+      currentUser.profileImage = response.data.profileImage;
+      localStorage.setItem("user", JSON.stringify(currentUser));
+    }
+    return response;
+  } catch (error) {
+    console.error("Error al realizar la solicitud:", error);
+    if (error.response) {
+      console.error("Respuesta del servidor:", error.response.data);
+    }
+    throw error;
+  }
 };
 
 const _delete = async (url) => {

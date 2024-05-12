@@ -1,21 +1,20 @@
-import { useCallback, useState } from "react";
-import { http } from "../services/http";
+import { useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProfileUsers, fetchUsers } from "../store/httpUserSlice";
 
-export const useUser = () => {
-  const [data, setData] = useState(undefined);
-  const [error, setError] = useState(undefined);
-  const [isLoading, setIsLoading] = useState(false);
+export const useUsers = () => {
+  const dispatch = useDispatch();
+  const users = useSelector((state) => state.user.users);
+  const isLoading = useSelector((state) => state.user.isLoading);
+  const error = useSelector((state) => state.user.error);
 
-  const get = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const user = await http.get("users/profile");
-      setData(user);
-    } catch (e) {
-      setError(e);
-    }
-    setIsLoading(false);
-  }, [setData, setIsLoading]);
+  const getUsers = useCallback(async () => {
+    dispatch(fetchProfileUsers());
+  }, [dispatch]);
 
-  return { data, error, isLoading, get };
+  const getAllUsers = useCallback(async () => {
+    dispatch(fetchUsers());
+  }, [dispatch]);
+
+  return { users, isLoading, error, getUsers, getAllUsers };
 };

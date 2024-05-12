@@ -2,6 +2,12 @@ import { Comment } from "../../models/Comments.model.js";
 import { Publication } from "../../models/Publications.model.js";
 import { Theme } from "../../models/Themes.model.js";
 import { User } from "../../models/User.model.js";
+import cloudinary from "cloudinary";
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 // Endpoint para obtener todas las Publicaciones
 export const getPublications = async (req, res) => {
   try {
@@ -50,8 +56,7 @@ export const filterPublications = async (req, res) => {
 
 export const createPublication = async (req, res) => {
   try {
-    const { description, themes, author } = req.body.body;
-
+    const { description, themes, author, title } = req.body;
     const existingUser = await User.findById(author);
     if (!existingUser) {
       return res
@@ -59,15 +64,24 @@ export const createPublication = async (req, res) => {
         .json({ message: "El autor no existe en la base de datos" });
     }
 
-    const existingThemes = await Theme.find({ _id: { $in: themes } });
-    const existingThemeIds = existingThemes.map((theme) => theme._id);
+    const themeIds = themes.split(",").map((themeId) => themeId.trim());
+    const existingThemes = await Theme.find({ _id: { $in: themeIds } });
+
+    let imageUrl;
+    if (req.file) {
+      const result = await cloudinary.uploader.upload(req.file.path);
+      imageUrl = result.secure_url;
+    }
 
     const publication = new Publication({
       description,
+      title,
       date: new Date(),
       author: existingUser._id,
-      themes: existingThemeIds,
+      themes: existingThemes,
+      image: imageUrl,
     });
+
     await publication.save();
     res.status(201).json({ publication });
   } catch (error) {
@@ -79,14 +93,23 @@ export const createPublication = async (req, res) => {
 // Endpoint para modificar un Publicacion existente
 export const updatePublication = async (req, res) => {
   try {
-    const { publicationId, description } = req.body.body;
-    console.log(publicationId, description);
+    const { publicationId, description, title } = req.body;
+    console.log(publicationId, description, title);
     const publication = await Publication.findById(publicationId);
     if (!publication) {
       res.status(404).json({ message: "Publicacion no encontrada" });
       return;
     }
+    let imageUrl;
+    if (req.file) {
+      const result = await cloudinary.uploader.upload(req.file.path);
+      imageUrl = result.secure_url;
+    }
+    publication.title = title;
     publication.description = description;
+    if (imageUrl) {
+      publication.image = imageUrl;
+    }
     await publication.save();
     res.status(200).json({ message: "Publicacion Modificada" });
   } catch (error) {
@@ -99,7 +122,6 @@ export const deletePublication = async (req, res) => {
     const { Id } = req.body;
     await Publication.findByIdAndDelete(Id);
     await Comment.deleteMany({ publicationId: Id });
-
     res
       .status(200)
       .json({ message: "Publicación y comentarios eliminados correctamente" });

@@ -1,26 +1,30 @@
 /* eslint-disable react/prop-types */
 import { CloseIcon, PencilIcon } from "../icons/icons";
-import { useUserEffect } from "../../utils/use";
-import { http } from "../../services/http";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteComment, updateComment } from "../../store/httpCommentSlice";
 
 export default function BadgeComment({ title, id, author, publication }) {
-  const user = useUserEffect();
+  const user = useSelector((state) => state.user.userProfile);
   const [editing, setEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState(title);
+  const dispatch = useDispatch();
   const Initials = (nombre, apellido) => {
-    return `${nombre.charAt(0)}${apellido.charAt(0)}`;
+    if (nombre && apellido) {
+      return `${nombre.charAt(0)}${apellido.charAt(0)}`;
+    } else {
+      return "";
+    }
   };
 
   const handleDeleteComments = async () => {
     if (
-      user.data &&
-      (user.data._id === author._id ||
-        user.data._id === publication.publication.author._id)
+      user &&
+      (user._id === author?._id ||
+        user._id === publication?.publication?.author?._id)
     ) {
       try {
-        const response = await http.deleteCreates("comments/delete", id);
-        if (response.status === 204) window.location.reload();
+        dispatch(deleteComment(id));
       } catch (error) {
         console.error("Error al eliminar la temática:", error);
       }
@@ -30,7 +34,7 @@ export default function BadgeComment({ title, id, author, publication }) {
   };
 
   const handleEditComment = async () => {
-    if (user.data && user.data._id === author._id) {
+    if (user && user._id === author?._id) {
       setEditing(true);
     } else {
       alert("No tienes permisos para editar este comentario.");
@@ -39,11 +43,11 @@ export default function BadgeComment({ title, id, author, publication }) {
 
   const handleUpdateComment = async () => {
     try {
-      const response = await http.put(`comments/update`, {
+      const data = {
         commentId: id,
         description: editedTitle,
-      });
-      if (response.status === 200) window.location.reload();
+      };
+      dispatch(updateComment(data));
       setEditing(false);
     } catch (error) {
       console.error("Error al actualizar el comentario:", error);
@@ -53,19 +57,27 @@ export default function BadgeComment({ title, id, author, publication }) {
   return (
     <div
       className="flex flex-col w-full border-2
-     items-center justify-between text-center rounded-lg m-2 px-2 gap-2  text-sm font-medium"
+     items-center justify-between text-center rounded-lg p-2 gap-2  text-sm font-medium"
     >
       <div className="flex w-full justify-between items-end">
         <div className="flex items-center justify-center gap-3 text-center">
-          <div className="rounded-full bg-gray-900 mt-2 text-white min-w-14 h-14 flex justify-center items-center text-center">
-            {Initials(author.firstName, author.lastName)}
+          <div className="rounded-full bg-gray-900 mt-2 text-white size-12 flex justify-center items-center text-center">
+            {author?.profileImage ? (
+              <img
+                src={author?.profileImage}
+                alt=""
+                className="rounded-full w-full h-full object-cover"
+              />
+            ) : (
+              Initials(author?.firstName, author?.lastName)
+            )}
           </div>
           <div className="text-center font-semibold flex mt-2 text-lg items-center">
-            {`${author.firstName}  ${author.lastName}`}
+            {`${author?.firstName}  ${author?.lastName}`}
           </div>
         </div>
         <div>
-          {user?.data && user.data._id === author._id && (
+          {user && user._id === author?._id && (
             <>
               {!editing && (
                 <button
@@ -96,9 +108,9 @@ export default function BadgeComment({ title, id, author, publication }) {
               )}
             </>
           )}
-          {user?.data &&
-            (user.data._id === author._id ||
-              user.data._id === publication.publication.author._id) && (
+          {user &&
+            (user._id === author?._id ||
+              user._id === publication?.publication?.author?._id) && (
               <button
                 onClick={handleDeleteComments}
                 className="m-2 rounded-full bg-red-500 hover:bg-red-800 p-1"
@@ -110,7 +122,7 @@ export default function BadgeComment({ title, id, author, publication }) {
       </div>
       <div className="w-full">
         {!editing && (
-          <p className="w-full font-light text-base ml-4 my-4  flex">{title}</p>
+          <p className="w-full font-light text-base ml-4 my-2  flex">{title}</p>
         )}
         {editing && (
           <input

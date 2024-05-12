@@ -1,23 +1,16 @@
-import { useCallback, useState } from "react";
-import { http } from "../services/http";
+import { useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchPublications } from "../store/httpPublicationSlice";
 
-export const usePublications = (url) => {
-  const [data, setData] = useState(undefined);
-  const [error, setError] = useState(undefined);
-  const [isLoading, setIsLoading] = useState(false);
+export const usePublications = () => {
+  const dispatch = useDispatch();
+  const publications = useSelector((state) => state.publication.publications);
+  const isLoading = useSelector((state) => state.publication.isLoading);
+  const error = useSelector((state) => state.publication.error);
 
-  const get = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const publications = await http.get(
-        url ? `publications/${url}` : "publications"
-      );
-      setData(publications);
-    } catch (e) {
-      setError(e);
-    }
-    setIsLoading(false);
-  }, [url, setData, setIsLoading]);
+  const getPublications = useCallback(async () => {
+    dispatch(fetchPublications());
+  }, [dispatch]);
 
-  return { data, error, isLoading, get };
+  return { publications, isLoading, error, getPublications };
 };

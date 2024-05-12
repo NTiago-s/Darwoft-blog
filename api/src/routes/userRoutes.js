@@ -8,20 +8,24 @@ import {
   resetPasswordController,
   prevResetPassword,
   filterUsers,
+  adminEdit,
 } from "../controllers/user/user.controller.js";
 import {
   authMiddleware,
   authResetPassword,
 } from "../middlewares/auth.middleware.js";
+import { handleFileUpload } from "../middlewares/fileSize.js";
 
 const router = Router();
 
 router.get("/", getUsers);
-router.get("/search", authMiddleware, filterUsers);
-router.get("/profile", authMiddleware, profile);
 router.get("/active", activeUser);
-router.put("/", authMiddleware, updateUser);
-router.post("/prevresetpassword", prevResetPassword);
+router.get("/profile", authMiddleware, profile);
+router.get("/search", authMiddleware, filterUsers);
+router.put("/", authMiddleware, handleFileUpload, updateUser);
 router.put("/resetpassword", authResetPassword, resetPasswordController);
+router.put("/editadmin", adminEdit);
+router.post("/prevresetpassword", prevResetPassword);
 router.delete("/", authResetPassword, deleteUser);
+
 export default router;
