@@ -154,9 +154,7 @@ export const updateUser = (data) => async (dispatch) => {
         "Content-Type": "multipart/form-data",
       },
     });
-    console.log(response);
     if (response.status === 200) {
-      dispatch(fetchProfileUsers());
       Swal.fire({
         title: "Usuario modificado correctamente!",
         text: "",
@@ -166,6 +164,7 @@ export const updateUser = (data) => async (dispatch) => {
         background: "#000",
         iconColor: "#22C55e",
       });
+      dispatch(fetchProfileUsers());
     }
   } catch (error) {
     dispatch(httpPutFailure(error.message));

@@ -13,10 +13,12 @@ export default function DashboardUser() {
   const user = useSelector((state) => state.user.userProfile);
   const dispatch = useDispatch();
   const [modal, setModal] = useState(false);
-  const { getUsers } = useUsers();
+  const { getUsers, getAllUsers } = useUsers();
+
   useEffect(() => {
     getUsers();
-  }, [getUsers]);
+    getAllUsers();
+  }, [getUsers, getAllUsers]);
 
   const handleModalClick = () => {
     setModal(!modal);

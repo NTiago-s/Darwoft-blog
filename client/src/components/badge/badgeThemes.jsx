@@ -7,7 +7,8 @@ export default function BadgeTheme({ icon, title, id, selected, onClick }) {
   const user = useSelector((state) => state.user.userProfile);
   const dispatch = useDispatch();
 
-  const handleDeleteTheme = async () => {
+  const handleDeleteTheme = async (e) => {
+    e.stopPropagation();
     try {
       dispatch(deletetheme(id));
     } catch (error) {

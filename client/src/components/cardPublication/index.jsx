@@ -11,6 +11,7 @@ import {
   updatePublication,
 } from "../../store/httpPublicationSlice";
 import { createComment } from "../../store/httpCommentSlice";
+import { useUsers } from "../../hooks/useGetUsers";
 export default function CardPublication() {
   const filtro = localStorage.getItem("filter");
   const user = useSelector((state) => state.user.userProfile);
@@ -19,6 +20,7 @@ export default function CardPublication() {
   const publicationsData = useSelector(
     (state) => state.publication.publications
   );
+  const { getUsers } = useUsers();
   const [publicationComments, setPublicationComments] = useState({});
   const [editingPublicationId, setEditingPublicationId] = useState(null);
   const [editedPublicationDescription, setEditedPublicationDescription] =
@@ -87,6 +89,10 @@ export default function CardPublication() {
       console.error("Error deleting publication:", error);
     }
   };
+
+  useEffect(() => {
+    getUsers();
+  }, [getUsers]);
 
   useEffect(() => {
     if (filtro) {

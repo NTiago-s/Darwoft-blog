@@ -10,7 +10,7 @@ export default function FormUserEdit() {
   const user = useSelector((state) => state.user.userProfile);
   const [image, setImage] = useState(null);
   const [imageUrl, setImageUrl] = useState("");
-  const { getUsers } = useUsers();
+  const { getUsers, getAllUsers } = useUsers();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -24,7 +24,8 @@ export default function FormUserEdit() {
 
   useEffect(() => {
     getUsers();
-  }, [getUsers]);
+    getAllUsers();
+  }, [getUsers, getAllUsers]);
 
   const onSubmit = async (data) => {
     const formData = new FormData();

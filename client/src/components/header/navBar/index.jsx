@@ -70,7 +70,10 @@ export default function NavBar() {
                   key={index}
                   title={theme.name}
                   id={theme._id}
-                  onClick={() => handleThemeSelect(theme._id)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleThemeSelect(theme._id);
+                  }}
                   selected={selectedTheme === theme._id}
                 />
               ))}
