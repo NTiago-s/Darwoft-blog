@@ -12,7 +12,7 @@ export default function AuthUser() {
         </div>
         <div className="text-2xl max-w-xl mt-3 mb-7">
           <p className="my-4">
-            Felicidades tu cuenta fue autenticada y activada correctamente.
+            Felicidades tu cuenta fue autenticada y activada correctamente!!!
           </p>
           <p>¿Desea Iniciar Sesión?</p>
         </div>

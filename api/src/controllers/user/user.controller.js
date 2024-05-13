@@ -40,8 +40,9 @@ export const activeUser = async (req, res) => {
     }
     user.state = "active";
     await user.save();
-    // return res.status(200).redirect("http://localhost:5173/users/active");
-    return res.status(200).json({ message: "Cuenta activada con exito" });
+    return res
+      .status(200)
+      .redirect("https://darwoft-blog.onrender.com/users/active");
   } catch (error) {
     return res.status(500).json({ message: "Error al modificar el Usuario" });
   }

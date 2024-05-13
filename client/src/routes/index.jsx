@@ -34,18 +34,18 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: "/publications/:id",
-    element: (
-      <Main>
-        <PublicationDetails />
-      </Main>
-    ),
-  },
-  {
     path: "/users/active",
     element: (
       <Main>
         <AuthUser />
+      </Main>
+    ),
+  },
+  {
+    path: "/publications/:id",
+    element: (
+      <Main>
+        <PublicationDetails />
       </Main>
     ),
   },
