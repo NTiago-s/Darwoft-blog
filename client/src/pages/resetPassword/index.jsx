@@ -1,10 +1,9 @@
-import { ShieldCheckIcon } from "@heroicons/react/24/outline";
 import { useForm } from "react-hook-form";
-import { Eye, EyeSlash } from "../icons/icons";
+import { Eye, EyeSlash, ShieldIcon } from "../../components/icons/icons";
 import { useState } from "react";
-import Button from "../reutilizable/Button";
+import Button from "../../components/buttons";
 import { validatePassword } from "../../utils/validation";
-import useDispatch from "react-redux";
+import { useDispatch } from "react-redux";
 import { resetPassword } from "../../store/httpUserSlice";
 export default function ResetPassword() {
   const [visibilityPassword, setVisibilityPassword] = useState(false);
@@ -31,7 +30,7 @@ export default function ResetPassword() {
     <main>
       <div className="flex flex-col gap-4 items-center">
         <div>
-          <ShieldCheckIcon className="w-24 h-24 text-colorSecondary" />
+          <ShieldIcon />
         </div>
         <div>
           <h3 className="mt-4 text-2xl text-white">
