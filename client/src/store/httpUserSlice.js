@@ -187,7 +187,6 @@ export const adminEdit = (data) => async (dispatch) => {
   try {
     const response = await http.put("users/editadmin", data);
     dispatch(httpPutSuccess(response));
-    console.log(response);
     if (response.status === 200) {
       dispatch(fetchUsers());
     }
@@ -201,7 +200,6 @@ export const resetPassword = (data) => async (dispatch) => {
   try {
     const response = await http.put("users/resetpassword", data);
     dispatch(httpPutSuccess(response));
-    console.log(response);
     if (response) {
       Swal.fire({
         title: "Cambios guardados correctamente",

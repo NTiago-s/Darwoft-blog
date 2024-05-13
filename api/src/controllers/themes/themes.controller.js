@@ -44,7 +44,6 @@ export const deleteThemes = async (req, res) => {
     await Theme.findByIdAndDelete(Id);
     res.status(200).json({ message: "Tematica Eliminada" });
   } catch (error) {
-    console.error("Error al eliminar la temática:", error);
     res.status(500).json({ message: "Error al eliminar la Tematica" });
   }
 };

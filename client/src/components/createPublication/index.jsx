@@ -1,10 +1,11 @@
 import { CloseIcon, PhotoIcon, UserIcon } from "../icons/icons";
 import { Link } from "react-router-dom";
-import { useEffect, useRef, useState } from "react"; // Importa useState
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createPublication } from "../../store/httpPublicationSlice";
 import { useUsers } from "../../hooks/useGetUsers";
 import Header from "../header";
+import Swal from "sweetalert2";
 export default function CreatePublication() {
   const { getUsers } = useUsers();
   const user = useSelector((state) => state.user.userProfile);
@@ -13,6 +14,7 @@ export default function CreatePublication() {
   const [publicationText, setPublicationText] = useState("");
   const [selectedThemes, setSelectedThemes] = useState([]);
   const [error, setError] = useState("");
+  const [errorTitle, setErrorTitle] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const dashPage = location.pathname === "/dashboard";
@@ -26,6 +28,7 @@ export default function CreatePublication() {
   const handleThemeSelection = (themeId) => {
     if (selectedThemes.includes(themeId)) {
       setSelectedThemes(selectedThemes.filter((id) => id !== themeId));
+      setError("");
     } else {
       setSelectedThemes([...selectedThemes, themeId]);
     }
@@ -55,21 +58,51 @@ export default function CreatePublication() {
     setPublicationText("");
     setSelectedThemes([]);
     setError("");
+    setErrorTitle("");
     setImageFile(null);
     setImagePreview(null);
+  };
+  const handleTitleChange = (e) => {
+    setTitle(e.target.value);
+    setErrorTitle("");
+  };
+
+  const handlePublicationTextChange = (e) => {
+    setPublicationText(e.target.value);
+    setErrorTitle("");
   };
 
   const handleCreatePublication = async () => {
     if (!user) {
-      alert("Debes Iniciar Sesion para crear una Publicacion");
-      return;
+      Swal.fire({
+        title: "Debes Iniciar Sesion para poder crear una publicación",
+        icon: "error",
+        confirmButtonColor: "#FF5C5C",
+        color: "#FFF",
+        background: "#000",
+        iconColor: "#FF5C5C",
+      });
     }
     if (user.status === "banned") {
-      alert("Tu cuenta esta Baneada no podras crear publicaciones");
-      return;
+      Swal.fire({
+        title: "Tu cuenta esta baneada no podras crear publicaciones",
+        icon: "error",
+        confirmButtonColor: "#FF5C5C",
+        color: "#FFF",
+        background: "#000",
+        iconColor: "#FF5C5C",
+      });
     }
     if (selectedThemes.length === 0) {
       setError("Seleccione al menos 1 temática.");
+      return;
+    } else {
+      setError("");
+    }
+    if (title === "" || publicationText === "") {
+      setErrorTitle(
+        "Falta los parametros de la descripcion, Titulo y descripcion."
+      );
       return;
     }
     try {
@@ -82,10 +115,9 @@ export default function CreatePublication() {
       dispatch(createPublication(formData));
       handleclearInputs();
     } catch (error) {
-      console.error("Error creating publication:", error);
+      throw new Error();
     }
   };
-
   return (
     <div className="flex sm:flex-col w-full p-2 rounded-lg border-2">
       <div className="flex sm:flex-row flex-col w-full">
@@ -119,7 +151,7 @@ export default function CreatePublication() {
           <input
             type="text"
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={handleTitleChange}
             className="rounded-xl w-full my-2  min-h-14 max-h-32
     text-2xl placeholder:text-xl p-2 outline-none"
             placeholder="Ingresa el titulo"
@@ -127,11 +159,12 @@ export default function CreatePublication() {
           <hr />
           <textarea
             value={publicationText}
-            onChange={(e) => setPublicationText(e.target.value)}
+            onChange={handlePublicationTextChange}
             className="rounded-xl w-full my-2  min-h-14 max-h-32
     text-2xl placeholder:text-xl p-2 outline-none [form-sizing:content] resize-none"
             placeholder="Ingresa la descripción"
           ></textarea>
+          {errorTitle && <div className="text-red-500 ml-4">{errorTitle}</div>}
           <label className="flex flex-col mb-6 gap-2">
             <div className="cursor-pointer">
               <PhotoIcon />

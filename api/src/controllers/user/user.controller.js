@@ -31,7 +31,7 @@ export const activeUser = async (req, res) => {
     const { token } = req.query;
     const decoded = jwt.decode(token, { complete: true });
     if (!decoded) {
-      res.status(401).send({ error: "token invalido" });
+      res.status(401).json({ error: "token invalido" });
       return;
     }
     const user = await User.findById(decoded.payload.id);
@@ -96,7 +96,6 @@ export const updateUser = async (req, res) => {
 
     res.status(200).json({ message: "Usuario Modificado", user: updatedUser });
   } catch (error) {
-    console.error("Error al modificar el Usuario:", error);
     res.status(500).json({ message: "Error al modificar el Usuario" });
   }
 };
@@ -177,7 +176,6 @@ const passwordCrypt = async (pass) => {
 export const resetPasswordController = async (req, res) => {
   try {
     const { password, userId } = req.body;
-    console.log(password, userId);
     const user = await User.findById(userId);
     if (!user) {
       res.status(404).json({ message: "Usuario no encontrado" });

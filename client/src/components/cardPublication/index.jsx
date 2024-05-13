@@ -55,7 +55,7 @@ export default function CardPublication() {
       dispatch(updatePublication(formData));
       setEditingPublicationId(null);
     } catch (error) {
-      console.error("Error updating publication:", error);
+      throw new Error();
     }
   };
   const handleCreateComment = async (id) => {
@@ -78,7 +78,7 @@ export default function CardPublication() {
       dispatch(createComment(data));
       handleStatusNoComment(id);
     } catch (error) {
-      console.error("Error creating comment:", error);
+      throw new Error();
     }
   };
 
@@ -86,7 +86,7 @@ export default function CardPublication() {
     try {
       dispatch(deletePublication(id));
     } catch (error) {
-      console.error("Error deleting publication:", error);
+      throw new Error();
     }
   };
 

@@ -8,7 +8,7 @@ const verifyData = (data) => {
     !data.password ||
     !data.telUser
   ) {
-    res.status(401).send({ error: "Campo requerido" });
+    res.status(401).json({ error: "Campo requerido" });
     return;
   }
 };
@@ -22,13 +22,13 @@ export const verifyDataRegisterClient = async (req, res, next) => {
     const userDb = await User.findOne({ email: body.email.toLowerCase() });
 
     if (userDb) {
-      res.status(401).send({ error: "Correo electrónico en uso" });
+      res.status(401).json({ error: "Correo electrónico en uso" });
       return;
     }
 
     next();
   } catch (error) {
-    res.status(500).send({ error: "Algo salió mal" });
+    res.status(500).json({ error: "Algo salió mal" });
     return;
   }
 };
@@ -40,19 +40,18 @@ export const verifyDataRegisterAdmin = async (req, res, next) => {
     verifyData(body);
 
     if (body.role !== "admin") {
-      res.status(401).send({ error: "Rol no admitido" });
+      res.status(401).json({ error: "Rol no admitido" });
       return;
     }
     const userDb = await User.findOne({ email: body.email.toLowerCase() });
     if (userDb) {
-      res.status(401).send({ error: "Correo electrónico en uso" });
+      res.status(401).json({ error: "Correo electrónico en uso" });
       return;
     }
 
     next();
   } catch (error) {
-    console.log(error);
-    res.status(500).send({ error: "Algo salió mal" });
+    res.status(500).json({ error: "Algo salió mal" });
     return;
   }
 };

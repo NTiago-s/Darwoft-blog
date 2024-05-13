@@ -68,7 +68,6 @@ export default function Login() {
             throw new Error("Error en la solicitud");
           }
         } catch (error) {
-          console.error("Error:", error);
           Swal.fire({
             title: "Error",
             text: "Hubo un problema al enviar el correo electrónico. Por favor, inténtelo de nuevo más tarde.",
@@ -78,6 +77,7 @@ export default function Login() {
             confirmButtonColor: "#FF22FF",
             background: "#000",
           });
+          throw new Error();
         }
       }
       setResetEmail("");

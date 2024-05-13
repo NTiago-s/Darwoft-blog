@@ -34,7 +34,7 @@ export default function DashboardUserAdmin() {
       dispatch(createTheme(data));
       setNewTheme("");
     } catch (error) {
-      console.error("Error al crear la temática:", error);
+      throw new Error();
     }
   };
 
@@ -42,7 +42,7 @@ export default function DashboardUserAdmin() {
     try {
       dispatch(searchUsers(searchUser));
     } catch (error) {
-      console.error("Error al buscar usuarios:", error);
+      throw new Error();
     }
   };
 
@@ -52,7 +52,7 @@ export default function DashboardUserAdmin() {
       dispatch(adminEdit(updatedUserData));
       getAllUsers();
     } catch (error) {
-      console.error("Error al cambiar el rol del usuario:", error);
+      throw new Error();
     }
   };
 
@@ -62,7 +62,7 @@ export default function DashboardUserAdmin() {
       dispatch(adminEdit(updatedUserData));
       getAllUsers();
     } catch (error) {
-      console.error("Error al cambiar el estado del usuario:", error);
+      throw new Error();
     }
   };
 

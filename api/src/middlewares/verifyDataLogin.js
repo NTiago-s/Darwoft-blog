@@ -9,7 +9,7 @@ export const verifyDataLogin = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
-      res.status(401).send({ error: "Campo requerido" });
+      res.status(401).json({ error: "Campo requerido" });
       return;
     }
 
@@ -18,7 +18,7 @@ export const verifyDataLogin = async (req, res, next) => {
     if (!clientdb) {
       res
         .status(404)
-        .send({ error: "Correo electrónico o contraseña incorrectos." });
+        .json({ error: "Correo electrónico o contraseña incorrectos." });
       return;
     }
     const compareBcrypt = verifyPassBcrypt(
@@ -28,12 +28,12 @@ export const verifyDataLogin = async (req, res, next) => {
     if (!compareBcrypt) {
       res
         .status(404)
-        .send({ error: "Correo electrónico o contraseña incorrectos." });
+        .json({ error: "Correo electrónico o contraseña incorrectos." });
       return;
     }
 
     if (clientdb.state !== "active") {
-      res.status(403).send({
+      res.status(403).json({
         error:
           "Tu cuenta está desactivada, verifica tu correo electrónico para activar tu cuenta.",
       });
@@ -41,9 +41,8 @@ export const verifyDataLogin = async (req, res, next) => {
     }
     next();
   } catch (error) {
-    console.log(error);
     res
       .status(500)
-      .send({ error: "Error al verificar los datos de inicio de sesión" });
+      .json({ error: "Error al verificar los datos de inicio de sesión" });
   }
 };

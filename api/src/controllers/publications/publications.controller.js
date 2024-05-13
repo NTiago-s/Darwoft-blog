@@ -37,7 +37,6 @@ export const getPublication = async (req, res) => {
     }
     res.status(200).json({ publication });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: "Error al obtener la publicación" });
   }
 };
@@ -85,7 +84,6 @@ export const createPublication = async (req, res) => {
     await publication.save();
     res.status(201).json({ publication });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: "Error al crear la Publicación" });
   }
 };
@@ -125,7 +123,6 @@ export const deletePublication = async (req, res) => {
       .status(200)
       .json({ message: "Publicación y comentarios eliminados correctamente" });
   } catch (error) {
-    console.error("Error al eliminar la publicación y los comentarios:", error);
     res
       .status(500)
       .json({ message: "Error al eliminar la publicación y los comentarios" });

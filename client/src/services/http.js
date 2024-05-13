@@ -41,13 +41,11 @@ const post = async (url, body, customHeaders) => {
 };
 
 const put = async (url, body, customHeaders) => {
-  console.log(url, body);
   try {
     const response = await axiosPrivate.put(`${BASE_URL}/${url}`, body, {
       method: "PUT",
       headers: customHeaders ? customHeaders : headers,
     });
-    console.log(response);
     if (response.data.user && response.data.user.profileImage) {
       const currentUser = JSON.parse(localStorage.getItem("user"));
       currentUser.profileImage = response.data.profileImage;
@@ -55,11 +53,7 @@ const put = async (url, body, customHeaders) => {
     }
     return response;
   } catch (error) {
-    console.error("Error al realizar la solicitud:", error);
-    if (error.response) {
-      console.error("Respuesta del servidor:", error.response.data);
-    }
-    throw error;
+    throw new Error();
   }
 };
 

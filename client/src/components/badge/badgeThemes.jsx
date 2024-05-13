@@ -12,7 +12,7 @@ export default function BadgeTheme({ icon, title, id, selected, onClick }) {
     try {
       dispatch(deletetheme(id));
     } catch (error) {
-      console.error("Error al eliminar la temática:", error);
+      throw new Error();
     }
   };
 

@@ -26,7 +26,7 @@ export default function BadgeComment({ title, id, author, publication }) {
       try {
         dispatch(deleteComment(id));
       } catch (error) {
-        console.error("Error al eliminar la temática:", error);
+        throw new Error();
       }
     } else {
       alert("No tienes permisos para eliminar este comentario.");
@@ -50,7 +50,7 @@ export default function BadgeComment({ title, id, author, publication }) {
       dispatch(updateComment(data));
       setEditing(false);
     } catch (error) {
-      console.error("Error al actualizar el comentario:", error);
+      throw new Error();
     }
   };
 

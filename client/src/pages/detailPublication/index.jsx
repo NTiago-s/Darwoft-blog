@@ -31,7 +31,7 @@ export default function PublicationDetails() {
         dispatch(fetchPublication(id));
         getComments();
       } catch (error) {
-        console.error("Error fetching data:", error);
+        throw new Error();
       }
     };
     fetchData();
@@ -62,7 +62,7 @@ export default function PublicationDetails() {
       dispatch(createComment(data));
       setIsCommenting(false);
     } catch (error) {
-      console.error("Error creating comment:", error);
+      throw new Error();
     }
   };
 

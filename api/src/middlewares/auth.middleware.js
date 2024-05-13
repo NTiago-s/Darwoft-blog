@@ -5,7 +5,7 @@ export const authMiddleware = async (req, res, next) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader) {
-    res.status(401).send({ error: "No token provided" });
+    res.status(401).json({ error: "No token provided" });
     return;
   }
 
@@ -15,12 +15,12 @@ export const authMiddleware = async (req, res, next) => {
     const decoded = jwt.verify(authHeader, process.env.JWT_SECRET);
 
     if (!decoded) {
-      res.status(401).send({ error: "Token inválido" });
+      res.status(401).json({ error: "Token inválido" });
       return;
     }
 
     if (decoded.exp < currentTimestamp) {
-      res.status(401).send({ error: "Token expirado" });
+      res.status(401).json({ error: "Token expirado" });
       return;
     }
 
@@ -28,10 +28,10 @@ export const authMiddleware = async (req, res, next) => {
     next();
   } catch (error) {
     if (error.name === "TokenExpiredError") {
-      res.status(401).send({ error: "Token expirado" });
+      res.status(401).json({ error: "Token expirado" });
       return;
     }
-    res.status(500).send({ error: "Internal Server Error" });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
@@ -39,18 +39,18 @@ export const authResetPassword = async (req, res, next) => {
   try {
     const authHeader = req.body.token;
     if (!authHeader) {
-      return res.status(401).send({ error: "No token provided" });
+      return res.status(401).json({ error: "No token provided" });
     }
     const decoded = jwt.verify(authHeader, process.env.JWT_SECRET);
     req.body.userId = decoded.id;
     next();
   } catch (error) {
     if (error instanceof jwt.TokenExpiredError) {
-      return res.status(401).send({ error: "Token expired" });
+      return res.status(401).json({ error: "Token expired" });
     } else if (error instanceof jwt.JsonWebTokenError) {
-      return res.status(401).send({ error: "Invalid token" });
+      return res.status(401).json({ error: "Invalid token" });
     } else {
-      return res.status(500).send({ error: "Internal server error" });
+      return res.status(500).json({ error: "Internal server error" });
     }
   }
 };
@@ -62,12 +62,12 @@ export const authUserRolClient = async (req, res, next) => {
     const userDb = await User.findById(userId);
 
     if (!userDb || !userDb.login || userDb.role !== "client") {
-      res.status(403).send({ error: "Autenticación fallida" });
+      res.status(403).json({ error: "Autenticación fallida" });
       return;
     }
     next();
   } catch (error) {
-    res.status(500).send({ error: "Error al autenticar el rol del usuario" });
+    res.status(500).json({ error: "Error al autenticar el rol del usuario" });
     return;
   }
 };
@@ -79,12 +79,12 @@ export const authUserRolAdmin = async (req, res, next) => {
     const userDb = await User.findById(userId);
 
     if (!userDb || !userDb.login || userDb.role !== "admin") {
-      res.status(403).send({ error: "Autenticación fallida" });
+      res.status(403).json({ error: "Autenticación fallida" });
       return;
     }
     next();
   } catch (error) {
-    res.status(500).send({ error: "Error al autenticar el rol del usuario" });
+    res.status(500).json({ error: "Error al autenticar el rol del usuario" });
     return;
   }
 };
