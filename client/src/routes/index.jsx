@@ -8,6 +8,8 @@ import DashboardUser from "../pages/dashboard";
 import { ProtectedLayout } from "./ProtectedRoutes";
 import PublicationDetails from "../pages/detailPublication";
 import DashboardUserAdmin from "../pages/dashboardAdmin";
+import ResetPassword from "../pages/resetPassword";
+import Error404 from "../pages/404";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -49,18 +51,18 @@ export const router = createBrowserRouter([
       </Main>
     ),
   },
-  // {
-  //   path: "/resetpassword",
-  //   element: <ResetPassword />,
-  // },
-  // {
-  //   path: "*",
-  //   element: (
-  //     <Main>
-  //       <Error404 />
-  //     </Main>
-  //   ),
-  // },
+  {
+    path: "/resetpassword",
+    element: <ResetPassword />,
+  },
+  {
+    path: "*",
+    element: (
+      <Main>
+        <Error404 />
+      </Main>
+    ),
+  },
   {
     path: "",
     element: <ProtectedLayout />,
