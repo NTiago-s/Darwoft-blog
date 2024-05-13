@@ -29,7 +29,7 @@ export default function DashboardUser() {
   };
 
   return (
-    <section className="w-full">
+    <section className="w-full md:ml-32">
       <div className="m-auto flex flex-col gap-4 p-4  justify-between">
         <div className="flex w-full justify-center gap-4">
           <div className="flex rounded-full size-14 justify-center items-center text-center bg-gray-900 text-white">

@@ -5,7 +5,7 @@ import CreatePublication from "../createPublication";
 const Main = ({ children }) => {
   return (
     <section className="flex flex-col">
-      <div className="flex flex-col w-full min-h-screen py-6 px-4">
+      <div className="flex flex-col w-full min-h-screen py-6 md:px-0 px-4">
         <div className="flex sm:hidden">
           <CreatePublication />
         </div>

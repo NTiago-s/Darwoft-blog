@@ -145,7 +145,7 @@ export default function CreatePublication() {
   };
 
   return (
-    <div className="flex sm:flex-col w-full p-2 rounded-lg border-2">
+    <div className="flex sm:flex-col w-full rounded-lg border-2">
       <div className="flex sm:flex-row flex-col w-full">
         <div className="flex justify-between sm:justify-start items-center sm:w-auto sm:items-start sm:px-4 sm:py-4 w-full">
           <div className="flex sm:hidden">
