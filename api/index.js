@@ -10,7 +10,11 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin: ["https://darwoft-blog.onrender.com", "http://localhost:5173"],
+    origin: [
+      "https://darwoft-blog.onrender.com",
+      "http://localhost:5173",
+      "https://server-darwoft.onrender.com",
+    ],
   })
 );
 
