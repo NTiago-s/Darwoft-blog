@@ -1,6 +1,6 @@
 import { useLocation } from "react-router-dom";
 import Badge from "../../badge";
-import { Home, User } from "../../icons/icons";
+import { CreatePublicationIcon, Home, User } from "../../icons/icons";
 import BadgeTheme from "../../badge/badgeThemes";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
@@ -8,6 +8,7 @@ import { useThemes } from "../../../hooks/useGetThemes";
 import { filterPublications } from "../../../store/httpPublicationSlice";
 import { useDispatch } from "react-redux";
 import { usePublications } from "../../../hooks/useGetPublications";
+import CreatePublicationModal from "../../modal/createModal";
 export default function NavBar() {
   const location = useLocation();
   const dispatch = useDispatch();
@@ -20,6 +21,7 @@ export default function NavBar() {
   const isRegisterPage = location.pathname === "/register";
   const dashPage = location.pathname === "/dashboard";
   const [selectedTheme, setSelectedTheme] = useState(null);
+  const [createPublication, setCreatePublication] = useState(false);
 
   useEffect(() => {
     if (filtro) {
@@ -39,6 +41,10 @@ export default function NavBar() {
     setSelectedTheme(null);
   };
 
+  const handleCreatePublication = () => {
+    setCreatePublication(true);
+  };
+
   useEffect(() => {
     getThemes();
   }, [getThemes]);
@@ -49,7 +55,16 @@ export default function NavBar() {
         <div>
           <Badge icon={<Home />} title={"Inicio"} to={"/"} />
         </div>
-        <div className={`${user ? "hidden" : "flex"} sm:flex`}>
+        <div className="flex sm:hidden">
+          {user && (
+            <Badge
+              icon={user ? <CreatePublicationIcon /> : ""}
+              title={user ? "Crear" : ""}
+              click={handleCreatePublication}
+            />
+          )}
+        </div>
+        <div className="hidden sm:flex">
           {!isLoginPage && !isRegisterPage && !dashPage && (
             <Badge
               icon={user ? <User /> : ""}
@@ -58,6 +73,9 @@ export default function NavBar() {
             />
           )}
         </div>
+        {createPublication && (
+          <CreatePublicationModal state={setCreatePublication} />
+        )}
       </div>
       {!isLoginPage && !isRegisterPage && (
         <div className="hidden sm:flex sm:flex-col">

@@ -3,6 +3,7 @@ import { CloseIcon, PencilIcon } from "../icons/icons";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteComment, updateComment } from "../../store/httpCommentSlice";
+import Swal from "sweetalert2";
 
 export default function BadgeComment({ title, id, author, publication }) {
   const user = useSelector((state) => state.user.userProfile);
@@ -29,7 +30,14 @@ export default function BadgeComment({ title, id, author, publication }) {
         throw new Error();
       }
     } else {
-      alert("No tienes permisos para eliminar este comentario.");
+      Swal.fire({
+        title: "No tienes permisos para eliminar este comentario",
+        icon: "error",
+        confirmButtonColor: "#FF5C5C",
+        color: "#FFF",
+        background: "#000",
+        iconColor: "#FF5C5C",
+      });
     }
   };
 
@@ -37,7 +45,14 @@ export default function BadgeComment({ title, id, author, publication }) {
     if (user && user._id === author?._id) {
       setEditing(true);
     } else {
-      alert("No tienes permisos para editar este comentario.");
+      Swal.fire({
+        title: "No tienes permisos para editar este comentario",
+        icon: "error",
+        confirmButtonColor: "#FF5C5C",
+        color: "#FFF",
+        background: "#000",
+        iconColor: "#FF5C5C",
+      });
     }
   };
 

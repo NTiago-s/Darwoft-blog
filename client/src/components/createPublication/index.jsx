@@ -1,11 +1,12 @@
 import { CloseIcon, PhotoIcon, UserIcon } from "../icons/icons";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createPublication } from "../../store/httpPublicationSlice";
 import { useUsers } from "../../hooks/useGetUsers";
 import Header from "../header";
 import Swal from "sweetalert2";
+import NavMobile from "../modal/navMobile";
 export default function CreatePublication() {
   const { getUsers } = useUsers();
   const user = useSelector((state) => state.user.userProfile);
@@ -17,13 +18,33 @@ export default function CreatePublication() {
   const [errorTitle, setErrorTitle] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+  const [navMobile, setNavMobile] = useState(false);
+  const [mobile, setMobile] = useState(false);
   const dashPage = location.pathname === "/dashboard";
   const { themes } = useSelector((state) => state.theme.themes);
   const fileInputRef = useRef(null);
-
+  const navigate = useNavigate();
   useEffect(() => {
     getUsers();
   }, [getUsers]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setNavMobile(window.innerWidth < 768);
+      setMobile(window.innerWidth >= 768);
+    };
+    handleResize();
+    document.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  const messi = () => {
+    if (!navMobile) {
+      navigate("/dashboard");
+    }
+  };
 
   const handleThemeSelection = (themeId) => {
     if (selectedThemes.includes(themeId)) {
@@ -72,6 +93,10 @@ export default function CreatePublication() {
     setErrorTitle("");
   };
 
+  const handleNavMobile = () => {
+    setMobile(!mobile);
+  };
+
   const handleCreatePublication = async () => {
     if (!user) {
       Swal.fire({
@@ -118,6 +143,7 @@ export default function CreatePublication() {
       throw new Error();
     }
   };
+
   return (
     <div className="flex sm:flex-col w-full p-2 rounded-lg border-2">
       <div className="flex sm:flex-row flex-col w-full">
@@ -125,10 +151,17 @@ export default function CreatePublication() {
           <div className="flex sm:hidden">
             <Header />
           </div>
-          <div className={`${!dashPage ? "flex" : "hidden"}`}>
-            {user ? (
-              <Link to={"/dashboard"}>
-                <div className="rounded-full bg-gray-900 items-center justify-center text-white sm:size-16  size-12 flex">
+
+          <div>
+            <div className={`${!dashPage ? "sm:flex" : "sm:hidden"}`}>
+              {user ? (
+                <div
+                  className="rounded-full bg-gray-900 items-center justify-center text-white sm:size-16  size-10 flex"
+                  onClick={() => {
+                    handleNavMobile();
+                    messi();
+                  }}
+                >
                   {user.profileImage ? (
                     <img
                       src={user.profileImage}
@@ -139,12 +172,19 @@ export default function CreatePublication() {
                     `${user.firstName?.charAt(0)}${user.lastName?.charAt(0)}`
                   )}
                 </div>
-              </Link>
-            ) : (
-              <div className="rounded-full bg-gray-900 text-white min-w-14 h-14 flex justify-center items-center text-center">
-                {user ? "" : <UserIcon />}
-              </div>
-            )}
+              ) : (
+                <div
+                  className="rounded-full bg-gray-900 text-white min-w-14 h-14 flex justify-center items-center text-center"
+                  onClick={() => {
+                    handleNavMobile();
+                    messi();
+                  }}
+                >
+                  {user ? "" : <UserIcon />}
+                </div>
+              )}
+              {mobile && <NavMobile state={setMobile} />}
+            </div>
           </div>
         </div>
         <div className="sm:flex p-1 flex-col w-full hidden">

@@ -12,6 +12,7 @@ import {
 } from "../../store/httpPublicationSlice";
 import { createComment } from "../../store/httpCommentSlice";
 import { useUsers } from "../../hooks/useGetUsers";
+import Swal from "sweetalert2";
 export default function CardPublication() {
   const filtro = localStorage.getItem("filter");
   const user = useSelector((state) => state.user.userProfile);
@@ -60,11 +61,25 @@ export default function CardPublication() {
   };
   const handleCreateComment = async (id) => {
     if (!user) {
-      alert("Debes Iniciar Sesion para crear un comentario");
+      Swal.fire({
+        title: "Debes iniciar sesion para crear un comentario",
+        icon: "error",
+        confirmButtonColor: "#FF5C5C",
+        color: "#FFF",
+        background: "#000",
+        iconColor: "#FF5C5C",
+      });
       return;
     }
     if (user.status === "banned") {
-      alert("Tu cuenta esta Baneada no podras crear comentarios");
+      Swal.fire({
+        title: "Tu cuenta esta baneada no podras crear comentarios",
+        icon: "error",
+        confirmButtonColor: "#FF5C5C",
+        color: "#FFF",
+        background: "#000",
+        iconColor: "#FF5C5C",
+      });
       return;
     }
     const { commentText } = publicationComments[id];
@@ -167,6 +182,18 @@ export default function CardPublication() {
                         >
                           <PencilIcon />
                         </button>
+                        <button
+                          className="flex items-center my-2 bg-red-600 hover:bg-red-800 p-1 rounded-lg"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            handleDeletePublication(publication._id);
+                          }}
+                        >
+                          <TrashIcon />
+                        </button>
+                      </div>
+                    ) : user && user.role === "admin" ? (
+                      <div className="flex p-2 gap-4 rounded-lg">
                         <button
                           className="flex items-center my-2 bg-red-600 hover:bg-red-800 p-1 rounded-lg"
                           onClick={(e) => {

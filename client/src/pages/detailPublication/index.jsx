@@ -7,6 +7,7 @@ import { fetchPublication } from "../../store/httpPublicationSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { createComment } from "../../store/httpCommentSlice";
 import { useComments } from "../../hooks/useGetComments";
+import Swal from "sweetalert2";
 
 export default function PublicationDetails() {
   const user = useSelector((state) => state.user.userProfile);
@@ -45,12 +46,26 @@ export default function PublicationDetails() {
   const handleCreateComment = (id) => {
     try {
       if (!user) {
-        alert("Debes Iniciar Sesion para crear un Comentario");
+        Swal.fire({
+          title: "Debes iniciar sesion para crear un comentario",
+          icon: "error",
+          confirmButtonColor: "#FF5C5C",
+          color: "#FFF",
+          background: "#000",
+          iconColor: "#FF5C5C",
+        });
         return;
       }
 
       if (user.status === "banned") {
-        alert("Tu cuenta esta Baneada no podras crear comentarios");
+        Swal.fire({
+          title: "Tu cuenta esta baneada no podras crear comentarios",
+          icon: "error",
+          confirmButtonColor: "#FF5C5C",
+          color: "#FFF",
+          background: "#000",
+          iconColor: "#FF5C5C",
+        });
       }
 
       if (!newCommentText.trim()) return;

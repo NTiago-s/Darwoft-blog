@@ -126,14 +126,9 @@ export default function FormUserEdit() {
         html="telefono"
         id="telefono"
       />
-      <div className="flex justify-start w-full mt-6">
-        <h4 className="text-white text-base hover:underline cursor-pointer ">
-          Quieres modificar tu contraseña?
-        </h4>
-      </div>
       <button
         type="submit"
-        className="bg-blue-500 text-white px-4 py-2 rounded-md"
+        className="bg-blue-500 text-white px-4 py-2 mt-6 rounded-md"
       >
         Guardar
       </button>

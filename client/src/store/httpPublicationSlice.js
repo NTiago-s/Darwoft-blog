@@ -1,6 +1,6 @@
 import { createSlice, createAction } from "@reduxjs/toolkit";
 import { http } from "../services/http";
-
+import Swal from "sweetalert2";
 export const filterPublicationsSuccess = createAction(
   "publication/filterSuccess"
 );
@@ -130,6 +130,14 @@ export const createPublication = (formData) => async (dispatch) => {
     });
     dispatch(httpPostSuccess(response));
     if (response.status === 201) {
+      Swal.fire({
+        title: "Publicacion Creada Correctamente",
+        icon: "success",
+        confirmButtonColor: "#22C55e",
+        color: "#FFFFFF",
+        background: "#000",
+        iconColor: "#22C55e",
+      });
       dispatch(fetchPublications());
     }
   } catch (error) {
