@@ -196,6 +196,38 @@ export const adminEdit = (data) => async (dispatch) => {
   }
 };
 
+export const resetPassword = (data) => async (dispatch) => {
+  dispatch(httpPutStart());
+  try {
+    const response = await http.put("users/resetpassword", data);
+    dispatch(httpPutSuccess(response));
+    console.log(response);
+    if (response) {
+      Swal.fire({
+        title: "Cambios guardados correctamente",
+        text: "Ya puedes cerrar esta pestaña",
+        icon: "success",
+        confirmButtonColor: "#22C55e",
+        color: "#FFFFFF",
+        background: "#000",
+        iconColor: "#22C55e",
+      });
+    } else {
+      Swal.fire({
+        title: "Oops!",
+        text: "Error al guardar la contraseña",
+        icon: "error",
+        confirmButtonColor: "#FF22FF",
+        color: "#FFFFFF",
+        background: "#000",
+        iconColor: "#FF22FF",
+      });
+    }
+  } catch (error) {
+    dispatch(httpPutFailure(error.message));
+  }
+};
+
 export const deleteUser = (id) => async (dispatch) => {
   dispatch(httpDeleteStart());
   try {
