@@ -173,11 +173,11 @@ const CreatePublicationModal = ({ state }) => {
                       <CloseIcon />
                     </button>
                   </div>
-                  <div className="px-8">
+                  <div className="px-8 w-20 h-10">
                     <img
                       src={imagePreview}
                       alt="Preview"
-                      className="w-full rounded-xl"
+                      className="w-full h-full rounded-xl"
                     />
                   </div>
                 </div>
