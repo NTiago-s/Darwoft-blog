@@ -177,7 +177,6 @@ const passwordCrypt = async (pass) => {
 export const resetPasswordController = async (req, res) => {
   try {
     const { password, userId } = req.body;
-    // Buscar el usuario en la base de datos
     const user = await User.findById(userId);
     if (!user) {
       res.status(404).json({ message: "Usuario no encontrado" });
