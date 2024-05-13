@@ -71,7 +71,7 @@ const NavMobile = ({ state }) => {
           </div>
           {!isLoginPage && !isRegisterPage && (
             <div className="">
-              <h4 className="font-semibold text-xl mt-3">
+              <h4 className="font-semibold text-xl text-white mt-3">
                 Tematicas Disponibles:
               </h4>
               <div>
