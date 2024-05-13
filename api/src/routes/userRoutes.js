@@ -23,7 +23,7 @@ router.get("/active", activeUser);
 router.get("/profile", authMiddleware, profile);
 router.get("/search", authMiddleware, filterUsers);
 router.put("/", authMiddleware, handleFileUpload, updateUser);
-router.put("/resetpassword", authMiddleware, resetPasswordController);
+router.put("/resetpassword", authResetPassword, resetPasswordController);
 router.put("/editadmin", adminEdit);
 router.post("/prevresetpassword", prevResetPassword);
 router.delete("/", authMiddleware, deleteUser);

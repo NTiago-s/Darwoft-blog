@@ -1,12 +1,13 @@
 import { useForm } from "react-hook-form";
 import { Eye, EyeSlash, ShieldIcon } from "../../components/icons/icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "../../components/buttons";
 import { validatePassword } from "../../utils/validation";
 import { useDispatch } from "react-redux";
 import { resetPassword } from "../../store/httpUserSlice";
 export default function ResetPassword() {
   const [visibilityPassword, setVisibilityPassword] = useState(false);
+  const [token, setToken] = useState("");
   const dispatch = useDispatch();
   const toggleVisibilityPassword = () => {
     setVisibilityPassword(!visibilityPassword);
@@ -18,9 +19,21 @@ export default function ResetPassword() {
     formState: { errors },
   } = useForm();
 
+  useEffect(() => {
+    const url = window.location.href;
+    const tokenFromUrl = new URLSearchParams(new URL(url).search).get("token");
+    if (tokenFromUrl) {
+      setToken(tokenFromUrl);
+    }
+  }, []);
+
   const handleChangePassword = async (data) => {
     try {
-      dispatch(resetPassword(data.password));
+      const info = {
+        password: data.password,
+        token: token,
+      };
+      dispatch(resetPassword(info));
     } catch (error) {
       throw new Error(error.message);
     }
