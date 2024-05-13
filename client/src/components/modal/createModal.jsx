@@ -194,7 +194,7 @@ const CreatePublicationModal = ({ state }) => {
                 themes.map((theme, index) => (
                   <label
                     key={index}
-                    className="inline-flex items-center gap-1 ml-4 my-3"
+                    className="flex items-center gap-1 ml-4 my-3"
                   >
                     <input
                       type="checkbox"
