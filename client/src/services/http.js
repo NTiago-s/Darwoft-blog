@@ -41,6 +41,7 @@ const post = async (url, body, customHeaders) => {
 };
 
 const put = async (url, body, customHeaders) => {
+  console.log(url, body);
   try {
     const response = await axiosPrivate.put(`${BASE_URL}/${url}`, body, {
       method: "PUT",
