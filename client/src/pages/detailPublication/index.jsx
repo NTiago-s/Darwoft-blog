@@ -88,7 +88,7 @@ export default function PublicationDetails() {
     : [];
 
   return (
-    <div className="lg:px-72">
+    <div className="md:ml-60 md:mr-6 lg:ml-0 lg:px-72">
       <div className="w-full bg-slate-500 rounded-lg p-4 my-4">
         <div className="flex justify-between m-3">
           <div className="flex gap-2">
@@ -118,11 +118,11 @@ export default function PublicationDetails() {
           {publication?.publication?.description}
         </p>
         {publication?.publication?.image ? (
-          <div className="flex justify-center rounded-xl">
+          <div className="flex justify-center mx-auto md:w-[450px] md:h-300px rounded-xl">
             <img
               src={publication?.publication?.image}
               alt={publication?.publication?.title}
-              className="rounded-xl"
+              className="rounded-xl h-full w-full"
             />
           </div>
         ) : (

@@ -36,7 +36,7 @@ export default function CreatePublication() {
     }
   }, [activeMobile]);
 
-  const messi = () => {
+  const handleoffNavMobile = () => {
     if (!navMobile) {
       navigate("/dashboard");
     }
@@ -79,6 +79,7 @@ export default function CreatePublication() {
     setImageFile(null);
     setImagePreview(null);
   };
+
   const handleTitleChange = (e) => {
     setTitle(e.target.value);
     setErrorTitle("");
@@ -155,7 +156,7 @@ export default function CreatePublication() {
                   className="rounded-full bg-gray-900 items-center justify-center text-white sm:size-16  size-10 flex"
                   onClick={() => {
                     handleNavMobile();
-                    messi();
+                    handleoffNavMobile();
                   }}
                 >
                   {user.profileImage ? (
@@ -173,7 +174,7 @@ export default function CreatePublication() {
                   className="rounded-full bg-gray-900 text-white min-w-14 h-14 flex justify-center items-center text-center"
                   onClick={() => {
                     handleNavMobile();
-                    messi();
+                    handleoffNavMobile();
                   }}
                 >
                   {user ? "" : <UserIcon />}
