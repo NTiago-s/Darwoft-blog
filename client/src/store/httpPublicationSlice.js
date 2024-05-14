@@ -142,6 +142,17 @@ export const createPublication = (formData) => async (dispatch) => {
     }
   } catch (error) {
     dispatch(httpPostFailure(error.message));
+    if (error.response && error.response.status === 400) {
+      Swal.fire({
+        title: "Error al crear la publicacion",
+        text: error.response.data.message,
+        icon: "error",
+        confirmButtonColor: "#FF5C5C",
+        color: "#FFF",
+        background: "#000",
+        iconColor: "#FF5C5C",
+      });
+    }
   }
 };
 

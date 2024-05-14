@@ -8,21 +8,14 @@ import {
   deletePublication,
 } from "../controllers/publications/publications.controller.js";
 import { authMiddleware } from "../middlewares/auth.middleware.js";
-import multer from "multer";
+import { handleFileUpload } from "../middlewares/fileSize.js";
 
 const router = Router();
-const storage = multer.diskStorage({});
-const upload = multer({ storage });
 
 router.get("/:id", getPublication);
 router.get("/", getPublications);
-router.put(
-  "/update",
-  authMiddleware,
-  upload.single("image"),
-  updatePublication
-);
-router.post("/create", upload.single("image"), createPublication);
+router.put("/update", authMiddleware, handleFileUpload, updatePublication);
+router.post("/create", handleFileUpload, createPublication);
 router.delete("/delete", deletePublication);
 
 export default router;

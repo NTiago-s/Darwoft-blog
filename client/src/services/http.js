@@ -33,11 +33,15 @@ const get = async (url) => {
 };
 
 const post = async (url, body, customHeaders) => {
-  const response = await axiosPrivate.post(`${BASE_URL}/${url}`, body, {
-    method: "POST",
-    headers: customHeaders ? customHeaders : headers,
-  });
-  return response;
+  try {
+    const response = await axiosPrivate.post(`${BASE_URL}/${url}`, body, {
+      method: "POST",
+      headers: customHeaders ? customHeaders : headers,
+    });
+    return response;
+  } catch (error) {
+    throw error;
+  }
 };
 
 const put = async (url, body, customHeaders) => {
@@ -53,7 +57,7 @@ const put = async (url, body, customHeaders) => {
     }
     return response;
   } catch (error) {
-    throw new Error();
+    throw error;
   }
 };
 
