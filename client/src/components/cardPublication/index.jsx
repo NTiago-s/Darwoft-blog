@@ -134,7 +134,7 @@ export default function CardPublication() {
       : [];
 
   return (
-    <div className="flex flex-col w-full sm:w-[500px] md:w-[430px] mx-auto h-auto my-2">
+    <div className="flex flex-col w-full sm:w-[500px] md:w-[430px] lg:w-[600px] mx-auto h-auto my-2">
       <div className="text-center">
         {isDashboardRoute ? "Publicaciones creadas" : ""}
       </div>

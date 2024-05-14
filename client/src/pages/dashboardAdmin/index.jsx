@@ -67,7 +67,7 @@ export default function DashboardUserAdmin() {
   };
 
   return (
-    <section className="w-full lg:px-72 md:ml-64 md:w-[470px]">
+    <section className="w-full lg:px-72 md:ml-64 md:w-[470px] lg:w-full lg:ml-0">
       <div className="m-auto flex py-4 justify-center">
         <div className="flex gap-4">
           <div className="w-10 rounded-full bg-gray-900 text-white min-w-14 h-14 flex justify-center items-center text-center">

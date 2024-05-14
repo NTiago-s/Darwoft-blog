@@ -148,7 +148,7 @@ const CreatePublicationModal = ({ state }) => {
             placeholder="Ingresa la descripción"
           ></textarea>
           {errorTitle && <div className="text-red-500 ml-4">{errorTitle}</div>}
-          <label className="flex flex-col mb-6 gap-2">
+          <label className="flex flex-col gap-2">
             <div className="cursor-pointer">
               <PhotoIcon />
             </div>
@@ -163,8 +163,8 @@ const CreatePublicationModal = ({ state }) => {
         <div className="flex flex-col">
           {imagePreview ? (
             <div className="px-6">
-              <div className="flex flex-col mt-3 items-start">
-                <div className="flex flex-col w-80 h-60 mb-10">
+              <div className="flex flex-col items-start">
+                <div className="flex flex-col w-60 h-40 mb-4">
                   <div className="flex justify-end mr-4">
                     <button
                       onClick={handleDeleteImage}
@@ -173,7 +173,7 @@ const CreatePublicationModal = ({ state }) => {
                       <CloseIcon />
                     </button>
                   </div>
-                  <div className="px-8 w-80 h-60">
+                  <div className="px-8 items-center flex mx-auto w-60 h-40">
                     <img
                       src={imagePreview}
                       alt="Preview"
