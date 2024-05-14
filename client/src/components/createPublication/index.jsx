@@ -20,6 +20,7 @@ export default function CreatePublication() {
   const [imagePreview, setImagePreview] = useState(null);
   const [navMobile, setNavMobile] = useState(false);
   const [mobile, setMobile] = useState(false);
+  const activeMobile = window.innerWidth < 768;
   const dashPage = location.pathname === "/dashboard";
   const { themes } = useSelector((state) => state.theme.themes);
   const fileInputRef = useRef(null);
@@ -29,16 +30,11 @@ export default function CreatePublication() {
   }, [getUsers]);
 
   useEffect(() => {
-    const handleResize = () => {
-      setNavMobile(window.innerWidth < 768);
-      setMobile(window.innerWidth >= 768);
-    };
-    handleResize();
-    document.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
+    if (activeMobile) {
+      setNavMobile(true);
+      setMobile(false);
+    }
+  }, [activeMobile]);
 
   const messi = () => {
     if (!navMobile) {
