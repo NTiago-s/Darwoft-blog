@@ -74,7 +74,7 @@ const NavMobile = ({ state }) => {
               <h4 className="font-semibold text-xl text-white mt-3">
                 Tematicas Disponibles:
               </h4>
-              <div>
+              <div className="flex flex-col gap-3 mt-3">
                 {themes &&
                   Array.isArray(themes) &&
                   themes.map((theme, index) => (

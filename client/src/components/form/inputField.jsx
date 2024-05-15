@@ -11,7 +11,7 @@ const InputField = ({ id, html, label, type, register, change }) => {
           id={id}
           type={type}
           {...register}
-          className="rounded-xl w-full px-2 text-black "
+          className="rounded-lg w-full p-2 text-black "
           onChange={change}
         />
       </label>

@@ -20,11 +20,11 @@ export default function BadgeTheme({ icon, title, id, selected, onClick }) {
     <div
       className={`${
         selected ? "selected" : ""
-      } flex items-center justify-between text-center rounded-3xl m-2 p-1 gap-2 bg-blue-100 text-blue-800 hover:bg-emerald-300 hover:text-black text-sm font-medium dark:bg-blue-900 dark:text-blue-300  cursor-pointer`}
+      } flex items-center justify-between text-center rounded-3xl py-1 px-3 gap-2 bg-blue-100 text-blue-800 hover:bg-emerald-300 hover:text-black text-sm font-medium dark:bg-blue-900 dark:text-blue-300  w-full cursor-pointer`}
       onClick={onClick}
     >
       {icon && <div>{icon}</div>}
-      <div className="font-semibold text-lg ml-7 flex justify-center text-center">
+      <div className="font-semibold text-lg ml-4 flex justify-center text-center">
         {title}
       </div>
       {user && user.role === "admin" && (

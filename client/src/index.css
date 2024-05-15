@@ -14,3 +14,8 @@
 ::-webkit-scrollbar-thumb:active{
     background-color: rgb(65, 89, 167);
 }
+
+
+body{
+    @apply bg-gray-100
+}

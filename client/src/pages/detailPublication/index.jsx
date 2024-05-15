@@ -89,7 +89,7 @@ export default function PublicationDetails() {
 
   return (
     <div className="md:ml-60 md:mr-6 lg:ml-0 lg:px-72">
-      <div className="w-full bg-slate-500 rounded-lg p-4 my-4">
+      <div className="w-full bg-slate-800 rounded-lg p-4 my-4">
         <div className="flex justify-between m-3">
           <div className="flex gap-2">
             <div className="rounded-full bg-gray-900 text-white size-14 flex justify-center items-center text-center">
@@ -106,15 +106,15 @@ export default function PublicationDetails() {
                 )
               )}
             </div>
-            <div className="text-center flex items-center">
+            <div className="text-center flex text-white items-center">
               {`${publication?.publication?.author?.firstName} ${publication?.publication?.author?.lastName}`}
             </div>
           </div>
         </div>
-        <h2 className="w-full break-words text-2xl font-semibold p-2">
+        <h2 className="w-full break-words text-2xl text-white font-semibold p-2">
           {publication?.publication?.title}
         </h2>
-        <p className="w-full break-words text-base p-2">
+        <p className="w-full break-words text-white/80 text-base p-2">
           {publication?.publication?.description}
         </p>
         {publication?.publication?.image ? (
@@ -141,7 +141,7 @@ export default function PublicationDetails() {
           </div>
           {!isCommenting && (
             <button
-              className="rounded-xl m-2 p-[6px] gap-2 text-black hover:bg-emerald-300 hover:text-black text-xs font-medium"
+              className="rounded-xl m-2 p-[6px] gap-2 text-white hover:bg-emerald-300 hover:text-black text-xs font-medium"
               onClick={handleToggleCommenting}
             >
               Comentar
@@ -153,14 +153,22 @@ export default function PublicationDetails() {
             <div className="flex gap-2">
               <div className="rounded-full bg-gray-900 text-white min-w-8 h-8  flex justify-center items-center text-center">
                 {user ? (
-                  `${user.firstName?.charAt(0)}${user.lastName?.charAt(0)}`
+                  user.profileImage ? (
+                    <img
+                      src={user.profileImage}
+                      alt=""
+                      className="rounded-full object-cover size-8"
+                    />
+                  ) : (
+                    `${user.firstName?.charAt(0)}${user.lastName?.charAt(0)}`
+                  )
                 ) : (
                   <UserIcon />
                 )}
               </div>
               <input
                 type="text"
-                className="w-full rounded-lg px-3 text-base bg-transparent border-black border-2"
+                className="w-full rounded-lg px-3 text-base bg-transparent border-white text-white border-2"
                 value={newCommentText}
                 onChange={(e) => setNewCommentText(e.target.value)}
                 onClick={(e) => {
@@ -171,13 +179,13 @@ export default function PublicationDetails() {
             </div>
             <div className="flex justify-end">
               <button
-                className="rounded-xl m-2 p-[6px] gap-2 text-black hover:bg-emerald-300 hover:text-black text-xs font-medium"
+                className="rounded-xl m-2 p-[6px] gap-2 text-white hover:bg-emerald-300 hover:text-black text-xs font-medium"
                 onClick={handleToggleCommenting}
               >
                 Cancelar
               </button>
               <button
-                className="rounded-xl m-2 p-[6px] gap-2 text-black hover:bg-emerald-300 hover:text-black text-xs font-medium"
+                className="rounded-xl m-2 p-[6px] gap-2 text-white hover:bg-emerald-300 hover:text-black text-xs font-medium"
                 onClick={(e) => {
                   e.preventDefault();
                   handleCreateComment(publication.publication._id);

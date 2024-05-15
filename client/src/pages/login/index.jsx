@@ -87,14 +87,14 @@ export default function Login() {
   return (
     <div className="my-40">
       <form
-        className="flex flex-col justify-center items-center max-w-[500px] h-auto mx-auto bg-fondo2 p-6 sm:p-12 rounded-b-lg shadow-md"
+        className="flex flex-col justify-center items-center max-w-[500px] h-auto mx-auto bg-white p-6 sm:p-12 rounded-xl shadow-md"
         onSubmit={onSubmit}
       >
         <div className="flex flex-col w-full">
           <input
             type="email"
             placeholder="Email"
-            className={`h-14 w-full px-2 placeholder:text-primary-blue placeholder:px-1  text-primary-blue  bg-white  border border-primary-blue-20 mt-10 mb-16  rounded-t-md`}
+            className={`h-14 w-full px-2 placeholder:text-gray-400 placeholder:px-1  text-primary-blue  bg-white  border border-primary-blue-20 mt-10 mb-16  rounded-t-md`}
             {...register("email", {
               required: "Ingresa un Email",
               validate: validateEmail,
@@ -112,7 +112,7 @@ export default function Login() {
               type={`${visibilityPassword ? "text" : "password"}`}
               id="password"
               placeholder="Contraseña"
-              className={`w-full h-14 pl-2 pr-10 placeholder:text-primary-blue placeholder:px-1 text-primary-blue bg-white border border-primary-blue-20 rounded-t-md`}
+              className={`w-full h-14 pl-2 pr-10 placeholder:text-gray-400 placeholder:px-1 bg-white border border-primary-blue-20 rounded-t-md`}
               {...register("password", {
                 required: "Ingresa una Contraseña",
                 validate: validatePassword,
@@ -135,7 +135,7 @@ export default function Login() {
         <div className="flex flex-col mt-9 gap-2 items-center justify-between text-txt">
           <span
             onClick={handleChangePassword}
-            className="hover:underline text-primary-blue font-Montserrat font-semibold text-md transition-colors cursor-pointer"
+            className="hover:underline placeholder:text-black font-semibold text-md transition-colors cursor-pointer"
           >
             ¿Olvidaste la contraseña?
           </span>

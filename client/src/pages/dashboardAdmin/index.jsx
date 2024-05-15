@@ -86,13 +86,13 @@ export default function DashboardUserAdmin() {
           </div>
         </div>
       </div>
-      <div>Crear Tematicas</div>
       <form
-        className="rounded-lg my-2"
+        className="rounded-lg my-2 max-w-[500px] w-full mx-auto"
         onSubmit={(e) => {
           e.preventDefault();
         }}
       >
+        <div>Crear Tematicas</div>
         <input
           type="text"
           className="w-full border-2 p-2 rounded-lg placeholder:text-black"
@@ -110,9 +110,7 @@ export default function DashboardUserAdmin() {
             }}
           />
         </div>
-      </form>
-      <div className="mt-10">Administrar Usuarios</div>
-      <form className="rounded-lg my-2">
+        <div className="mt-10">Administrar Usuarios</div>
         <input
           type="text"
           className="w-full border-2 p-2 rounded-lg placeholder:text-black"
@@ -134,7 +132,7 @@ export default function DashboardUserAdmin() {
           />
         </div>
       </form>
-      <div>
+      <div className="mx-auto max-w-[700px] w-full">
         {users?.map((currentUser, index) => {
           return (
             <div

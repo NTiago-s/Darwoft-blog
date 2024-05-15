@@ -143,7 +143,7 @@ export default function CardPublication() {
           <Link key={index} to={`/publications/${publication._id}`}>
             <div
               key={index}
-              className="bg-slate-500 cursor-pointer rounded-lg p-3 my-4"
+              className="bg-slate-800 relative transition duration-300 hover:border-0 hover:opacity-90 cursor-pointer rounded-lg p-3 my-4"
             >
               <div className="flex">
                 <div className="flex gap-2">
@@ -161,7 +161,7 @@ export default function CardPublication() {
                       )
                     )}
                   </div>
-                  <div className="text-center flex items-center">
+                  <div className="text-center text-white flex items-center">
                     {`${publication.author.firstName}  ${publication.author.lastName}`}
                   </div>
                 </div>
@@ -170,7 +170,7 @@ export default function CardPublication() {
                     {isDashboardRoute ? (
                       <div className="flex p-2 gap-4 rounded-lg">
                         <button
-                          className="flex items-center my-2 bg-green-600 hover:bg-green-800 p-1 rounded-lg"
+                          className="absolute top-4 right-16 bg-green-600 hover:bg-green-800 p-2 rounded-lg"
                           onClick={(e) => {
                             e.preventDefault();
                             setEditingPublicationId(publication._id);
@@ -183,7 +183,7 @@ export default function CardPublication() {
                           <PencilIcon />
                         </button>
                         <button
-                          className="flex items-center my-2 bg-red-600 hover:bg-red-800 p-1 rounded-lg"
+                          className="absolute top-4 right-4 bg-red-600 hover:bg-red-800 p-2 rounded-lg"
                           onClick={(e) => {
                             e.preventDefault();
                             handleDeletePublication(publication._id);
@@ -195,7 +195,7 @@ export default function CardPublication() {
                     ) : user && user.role === "admin" ? (
                       <div className="flex p-2 gap-4 rounded-lg">
                         <button
-                          className="flex items-center my-2 bg-red-600 hover:bg-red-800 p-1 rounded-lg"
+                          className="absolute top-4 right-4 bg-red-600 hover:bg-red-800 p-2 rounded-lg"
                           onClick={(e) => {
                             e.preventDefault();
                             handleDeletePublication(publication._id);
@@ -227,7 +227,7 @@ export default function CardPublication() {
                       }}
                     />
                   ) : (
-                    <h2 className="w-full break-words p-2 text-lg font-semibold">
+                    <h2 className="w-full text-white break-words p-2 text-lg font-semibold">
                       {publication.title}
                     </h2>
                   )}
@@ -247,17 +247,17 @@ export default function CardPublication() {
                       }}
                     />
                   ) : (
-                    <p className="w-full break-words text-sm p-2">
+                    <p className="w-full text-white/80 break-words text-sm p-2">
                       {publication.description}
                     </p>
                   )}
                 </div>
                 {publication.image ? (
-                  <div className="flex h-[150px] w-full items-center justify-center rounded-2xl">
+                  <div className="flex h-[150px] w-fit  items-center justify-center mx-auto rounded-2xl">
                     <img
                       src={publication.image}
                       alt=""
-                      className="rounded-2xl  w-[300px] h-full object-cover mx-auto"
+                      className="rounded-2xl w-full h-full object-scale-down"
                     />
                   </div>
                 ) : (
@@ -266,10 +266,10 @@ export default function CardPublication() {
               </div>
 
               <div className="flex flex-col justify-between">
-                <div className="flex">
+                <div className="flex flex-wrap">
                   {publication.themes.map((theme, index) => (
                     <div
-                      className="flex w-auto justify-center rounded-xl m-2 p-[6px] gap-2 bg-blue-100 text-blue-800 hover:text-black text-xs font-medium dark:bg-blue-900 dark:text-blue-300  cursor-pointer"
+                      className="flex w-full max-w-[70px] justify-center rounded-xl m-2 p-[6px] gap-2 bg-blue-100 text-blue-800 hover:text-black text-xs font-medium dark:bg-blue-900 dark:text-blue-300  cursor-pointer"
                       key={index}
                     >
                       {theme.name}
@@ -280,7 +280,7 @@ export default function CardPublication() {
                   {editingPublicationId ? (
                     <div className="mt-2">
                       <button
-                        className="rounded-xl m-2 p-[6px] gap-2 text-black hover:bg-emerald-300 hover:text-black text-xs font-medium"
+                        className="rounded-xl m-2 p-[6px] gap-2 text-white hover:bg-emerald-300 hover:text-black text-xs font-medium"
                         onClick={(e) => {
                           e.preventDefault();
                           handleUpdatePublication(publication._id);
@@ -289,7 +289,7 @@ export default function CardPublication() {
                         Cancelar
                       </button>
                       <button
-                        className="rounded-xl m-2 p-[6px] gap-2 text-black hover:bg-emerald-300 hover:text-black text-xs font-medium"
+                        className="rounded-xl m-2 p-[6px] gap-2 text-white hover:bg-emerald-300 hover:text-black text-xs font-medium"
                         onClick={(e) => {
                           e.preventDefault();
                           handleUpdatePublication(publication._id);
@@ -300,7 +300,7 @@ export default function CardPublication() {
                     </div>
                   ) : (
                     <button
-                      className="rounded-xl m-2 p-[6px] gap-2 text-black hover:bg-emerald-300 hover:text-black text-xs font-medium"
+                      className="rounded-xl m-2 p-[6px] gap-2 text-white hover:bg-emerald-300 hover:text-black text-xs font-medium"
                       onClick={(e) => {
                         e.preventDefault();
                         handleStatusComment(publication._id);
@@ -336,7 +336,7 @@ export default function CardPublication() {
                     </div>
                     <input
                       type="text"
-                      className="w-full rounded-lg px-3 text-base bg-transparent border-black border-2 "
+                      className="w-full rounded-lg px-3 text-base bg-transparent text-white border-white border-2 "
                       value={
                         publicationComments[publication._id]?.commentText || ""
                       }
@@ -357,7 +357,7 @@ export default function CardPublication() {
                   </div>
                   <div className="flex justify-end mt-2">
                     <button
-                      className="rounded-xl m-2 p-[6px] gap-2 text-black hover:bg-emerald-300 hover:text-black text-xs font-medium"
+                      className="rounded-xl m-2 p-[6px] gap-2 text-white hover:bg-emerald-300 hover:text-black text-xs font-medium"
                       onClick={(e) => {
                         e.preventDefault();
                         handleStatusNoComment(publication._id);
@@ -366,7 +366,7 @@ export default function CardPublication() {
                       Cancelar
                     </button>
                     <button
-                      className="rounded-xl m-2 p-[6px] gap-2 text-black hover:bg-emerald-300 hover:text-black text-xs font-medium"
+                      className="rounded-xl m-2 p-[6px] gap-2 text-white hover:bg-emerald-300 hover:text-black text-xs font-medium"
                       onClick={(e) => {
                         e.preventDefault();
                         handleCreateComment(publication._id);

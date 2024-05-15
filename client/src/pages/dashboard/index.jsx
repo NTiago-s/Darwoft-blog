@@ -29,7 +29,7 @@ export default function DashboardUser() {
   };
 
   return (
-    <section className="w-full md:ml-32 lg:w-full">
+    <section className="w-full max-w-[820px] md:pl-32 md:mx-auto lg:w-full">
       <div className="m-auto flex flex-col gap-4 p-4  justify-between">
         <div className="flex w-full justify-center gap-4">
           <div className="flex rounded-full size-14 justify-center items-center text-center bg-gray-900 text-white">
@@ -46,7 +46,7 @@ export default function DashboardUser() {
           <div className="flex text-center font-medium text-lg items-center">
             {user ? `${user?.firstName} ${user?.lastName}` : ""}
           </div>
-          <div className="flex text-center font-medium text-lg items-center">
+          <div className="flex text-center hover:bg-blue-800 px-1 rounded-lg hover:text-white font-medium text-lg items-center">
             {user?.role === "admin" ? (
               <Link to={"/dashboard/admin"}>
                 <SettingsIcon />

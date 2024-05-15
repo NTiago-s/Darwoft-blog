@@ -50,12 +50,17 @@ export default function NavBar() {
   }, [getThemes]);
 
   return (
-    <div className="flex flex-col">
-      <div className="flex gap-2">
-        <div>
-          <Badge icon={<Home />} title={"Inicio"} to={"/"} />
+    <div className="flex md:max-w-[192px] lg:max-w-full w-full flex-col">
+      <div className="flex  md:flex-col  lg:flex-row items-center gap-2">
+        <div className="w-full">
+          <Badge
+            icon={<Home />}
+            title={"Inicio"}
+            to={"/"}
+            classname="!w-full"
+          />
         </div>
-        <div className="flex sm:hidden">
+        <div className="flex md:hidden">
           {user && (
             <Badge
               icon={user ? <CreatePublicationIcon /> : ""}
@@ -64,12 +69,13 @@ export default function NavBar() {
             />
           )}
         </div>
-        <div className="hidden sm:flex">
+        <div className="hidden md:block w-full">
           {!isLoginPage && !isRegisterPage && !dashPage && (
             <Badge
               icon={user ? <User /> : ""}
               title={user ? "Perfil" : "Iniciar Sesión"}
               to={user ? "/dashboard" : "/login"}
+              classname="!w-full "
             />
           )}
         </div>
@@ -78,9 +84,11 @@ export default function NavBar() {
         )}
       </div>
       {!isLoginPage && !isRegisterPage && (
-        <div className="hidden sm:flex sm:flex-col">
-          <h4 className="font-semibold text-xl mt-3">Tematicas Disponibles:</h4>
-          <div>
+        <div className="hidden md:flex md:flex-col">
+          <h4 className="font-semibold text-center lg:text-lg mt-3">
+            Tematicas Disponibles:
+          </h4>
+          <div className="flex flex-col gap-2 mt-2">
             {themes &&
               Array.isArray(themes) &&
               themes.map((theme, index) => (

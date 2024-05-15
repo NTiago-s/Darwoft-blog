@@ -28,7 +28,7 @@ export default function Register() {
   };
   return (
     <form
-      className="flex flex-col max-w-[500px] bg-fondo2 sm:p-12 shadow-md rounded-md p-6 h-auto mx-auto my-40"
+      className="flex flex-col max-w-[500px] bg-white sm:p-12 shadow-md rounded-md p-6 h-auto mx-auto my-40"
       onSubmit={onSubmit}
     >
       <div className="flex flex-col lg:flex-row w-full gap-x-4">

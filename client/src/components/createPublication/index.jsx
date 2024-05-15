@@ -142,18 +142,17 @@ export default function CreatePublication() {
   };
 
   return (
-    <div className="flex sm:flex-col w-full rounded-lg border-2">
-      <div className="flex sm:flex-row flex-col w-full">
-        <div className="flex justify-between sm:justify-start items-center sm:w-auto sm:items-start sm:px-4 sm:py-4 w-full">
-          <div className="flex sm:hidden">
+    <div className="flex md:flex-col w-full rounded-lg border-2 overflow-y-scroll bg-white">
+      <div className="flex md:flex-row flex-col w-full max-w-full">
+        <div className="flex justify-between md:justify-start items-center md:items-start p-4">
+          <div className="flex items-center md:hidden">
             <Header />
           </div>
-
-          <div>
-            <div className={`${!dashPage ? "sm:flex" : "sm:hidden"}`}>
+          <div className="flex items-center">
+            <div className={`${!dashPage ? "md:flex" : "md:hidden"}`}>
               {user ? (
                 <div
-                  className="rounded-full bg-gray-900 items-center justify-center text-white sm:size-16  size-10 flex"
+                  className="rounded-full flex bg-gray-900 items-center justify-center text-white sm:size-16  size-10"
                   onClick={() => {
                     handleNavMobile();
                     handleoffNavMobile();
@@ -184,7 +183,7 @@ export default function CreatePublication() {
             </div>
           </div>
         </div>
-        <div className="sm:flex p-1 flex-col w-full hidden">
+        <div className="md:flex p-1 flex-col w-full hidden">
           <input
             type="text"
             value={title}
@@ -215,7 +214,8 @@ export default function CreatePublication() {
           </label>
         </div>
       </div>
-      <div className="sm:flex sm:ml-24 hidden justify-between sm:flex-col">
+
+      <div className="md:flex md:ml-24 hidden justify-between md:flex-col">
         {imagePreview ? (
           <div className="px-6">
             <div className="flex flex-col mt-3 items-start">
@@ -243,14 +243,11 @@ export default function CreatePublication() {
         )}
         <div className="flex flex-col">
           Tematicas:
-          <div>
+          <div className="flex flex-wrap w-full">
             {themes &&
               Array.isArray(themes) &&
               themes.map((theme, index) => (
-                <label
-                  key={index}
-                  className="inline-flex items-center gap-1 ml-4 my-3"
-                >
+                <label key={index} className="flex items-center gap-1 my-3">
                   <input
                     type="checkbox"
                     className="form-checkbox h-5 w-5 text-blue-600 cursor-pointer"
