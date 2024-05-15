@@ -1,6 +1,11 @@
 import { useLocation } from "react-router-dom";
 import Badge from "../../badge";
-import { CreatePublicationIcon, Home, User } from "../../icons/icons";
+import {
+  CreatePublicationIcon,
+  Home,
+  LoginIcon,
+  User,
+} from "../../icons/icons";
 import BadgeTheme from "../../badge/badgeThemes";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
@@ -51,7 +56,7 @@ export default function NavBar() {
 
   return (
     <div className="flex md:max-w-[192px] lg:max-w-full w-full flex-col">
-      <div className="flex  md:flex-col  lg:flex-row items-center gap-2">
+      <div className="flex  md:flex-col items-center gap-2">
         <div className="w-full">
           <Badge
             icon={<Home />}
@@ -72,10 +77,10 @@ export default function NavBar() {
         <div className="hidden md:block w-full">
           {!isLoginPage && !isRegisterPage && !dashPage && (
             <Badge
-              icon={user ? <User /> : ""}
+              icon={user ? <User /> : <LoginIcon />}
               title={user ? "Perfil" : "Iniciar Sesión"}
               to={user ? "/dashboard" : "/login"}
-              classname="!w-full "
+              classname="!w-full"
             />
           )}
         </div>
