@@ -84,21 +84,34 @@ const NavMobile = ({ state }) => {
                 {themes &&
                   Array.isArray(themes) &&
                   themes.map((theme, index) => (
-                    <BadgeTheme
+                    <button
                       key={index}
-                      title={theme.name}
-                      id={theme._id}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        handleThemeSelect(theme._id);
+                      onClick={() => {
+                        state(false);
                       }}
-                      selected={selectedTheme}
-                    />
+                    >
+                      <BadgeTheme
+                        key={index}
+                        title={theme.name}
+                        id={theme._id}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleThemeSelect(theme._id);
+                        }}
+                        selected={selectedTheme}
+                      />
+                    </button>
                   ))}
               </div>
               <div className="p-2 text-center text-red-600 font-medium text-xl">
                 {selectedTheme ? (
-                  <button onClick={resetFilter} className="underline">
+                  <button
+                    onClick={() => {
+                      state(false);
+                      resetFilter();
+                    }}
+                    className="underline"
+                  >
                     Eliminar filtro
                   </button>
                 ) : (
