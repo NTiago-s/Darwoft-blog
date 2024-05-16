@@ -168,7 +168,7 @@ export default function CreatePublication() {
                       className="rounded-full w-full h-full object-cover"
                     />
                   ) : (
-                    `${user.firstName?.charAt(0)}${user.lastName?.charAt(0)}`
+                    `${user?.firstName?.charAt(0)}${user?.lastName?.charAt(0)}`
                   )}
                 </div>
               ) : (

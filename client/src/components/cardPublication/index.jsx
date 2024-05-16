@@ -30,6 +30,10 @@ export default function CardPublication() {
   const isDashboardRoute = location.pathname === "/dashboard";
 
   const Initials = (nombre, apellido) => {
+    if (!nombre || !apellido) {
+      return null;
+    }
+
     return `${nombre.charAt(0)}${apellido.charAt(0)}`;
   };
 
@@ -148,21 +152,21 @@ export default function CardPublication() {
               <div className="flex">
                 <div className="flex gap-2">
                   <div className="rounded-full bg-gray-900 text-white w-14 h-14 flex justify-center items-center text-center">
-                    {publication.author.profileImage ? (
+                    {publication?.author?.profileImage ? (
                       <img
-                        src={publication.author.profileImage}
+                        src={publication?.author?.profileImage}
                         alt=""
                         className="rounded-full w-full h-full object-cover"
                       />
                     ) : (
                       Initials(
-                        publication.author.firstName,
-                        publication.author.lastName
+                        publication?.author?.firstName,
+                        publication?.author?.lastName
                       )
                     )}
                   </div>
                   <div className="text-center text-white flex items-center">
-                    {`${publication.author.firstName}  ${publication.author.lastName}`}
+                    {`${publication?.author?.firstName}  ${publication?.author?.lastName}`}
                   </div>
                 </div>
                 <div>
