@@ -37,11 +37,7 @@ export const router = createBrowserRouter([
   },
   {
     path: "/users/active",
-    element: (
-      <Main>
-        <AuthUser />
-      </Main>
-    ),
+    element: <AuthUser />,
   },
   {
     path: "/publications/:id",

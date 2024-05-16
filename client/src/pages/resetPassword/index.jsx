@@ -46,7 +46,7 @@ export default function ResetPassword() {
           <ShieldIcon />
         </div>
         <div>
-          <h3 className="mt-4 text-2xl text-white">
+          <h3 className="mt-4 text-2xl text-black">
             Ingresa tu nueva contraseña
           </h3>
         </div>
