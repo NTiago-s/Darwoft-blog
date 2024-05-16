@@ -161,9 +161,9 @@ export default function CreatePublication() {
                     handleoffNavMobile();
                   }}
                 >
-                  {user.profileImage ? (
+                  {user?.profileImage ? (
                     <img
-                      src={user.profileImage}
+                      src={user?.profileImage}
                       alt=""
                       className="rounded-full w-full h-full object-cover"
                     />
