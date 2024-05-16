@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { CloseIcon } from "../icons/icons";
+import { CloseIcon, LoginIcon } from "../icons/icons";
 import { useLocation } from "react-router-dom";
 import Badge from "../badge";
 import { User } from "../icons/icons";
@@ -62,7 +62,7 @@ const NavMobile = ({ state }) => {
             <div className={`${user ? "flex" : "flex"} sm:flex`}>
               {!isLoginPage && !isRegisterPage && !dashPage && (
                 <Badge
-                  icon={user ? <User /> : ""}
+                  icon={user ? <User /> : <LoginIcon />}
                   title={user ? "Perfil" : "Iniciar Sesión"}
                   to={user ? "/dashboard" : "/login"}
                 />
