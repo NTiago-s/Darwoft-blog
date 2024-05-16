@@ -118,21 +118,21 @@ export default function PublicationDetails() {
           {publication?.publication?.description}
         </p>
         {publication?.publication?.image ? (
-          <div className="flex justify-center mx-auto md:w-[450px] md:h-300px rounded-xl">
+          <div className="flex justify-center mx-auto h-[350px] w-full  rounded-xl">
             <img
               src={publication?.publication?.image}
               alt={publication?.publication?.title}
-              className="rounded-xl h-full w-full"
+              className="rounded-xl h-full w-full object-scale-down"
             />
           </div>
         ) : (
           ""
         )}
-        <div className="flex justify-between">
-          <div className="flex">
+        <div className="flex w-full flex-wrap justify-end">
+          <div className="flex w-full flex-wrap">
             {publication?.publication?.themes.map((theme, index) => (
               <div
-                className="flex w-auto justify-center rounded-xl m-2 p-[6px] gap-2 bg-blue-100 text-blue-800 hover:text-black text-xs font-medium dark:bg-blue-900 dark:text-blue-300  cursor-pointer"
+                className="flex justify-center rounded-xl m-2 p-[6px] gap-2 bg-blue-100 text-blue-800 hover:text-black text-xs font-medium dark:bg-blue-900 dark:text-blue-300  cursor-pointer"
                 key={index}
               >
                 {theme.name}

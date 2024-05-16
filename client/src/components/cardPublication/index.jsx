@@ -253,11 +253,11 @@ export default function CardPublication() {
                   )}
                 </div>
                 {publication.image ? (
-                  <div className="flex h-[150px] w-fit  items-center justify-center mx-auto rounded-2xl">
+                  <div className="flex h-[200px] w-fit  items-center justify-center mx-auto rounded-2xl">
                     <img
                       src={publication.image}
                       alt=""
-                      className="rounded-2xl w-full h-full object-scale-down"
+                      className="rounded-2xl w-full h-full object-contain"
                     />
                   </div>
                 ) : (
