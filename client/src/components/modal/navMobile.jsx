@@ -61,11 +61,17 @@ const NavMobile = ({ state }) => {
           <div className="flex flex-col w-full mt-20 text-center items-center gap-2">
             <div className={`${user ? "flex" : "flex"} sm:flex`}>
               {!isLoginPage && !isRegisterPage && !dashPage && (
-                <Badge
-                  icon={user ? <User /> : <LoginIcon />}
-                  title={user ? "Perfil" : "Iniciar Sesión"}
-                  to={user ? "/dashboard" : "/login"}
-                />
+                <button
+                  onClick={() => {
+                    state(false);
+                  }}
+                >
+                  <Badge
+                    icon={user ? <User /> : <LoginIcon />}
+                    title={user ? "Perfil" : "Iniciar Sesión"}
+                    to={user ? "/dashboard" : "/login"}
+                  />
+                </button>
               )}
             </div>
           </div>
