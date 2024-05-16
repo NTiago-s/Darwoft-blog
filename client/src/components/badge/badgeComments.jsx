@@ -87,7 +87,7 @@ export default function BadgeComment({ title, id, author, publication }) {
               Initials(author?.firstName, author?.lastName)
             )}
           </div>
-          <div className="text-center font-semibold flex mt-2 text-lg items-center">
+          <div className="text-center font-semibold text-white flex mt-2 text-lg items-center">
             {`${author?.firstName}  ${author?.lastName}`}
           </div>
         </div>
@@ -137,7 +137,9 @@ export default function BadgeComment({ title, id, author, publication }) {
       </div>
       <div className="w-full">
         {!editing && (
-          <p className="w-full font-light text-base ml-4 my-2  flex">{title}</p>
+          <p className="w-full text-white font-light text-base ml-4 my-2  flex">
+            {title}
+          </p>
         )}
         {editing && (
           <input

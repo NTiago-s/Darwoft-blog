@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { createSlice } from "@reduxjs/toolkit";
 import { http } from "../services/http";
+import Swal from "sweetalert2";
 
 const httpCommentSlice = createSlice({
   name: "comment",
@@ -92,11 +93,31 @@ export const createComment = (data) => async (dispatch) => {
   try {
     const response = await http.post("comments/create", data);
     dispatch(httpPostSuccess(response));
+    console.log(response);
     if (response.status === 200) {
       dispatch(fetchComments());
+      Swal.fire({
+        title: "Comentario Creado Correctamente",
+        icon: "success",
+        confirmButtonColor: "#22C55e",
+        color: "#FFFFFF",
+        background: "#000",
+        iconColor: "#22C55e",
+      });
     }
   } catch (error) {
     dispatch(httpPostFailure(error.message));
+    if (error.response && error.response.status === 400) {
+      Swal.fire({
+        title: "Error al crear el comentario",
+        text: error.response.data.message,
+        icon: "error",
+        confirmButtonColor: "#FF5C5C",
+        color: "#FFF",
+        background: "#000",
+        iconColor: "#FF5C5C",
+      });
+    }
   }
 };
 
@@ -105,11 +126,31 @@ export const updateComment = (data) => async (dispatch) => {
   try {
     const response = await http.put(`comments/update`, data);
     dispatch(httpPutSuccess(response.data));
+    console.log(response);
     if (response.status === 200) {
+      Swal.fire({
+        title: "Comentario Modificado Correctamente",
+        icon: "success",
+        confirmButtonColor: "#22C55e",
+        color: "#FFFFFF",
+        background: "#000",
+        iconColor: "#22C55e",
+      });
       dispatch(fetchComments());
     }
   } catch (error) {
     dispatch(httpPutFailure(error.message));
+    if (error.response && error.response.status === 400) {
+      Swal.fire({
+        title: "Error al modificar el comentario",
+        text: error.response.data.message,
+        icon: "error",
+        confirmButtonColor: "#FF5C5C",
+        color: "#FFF",
+        background: "#000",
+        iconColor: "#FF5C5C",
+      });
+    }
   }
 };
 

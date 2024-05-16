@@ -53,11 +53,7 @@ export const router = createBrowserRouter([
   },
   {
     path: "*",
-    element: (
-      <Main>
-        <Error404 />
-      </Main>
-    ),
+    element: <Error404 />,
   },
   {
     path: "",

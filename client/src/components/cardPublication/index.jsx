@@ -269,7 +269,7 @@ export default function CardPublication() {
                 <div className="flex flex-wrap">
                   {publication.themes.map((theme, index) => (
                     <div
-                      className="flex w-full max-w-[70px] justify-center rounded-xl m-2 p-[6px] gap-2 bg-blue-100 text-blue-800 hover:text-black text-xs font-medium dark:bg-blue-900 dark:text-blue-300  cursor-pointer"
+                      className="flex w-full max-w-[70px] hover:bg-emerald-400 justify-center rounded-xl m-2 p-[6px] gap-2 bg-blue-100 text-blue-800 hover:text-black text-xs font-medium dark:bg-blue-900 dark:text-blue-300  cursor-pointer"
                       key={index}
                     >
                       {theme.name}

@@ -42,7 +42,7 @@ export default function ResetPassword() {
   return (
     <main>
       <div className="flex flex-col gap-4 items-center">
-        <div>
+        <div className="mt-32">
           <ShieldIcon />
         </div>
         <div>

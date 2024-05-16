@@ -25,6 +25,7 @@ export default function NavBar() {
   const isLoginPage = location.pathname === "/login";
   const isRegisterPage = location.pathname === "/register";
   const dashPage = location.pathname === "/dashboard";
+  const randomPage = location.pathname === "/*";
   const [selectedTheme, setSelectedTheme] = useState(null);
   const [createPublication, setCreatePublication] = useState(false);
 
@@ -88,7 +89,7 @@ export default function NavBar() {
           <CreatePublicationModal state={setCreatePublication} />
         )}
       </div>
-      {!isLoginPage && !isRegisterPage && (
+      {!isLoginPage && !isRegisterPage && !randomPage && (
         <div className="hidden md:flex md:flex-col">
           <h4 className="font-semibold text-center lg:text-lg mt-3">
             Tematicas Disponibles:
