@@ -66,6 +66,7 @@ export default function PublicationDetails() {
           background: "#000",
           iconColor: "#FF5C5C",
         });
+        return;
       }
 
       if (!newCommentText.trim()) return;

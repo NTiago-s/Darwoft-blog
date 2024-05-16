@@ -105,6 +105,7 @@ export default function CreatePublication() {
         background: "#000",
         iconColor: "#FF5C5C",
       });
+      return;
     }
     if (user.status === "banned") {
       Swal.fire({
@@ -115,6 +116,7 @@ export default function CreatePublication() {
         background: "#000",
         iconColor: "#FF5C5C",
       });
+      return;
     }
     if (selectedThemes.length === 0) {
       setError("Seleccione al menos 1 temática.");
