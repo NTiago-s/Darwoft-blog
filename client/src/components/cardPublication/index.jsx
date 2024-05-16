@@ -318,9 +318,9 @@ export default function CardPublication() {
                     <div className="rounded-full bg-gray-900 text-white min-w-8 h-8  flex justify-center items-center text-center">
                       <div className="rounded-full bg-gray-900 text-white min-w-8 h-8 flex justify-center items-center text-center">
                         {user ? (
-                          user.profileImage ? (
+                          user?.profileImage ? (
                             <img
-                              src={user.profileImage}
+                              src={user?.profileImage}
                               alt=""
                               className="rounded-full object-cover size-8"
                             />

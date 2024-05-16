@@ -64,10 +64,10 @@ export default function FormUserEdit() {
       onSubmit={handleSubmit(onSubmit)}
       encType="multipart/form-data"
     >
-      {user && user.profileImage ? (
+      {user && user?.profileImage ? (
         <div className="flex justify-center items-center flex-col gap-2">
           <img
-            src={user.profileImage}
+            src={user?.profileImage}
             alt="Imagen de perfil"
             className="rounded-full object-cover h-32 w-32"
           />
