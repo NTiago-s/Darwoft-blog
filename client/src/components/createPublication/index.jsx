@@ -22,6 +22,7 @@ export default function CreatePublication() {
   const [mobile, setMobile] = useState(false);
   const activeMobile = window.innerWidth < 768;
   const dashPage = location.pathname === "/dashboard";
+  const loginPage = location.pathname === "/login";
   const { themes } = useSelector((state) => state.theme.themes);
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
@@ -149,7 +150,7 @@ export default function CreatePublication() {
             <Header />
           </div>
           <div className="flex items-center">
-            <div className={`${!dashPage ? "md:flex" : "md:hidden"}`}>
+            <div className={`${!dashPage && !loginPage ? "flex" : "hidden"}`}>
               {user ? (
                 <div
                   className="rounded-full flex bg-gray-900 items-center justify-center text-white sm:size-16  size-10"
